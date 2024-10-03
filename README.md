@@ -1,5 +1,7 @@
 # MelHouse
 
+Welcome to MelHouse, a mobile application where you and your housemates can arrange in an easier way all the tasks to be done in the next months, control your common expenses and handle different kinds of events.
+
 ## 👨‍💻 Contributors:
 
 | Contributor | Github |
