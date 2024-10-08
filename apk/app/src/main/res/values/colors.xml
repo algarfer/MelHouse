@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="melhouse_yellow">#FFFEEA14</color>
+    <color name="melhouse_blue">#FF0BBAFF</color>
+    <color name="melhouse_grey">#FFC2C6C2</color>
 </resources>
