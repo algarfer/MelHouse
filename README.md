@@ -4,9 +4,7 @@
 </div>
 
 ---
-<p align="justify">Welcome to MelHouse, a mobile application where you and your
-housemates can arrange in an easier way all the tasks to be done in the next months,
-control your common expenses and handle different kinds of events.</p>
+<p align="justify">Welcome to MelHouse, a mobile application where you and your housemates can arrange in an easier way all the tasks to be done in the next months, control your common expenses and handle different kinds of events. Our app will allow you to create and edit individual or shared tasks that will bring some rewards if completed. Apart from this, you will be capable of control your expenses and how much each one of you owes to the rest of mates.</p>
 
 ## 👨‍💻 Contributors
 
