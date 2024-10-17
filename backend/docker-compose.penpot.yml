@@ -1,0 +1,84 @@
+name: melhouse-penpot
+
+services:
+  penpot-frontend:
+    container_name: "${prefix:-melhouse}-penpot-frontend"
+    image: "penpotapp/frontend:${PENPOT_FRONTEND_VERSION}"
+    restart: unless-stopped
+    ports:
+      - "${PENPOT_FRONTEND_EXTERNAL_PORT}:${PENPOT_FRONTEND_PORT}"
+    volumes:
+      - "${PENPOT_ASSETS_STORAGE_DIR}:/opt/data/assets"
+    depends_on:
+      - penpot-backend
+      - penpot-exporter
+    networks:
+      - penpot_internal
+      - melhouse
+    environment:
+      PENPOT_FLAGS: enable-login-with-password disable-registration
+
+  penpot-backend:
+    container_name: "${prefix:-melhouse}-penpot-backend"
+    image: "penpotapp/backend:${PENPOT_BACKEND_VERSION}"
+    restart: unless-stopped
+    volumes:
+      - "${PENPOT_ASSETS_STORAGE_DIR}:/opt/data/assets"
+    depends_on:
+      - penpot-postgres
+      - penpot-redis
+    networks:
+      - penpot_internal
+      - melhouse
+    environment:
+      PENPOT_FLAGS: enable-login-with-password disable-email-verification enable-prepl-server disable-secure-session-cookies disable-registration
+      PENPOT_SECRET_KEY: "${PENPOT_BACKEND_SECRET_KEY}"
+      PENPOT_PUBLIC_URI: "${PENPOT_PUBLIC_URI}"
+      PENPOT_DATABASE_URI: "postgresql://${PENPOT_POSTGRES_HOST}/${PENPOT_POSTGRES_DB}"
+      PENPOT_DATABASE_USERNAME: "${PENPOT_POSTGRES_USER}"
+      PENPOT_DATABASE_PASSWORD: "${PENPOT_POSTGRES_PASSWORD}"
+      PENPOT_REDIS_URI: "redis://${PENPOT_REDIS_HOST}/0"
+      PENPOT_ASSETS_STORAGE_BACKEND: assets-fs
+      PENPOT_STORAGE_ASSETS_FS_DIRECTORY: /opt/data/assets
+      PENPOT_TELEMETRY_ENABLED: false
+
+  penpot-exporter:
+    container_name: "${prefix:-melhouse}-penpot-exporter"
+    image: "penpotapp/exporter:${PENPOT_EXPORTER_VERSION}"
+    restart: unless-stopped
+    networks:
+      - penpot_internal
+      - melhouse
+    environment:
+      PENPOT_PUBLIC_URI: "http://${PENPOT_FRONTEND_HOST}"
+      PENPOT_REDIS_URI: "redis://${PENPOT_REDIS_HOST}/0"
+
+  penpot-postgres:
+    container_name: "${prefix:-melhouse}-penpot-postgres"
+    image: "postgres:${PENPOT_POSTGRES_VERSION}"
+    restart: unless-stopped
+    stop_signal: SIGINT
+    volumes:
+      - "${PENPOT_POSTGRES_STORAGE_DIR}:/var/lib/postgresql/data"
+    networks:
+      - penpot_internal
+    environment:
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      POSTGRES_DB: "${PENPOT_POSTGRES_DB}"
+      POSTGRES_USER: "${PENPOT_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${PENPOT_POSTGRES_PASSWORD}"
+
+  penpot-redis:
+    container_name: "${prefix:-melhouse}-redis"
+    image: "redis:${PENPOT_REDIS_VERSION}"
+    restart: unless-stopped
+    networks:
+      - penpot_internal
+
+networks:
+  penpot_internal:
+    name: forgejo_internal
+    driver: bridge
+  melhouse:
+    name: melhouse
+    external: true

@@ -1,0 +1,20 @@
+name: melhouse-proxy
+
+services:
+  proxy:
+    container_name: ${prefix:-melhouse}-proxy
+    build:
+      context: ./proxy
+      args:
+        PENPOT_URI: "http://${PENPOT_FRONTEND_HOST}:${PENPOT_FRONTEND_PORT}"
+    ports:
+      - "80:80"
+      # Enable for SSL
+      # - "443:443"
+    networks:
+      - melhouse
+
+networks:
+  melhouse:
+    name: melhouse
+    driver: bridge
