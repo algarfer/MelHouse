@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme colors -->
+
+    <!-- Background colors -->
+    <color name="background">#1B1F3A</color>
+    <color name="on_background">#E4E6EB</color>
+
+    <!-- Primary colors -->
+    <color name="primary">#90A6FF</color>
+    <color name="on_primary">#000000</color>
+    <color name="primary_container">#2D3D6B</color>
+    <color name="on_primary_container">#E4E6EB</color>
+    <color name="inverse_primary">#7EB9FC</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary">#9A8B2E</color>
+    <color name="on_secondary">#000000</color>
+    <color name="secondary_container">#474008</color>
+    <color name="on_secondary_container">#E4E6EB</color>
+
+    <!-- Tertiary colors -->
+    <color name="tertiary">#B8585A</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="tertiary_container">#4A1B1C</color>
+    <color name="on_tertiary_container">#FFCCCC</color>
+
+    <!-- Error colors -->
+    <color name="error">#FF8882</color>
+    <color name="on_error">#370B0A</color>
+    <color name="error_container">#6C1E1C</color>
+    <color name="on_error_container">#F9DEDC</color>
+
+    <!-- Outline colors -->
+    <color name="outline">#8A8A94</color>
+    <color name="outline_variant">#585860</color>
+
+    <!-- Scrim colors -->
+    <color name="scrim">#000000</color>
+
+    <!-- Shadow colors -->
+    <color name="shadow">#000000</color>
+
+    <!-- Surface colors -->
+    <color name="surface">#2C2F3E</color>
+    <color name="surface_tint">#90A6FF</color>
+    <color name="on_surface">#E4E6EB</color>
+    <color name="on_surface_variant">#B0B0BC</color>
+    <color name="inverse_surface">#E4E6EB</color>
+    <color name="inverse_on_surface">#313033</color>
+</resources>

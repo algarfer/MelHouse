@@ -1,8 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="melhouse_yellow">#FFFEEA14</color>
-    <color name="melhouse_blue">#FF0BBAFF</color>
-    <color name="melhouse_grey">#FFC2C6C2</color>
+    <!-- Light theme colors -->
+
+    <!-- Background colors -->
+    <color name="background">#647dff</color>
+    <color name="on_background">#000000</color>
+
+    <!-- Primary colors -->
+    <color name="primary">#053B7A</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#7EB9FC</color>
+    <color name="on_primary_container">#000000</color>
+    <color name="inverse_primary">#D0BCFF</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary">#564D03</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_container">#FDDF0B</color>
+    <color name="on_secondary_container">#262201</color>
+
+    <!-- Teriary colors -->
+    <color name="tertiary">#890608</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="tertiary_container">#FF9B99</color>
+    <color name="on_tertiary_container">#310202</color>
+
+    <!-- Error colors -->
+    <color name="error">#e53026</color>
+    <color name="on_error">#ffffff</color>
+    <color name="error_container">#f9dedc</color>
+    <color name="on_error_container">#410e0b</color>
+
+    <!-- Outline colors -->
+    <color name="outline">#79747e</color>
+    <color name="outline_variant">#c4c7c5</color>
+
+    <!-- Scrim colors -->
+    <color name="scrim">#000000</color>
+
+    <!-- Shadow colors -->
+    <color name="shadow">#000000</color>
+
+    <!-- Surface colors -->
+    <color name="surface">#FFFBFE</color>
+    <color name="surface_tint">#647DFF</color>
+    <color name="on_surface">#1C1B1F</color>
+    <color name="on_surface_variant">#49454E</color>
+    <color name="inverse_surface">#313033</color>
+    <color name="inverse_on_surface">#F4EFF4</color>
 </resources>
