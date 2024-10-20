@@ -2,4 +2,5 @@
     <string name="app_name">MelHouse</string>
     <string name="login">Iniciar Sesión</string>
     <string name="signup">Registrarse</string>
+    <string name="continuar">Continuar</string>
 </resources>
