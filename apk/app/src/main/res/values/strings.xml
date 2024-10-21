@@ -5,4 +5,6 @@
     <string name="continuar">Continuar</string>
     <string name="email">Correo Electrónico</string>
     <string name="password">Contraseña</string>
+    <string name="confirmar_password">Confirmar Contraseña</string>
+    <string name="nombre">Nombre</string>
 </resources>
