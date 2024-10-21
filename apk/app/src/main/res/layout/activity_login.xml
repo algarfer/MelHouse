@@ -1,121 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/main"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    tools:context=".presentation.view.LoginActivity">
+
+    <Button
+        android:id="@+id/textButton"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/baseline_arrow_back_24"
+        app:layout_constraintBottom_toTopOf="@+id/tvLogoMelhouse"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvLogoMelhouse"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".presentation.view.LoginActivity"
-        android:layout_margin="16dp">
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="35dp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineLoginLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            style="@style/Widget.Material3.Button.TextButton"
-            android:id="@+id/textButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/baseline_arrow_back_24"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tvLogoMelhouse"
-            app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineLoginLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
 
-        <TextView
-            android:id="@+id/tvLogoMelhouse"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardLogin"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="@+id/guidelineLoginLogo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/formLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/cardLogin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/app_name"
-            android:textSize="35dp"/>
+            android:layout_height="match_parent"
+            android:layout_margin="16dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintTop_ToBottomOf="@id/tvLogoMelhouse"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/formLayout"
+            <TextView
+                android:id="@+id/tvLogin"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="40dp">
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:textAlignment="center"
+                android:textSize="35sp"
+                app:layout_constraintBottom_toTopOf="@+id/guidelineLoginCard"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tvLogin"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineLoginCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.54" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tfEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:layout_constraintBottom_toTopOf="@+id/tfPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guidelineLoginCard">
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/guidelineLogin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:text="@string/login"
-                    android:textSize="35sp"
-                    android:textAlignment="center"/>
+                    android:inputType="textEmailAddress"
+                    android:hint="@string/email" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guidelineLogin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.6" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tfPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="password_toggle"
+                app:layout_constraintBottom_toTopOf="@id/buttonLogin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_ToBottomOf="@+id/tfEmail">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tfEmail"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:endIconMode="clear_text"
-                    app:layout_constraintTop_toBottomOf="@+id/guidelineLogin"
-                    app:layout_constraintBottom_toTopOf="@+id/tfPassword"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    android:inputType="textPassword"
+                    android:hint="@string/password"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress" />
-                </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/continuar"
+                app:layout_constraintBottom_toBottomOf=""
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tfPassword" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tfPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:endIconMode="password_toggle"
-                    app:layout_constraintTop_ToBottomOf="@+id/tfEmail"
-                    app:layout_constraintBottom_toTopOf="@id/buttonLogin"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" >
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword" />
-                </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-                <Button
-                    android:id="@+id/buttonLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/continuar"
-                    app:layout_constraintTop_toBottomOf="@+id/tfPassword"
-                    app:layout_constraintBottom_toBottomOf=""
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="30dp"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </com.google.android.material.card.MaterialCardView>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,4 +3,6 @@
     <string name="login">Iniciar Sesión</string>
     <string name="signup">Registrarse</string>
     <string name="continuar">Continuar</string>
+    <string name="email">Correo Electrónico</string>
+    <string name="password">Contraseña</string>
 </resources>
