@@ -1,23 +1,53 @@
 package com.uniovi.melhouse.data.database
 
+import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
-class SQLite : Database {
+object SQLite : Database<SQLiteDatabase> {
 
-    companion object {
-        @Volatile
-        private var instance: SQLiteDatabase? = null
+    @Volatile
+    private var instance: SQLiteDatabase? = null
 
-        fun getInstance(): SQLiteDatabase {
-            if(instance == null) {
-                instance = SQLiteDatabase.openOrCreateDatabase(":memory:", null)
-                configureDatabase()
-            }
-            return instance!!
+    fun init(context: Context) {
+        if(instance != null) return
+        instance = SQLiteDatabase.openOrCreateDatabase(":memory:", null)
+        configureDatabase(context)
+    }
+
+    override fun getInstance(): SQLiteDatabase {
+        if(instance == null) {
+            throw IllegalStateException("Database not initialized")
         }
+        return instance!!
+    }
 
-        private fun configureDatabase() {
-            TODO()
+    private fun configureDatabase(context: Context) {
+        executeSqlFile(context, "schema.sql")
+        executeSqlFile(context, "data.sql")
+    }
+
+    private fun executeSqlFile(context: Context, fileName: String) {
+        val inputStream = context.assets.open(fileName)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        val db = instance!!
+
+        db.beginTransaction()
+        try {
+            reader.use {
+                val sqlScript = it.readText()
+                val sqlStatements = sqlScript.split(";")
+                for (statement in sqlStatements) {
+                    val trimmedStatement = statement.trim()
+                    if (trimmedStatement.isNotEmpty()) {
+                        db.execSQL(trimmedStatement)
+                    }
+                }
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
         }
     }
 }
