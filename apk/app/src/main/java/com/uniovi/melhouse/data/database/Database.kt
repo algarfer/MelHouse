@@ -1,4 +1,5 @@
 package com.uniovi.melhouse.data.database
 
-
-interface Database
+interface Database<T> {
+    fun getInstance(): T
+}
