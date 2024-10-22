@@ -1,6 +1,8 @@
 package com.uniovi.melhouse.data.repository.flat
 
 import android.database.Cursor
+import androidx.core.database.getIntOrNull
+import androidx.core.database.getStringOrNull
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.repository.Repository
 import java.util.UUID
@@ -19,9 +21,35 @@ class FlatAssembler {
             val flats = mutableListOf<Flat>()
             while (cursor.moveToNext()) {
                 val idIndex = cursor.getColumnIndex("id")
-                val id = cursor.getString(idIndex)
+                val nameIndex = cursor.getColumnIndex("name")
+                val addressIndex = cursor.getColumnIndex("address")
+                val floorIndex = cursor.getColumnIndex("floor")
+                val doorIndex = cursor.getColumnIndex("door")
+                val stairIndex = cursor.getColumnIndex("stair")
+                val invitationCodeIndex = cursor.getColumnIndex("invitation_code")
+                val adminIdIndex = cursor.getColumnIndex("admin_id")
 
-                flats.add(Flat(UUID.fromString(id)))
+                val id = cursor.getString(idIndex)
+                val name = cursor.getString(nameIndex)
+                val address = cursor.getString(addressIndex)
+                val floor = cursor.getIntOrNull(floorIndex)
+                val door = cursor.getStringOrNull(doorIndex)
+                val stair = cursor.getStringOrNull(stairIndex)
+                val invitationCode = cursor.getString(invitationCodeIndex)
+                val adminId = cursor.getString(adminIdIndex)
+
+                flats.add(
+                    Flat(
+                        UUID.fromString(id),
+                        name,
+                        address,
+                        floor,
+                        door,
+                        stair,
+                        invitationCode,
+                        UUID.fromString(adminId)
+                    )
+                )
             }
             return flats
         }

@@ -1,6 +1,7 @@
 package com.uniovi.melhouse.data.repository.user
 
 import android.database.Cursor
+import androidx.core.database.getStringOrNull
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.Repository
 import java.util.UUID
@@ -19,9 +20,23 @@ class UserAssembler {
             val users = mutableListOf<User>()
             while (cursor.moveToNext()) {
                 val idIndex = cursor.getColumnIndex("id")
-                val id = cursor.getString(idIndex)
+                val nameIndex = cursor.getColumnIndex("name")
+                val emailIndex = cursor.getColumnIndex("email")
+                val flatIdIndex = cursor.getColumnIndex("flat_id")
 
-                users.add(User(UUID.fromString(id)))
+                val id = cursor.getString(idIndex)
+                val name = cursor.getString(nameIndex)
+                val email = cursor.getString(emailIndex)
+                val flatId = cursor.getStringOrNull(flatIdIndex)
+
+                users.add(
+                    User(
+                        UUID.fromString(id),
+                        name,
+                        email,
+                        flatId?.let { UUID.fromString(it) }
+                    )
+                )
             }
             return users
         }
