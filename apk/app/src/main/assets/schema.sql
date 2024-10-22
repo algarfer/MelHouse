@@ -5,6 +5,7 @@ CREATE TABLE users (
     email TEXT NOT NULL,
     flat_id TEXT,
     CONSTRAINT "PK_USERS" PRIMARY KEY (id),
+    CONSTRAINT "UQ_USERS_EMAIL" UNIQUE (email),
     CONSTRAINT "FK_USERS_FLATS" FOREIGN KEY (flat_id) REFERENCES flats (id)
 );
 
