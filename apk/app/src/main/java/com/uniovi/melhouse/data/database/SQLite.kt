@@ -2,6 +2,12 @@ package com.uniovi.melhouse.data.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.uniovi.melhouse.data.repository.flat.FlatRepository
+import com.uniovi.melhouse.data.repository.flat.FlatRepositorySQLite
+import com.uniovi.melhouse.data.repository.task.TaskRepository
+import com.uniovi.melhouse.data.repository.task.TaskRepositorySQLite
+import com.uniovi.melhouse.data.repository.user.UserRepository
+import com.uniovi.melhouse.data.repository.user.UserRepositorySQLite
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -21,6 +27,18 @@ object SQLite : Database<SQLiteDatabase> {
             throw IllegalStateException("Database not initialized")
         }
         return instance!!
+    }
+
+    override fun getUserRepository(): UserRepository {
+        return UserRepositorySQLite(getInstance())
+    }
+
+    override fun getFlatRepository(): FlatRepository {
+        return FlatRepositorySQLite(getInstance())
+    }
+
+    override fun getTaskRepository(): TaskRepository {
+        return TaskRepositorySQLite(getInstance())
     }
 
     private fun configureDatabase(context: Context) {
