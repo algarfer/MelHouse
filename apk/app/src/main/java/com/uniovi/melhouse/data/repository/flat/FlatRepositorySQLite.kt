@@ -8,7 +8,7 @@ class FlatRepositorySQLite(
     private val db: SQLiteDatabase
 ) : FlatRepository {
 
-    private val TABLE_NAME = "flat"
+    private val TABLE_NAME = "flats"
 
     override fun insert(entity: Flat) {
         db.insertOrThrow(TABLE_NAME, null, entity.toContentValues())

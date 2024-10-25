@@ -8,7 +8,7 @@ class TaskRepositorySQLite(
     private val db: SQLiteDatabase
 ) : TaskRepository {
 
-    private val TABLE_NAME = "task"
+    private val TABLE_NAME = "tasks"
 
     override fun insert(entity: Task) {
         db.insertOrThrow(TABLE_NAME, null, entity.toContentValues())

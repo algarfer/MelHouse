@@ -8,7 +8,7 @@ class UserRepositorySQLite(
     private val db: SQLiteDatabase
 ) : UserRepository {
 
-    private val TABLE_NAME = "user"
+    private val TABLE_NAME = "users"
 
     override fun insert(entity: User) {
         db.insertOrThrow(TABLE_NAME, null, entity.toContentValues())
