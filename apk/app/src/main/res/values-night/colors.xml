@@ -6,6 +6,9 @@
     <color name="background">#1B1F3A</color>
     <color name="on_background">#E4E6EB</color>
 
+    <color name="background_white">#000000</color>
+    <color name="on_background_white">#E4E6EB</color>
+
     <!-- Primary colors -->
     <color name="primary">#90A6FF</color>
     <color name="on_primary">#000000</color>
