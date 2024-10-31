@@ -38,7 +38,7 @@ class UserAssembler {
                     )
                 )
             }
-            return users
+            return users.toList()
         }
     }
 }
