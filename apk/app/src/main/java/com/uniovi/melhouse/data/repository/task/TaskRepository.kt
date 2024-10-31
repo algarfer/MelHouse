@@ -53,7 +53,7 @@ class TaskAssembler {
                     )
                 )
             }
-            return tasks
+            return tasks.toList()
         }
     }
 }

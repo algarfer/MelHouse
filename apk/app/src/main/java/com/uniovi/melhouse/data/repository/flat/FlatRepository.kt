@@ -51,7 +51,7 @@ class FlatAssembler {
                     )
                 )
             }
-            return flats
+            return flats.toList()
         }
     }
 }
