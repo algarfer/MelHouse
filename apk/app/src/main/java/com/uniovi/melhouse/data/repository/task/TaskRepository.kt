@@ -9,7 +9,9 @@ import com.uniovi.melhouse.data.repository.Repository
 import java.time.LocalDate
 import java.util.UUID
 
-interface TaskRepository : Repository<Task>
+interface TaskRepository : Repository<Task> {
+    fun findByDate(date: LocalDate?): List<Task>
+}
 
 class TaskAssembler {
     companion object {

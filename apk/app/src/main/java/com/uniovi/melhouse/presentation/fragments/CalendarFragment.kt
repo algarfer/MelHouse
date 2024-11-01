@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.CalendarDay
@@ -18,7 +19,6 @@ import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.database.SQLite
 import com.uniovi.melhouse.databinding.CalendarDayLayoutBinding
 import com.uniovi.melhouse.databinding.CalendarFragmentBinding
 import com.uniovi.melhouse.databinding.CalendarHeaderLayoutBinding
@@ -28,6 +28,7 @@ import com.uniovi.melhouse.presentation.utils.displayText
 import com.uniovi.melhouse.presentation.utils.getColorCompat
 import com.uniovi.melhouse.presentation.utils.lighterColor
 import com.uniovi.melhouse.presentation.utils.setTextColorRes
+import com.uniovi.melhouse.presentation.viewmodel.CalendarViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -38,13 +39,22 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
 
     private var selectedDate: LocalDate? = null
     private val tasksAdapter = TasksAdapter(listOf())
-    private val tasks = SQLite
-        .getTaskRepository()
-        .findAll()
-        .filter { it.endDate != null }
-        .groupBy { it.endDate }
+    private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.onCreate()
+
+        viewModel.dailyTasks.observe(this) {
+            tasksAdapter.updateList(it[selectedDate].orEmpty())
+        }
+
+        viewModel.tasks.observe(this) {
+            binding.calendarView.notifyCalendarChanged()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,14 +89,11 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
             selectedDate?.let {
                 selectedDate = null
                 binding.calendarView.notifyDateChanged(it)
-                updateAdapterForDate(null)
+                viewModel.updateDailyTasks(null)
             }
         }
     }
 
-    private fun updateAdapterForDate(date: LocalDate?) {
-        tasksAdapter.updateList(tasks[date].orEmpty())
-    }
 
     private fun configureBinders(daysOfWeek: List<DayOfWeek>) {
         class DayViewContainer(view: View) : ViewContainer(view) {
@@ -102,7 +109,7 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                             val binding = this@CalendarFragment.binding
                             binding.calendarView.notifyDateChanged(day.date)
                             oldDate?.let { binding.calendarView.notifyDateChanged(it) }
-                            updateAdapterForDate(day.date)
+                            viewModel.updateDailyTasks(day.date)
                         }
                     }
                 }
@@ -119,16 +126,16 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
 
                 val taskIndicator = container.binding.calendarDayIndicator
                 taskIndicator.background = null
+                val tasks = viewModel.tasks.value
 
-                if (!tasks[data.date].isNullOrEmpty()) {
+                if (tasks != null && !tasks[data.date].isNullOrEmpty()) {
                     val color = if (data.position != DayPosition.MonthDate)
                         context.getColorCompat(R.color.tertiary).lighterColor()
                     else
                         context.getColorCompat(R.color.tertiary)
                     taskIndicator.setBackgroundColor(color)
                 }
-                else if (!tasks[data.date].isNullOrEmpty())
-                    taskIndicator.setBackgroundColor(context.getColorCompat(R.color.tertiary))
+
                 if (data.position != DayPosition.MonthDate) {
                     textView.setTextColorRes(R.color.on_primary_container)
                     layout.setBackgroundColor(context.getColorCompat(R.color.primary_container).lighterColor())
