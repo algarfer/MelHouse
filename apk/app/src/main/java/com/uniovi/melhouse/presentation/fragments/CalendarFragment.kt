@@ -28,6 +28,7 @@ import com.uniovi.melhouse.presentation.utils.displayText
 import com.uniovi.melhouse.presentation.utils.getColorCompat
 import com.uniovi.melhouse.presentation.utils.lighterColor
 import com.uniovi.melhouse.presentation.utils.setTextColorRes
+import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.presentation.viewmodel.CalendarViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -38,7 +39,7 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
-    private val tasksAdapter = TasksAdapter(listOf())
+    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it) }
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding

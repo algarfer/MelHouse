@@ -8,12 +8,12 @@ import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.presentation.diffutil.TasksDiffUtil
 import com.uniovi.melhouse.presentation.viewholder.TasksViewHolder
 
-class TasksAdapter(list: List<Task>) : AbstractAdapter<Task, TasksViewHolder>(list) {
+class TasksAdapter(list: List<Task>, private val taskHandler: (Task) -> Unit) : AbstractAdapter<Task, TasksViewHolder>(list) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
         return TasksViewHolder(LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.calendar_task_layout, parent, false))
+            .inflate(R.layout.calendar_task_layout, parent, false), taskHandler)
     }
 
     override fun getItemCount(): Int = list.size

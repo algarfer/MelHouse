@@ -1,15 +1,15 @@
 package com.uniovi.melhouse.presentation.viewholder
 
 import android.view.View
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.FragmentManager
 import com.uniovi.melhouse.data.model.Task
-import com.uniovi.melhouse.data.model.taskDateFormatter
 import com.uniovi.melhouse.databinding.CalendarTaskLayoutBinding
+import com.uniovi.melhouse.presentation.fragments.TaskBottomSheetDialog
 import com.uniovi.melhouse.presentation.utils.makeGone
 import com.uniovi.melhouse.presentation.utils.makeVisible
+import com.uniovi.melhouse.presentation.utils.taskDateFormatter
 
-class TasksViewHolder(view: View) : AbstractViewHolder<Task>(view) {
+class TasksViewHolder(view: View, private val taskpressedHandler: (Task) -> Unit) : AbstractViewHolder<Task>(view) {
 
     private val binding = CalendarTaskLayoutBinding.bind(view)
 
@@ -26,9 +26,12 @@ class TasksViewHolder(view: View) : AbstractViewHolder<Task>(view) {
         }
 
         itemView.setOnClickListener {
-            Toast.makeText(itemView.context,
-                "TODO: Show task ${item.name} details",
-                Toast.LENGTH_SHORT).show()
+            taskpressedHandler(item)
         }
     }
+}
+
+fun taskPressedHandler(fragmentManager: FragmentManager, task: Task) {
+    val modal = TaskBottomSheetDialog(task)
+    fragmentManager.let { modal.show(it, TaskBottomSheetDialog.TAG) }
 }

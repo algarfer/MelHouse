@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
@@ -35,3 +36,7 @@ fun Fragment.addStatusBarColorUpdate(@ColorRes colorRes: Int) {
 }
 
 internal fun Int.lighterColor(color: Int = Color.WHITE) = ColorUtils.blendARGB(this, color, 0.5f)
+
+fun showWipToast(context: Context) {
+    Toast.makeText(context, "WIP", Toast.LENGTH_SHORT).show()
+}
