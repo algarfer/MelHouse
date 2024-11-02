@@ -51,4 +51,15 @@
     <color name="on_surface_variant">#B0B0BC</color>
     <color name="inverse_surface">#E4E6EB</color>
     <color name="inverse_on_surface">#313033</color>
+
+    <!-- Priority colors -->
+    <color name="task_priority_high">#FF0000</color>
+    <color name="task_priority_medium">#FFA500</color>
+    <color name="task_priority_low">#008000</color>
+
+    <!-- Status colors -->
+    <color name="task_status_done">#008000</color>
+    <color name="task_status_in_progress">#0000FF</color>
+    <color name="task_status_pending">#FFA500</color>
+    <color name="task_status_cancelled">#FF0000</color>
 </resources>

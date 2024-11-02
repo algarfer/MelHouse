@@ -2,4 +2,14 @@
     <string name="app_name">MelHouse</string>
     <string name="login">Iniciar Sesión</string>
     <string name="signup">Registrarse</string>
+    <string name="edit">Editar</string>
+
+    <string name="task_status_done">Acabado</string>
+    <string name="task_status_in_progress">En progreso</string>
+    <string name="task_status_pending">Pendiente</string>
+    <string name="task_status_cancelled">Cancelado</string>
+
+    <string name="task_priority_low">Baja</string>
+    <string name="task_priority_medium">Media</string>
+    <string name="task_priority_high">Alta</string>
 </resources>
