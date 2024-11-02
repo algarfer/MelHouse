@@ -2,7 +2,6 @@ package com.uniovi.melhouse.data.model
 
 import android.content.ContentValues
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 data class Task(
@@ -41,5 +40,3 @@ fun Task.toContentValues(): ContentValues {
         put("flat_id", flatId.toString())
     }
 }
-
-val taskDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE'\n'dd MMM'\n'yyyy")
