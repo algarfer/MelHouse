@@ -2,25 +2,26 @@ package com.uniovi.melhouse.presentation.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var loginButton: Button
-    private lateinit var signUpButton: Button
+    private lateinit var binding: ActivityMainBinding
 
     private fun setup() {
-        loginButton=findViewById(R.id.loginButton)
-        signUpButton=findViewById(R.id.signUpButton)
-        loginButton.setOnClickListener {
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.loginButton.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
-        signUpButton.setOnClickListener {
+        binding.signUpButton.setOnClickListener {
             startActivity(Intent(this, SignupActivity::class.java))
         }
     }

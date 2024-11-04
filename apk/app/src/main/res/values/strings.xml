@@ -17,4 +17,8 @@
     <string name="task_priority_low">Baja</string>
     <string name="task_priority_medium">Media</string>
     <string name="task_priority_high">Alta</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>
