@@ -2,4 +2,9 @@
     <string name="app_name">MelHouse</string>
     <string name="login">Iniciar Sesión</string>
     <string name="signup">Registrarse</string>
+    <string name="continuar">Continuar</string>
+    <string name="email">Correo Electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="confirmar_password">Confirmar Contraseña</string>
+    <string name="nombre">Nombre</string>
 </resources>
