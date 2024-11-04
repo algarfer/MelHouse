@@ -8,6 +8,18 @@
     android:layout_margin="10dp"
     tools:context=".presentation.view.MainActivity">
 
+    <ImageView
+        android:id="@+id/ivLogoMelhouse"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guidelineLanding"
+        app:layout_constraintVertical_bias="0.25"/>
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
@@ -18,7 +30,7 @@
         android:backgroundTint="@color/primary"
         android:textColor="@color/on_primary"
         app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline65" />
+        app:layout_constraintTop_toBottomOf="@+id/guidelineLanding" />
 
     <Button
         android:id="@+id/signUpButton"
@@ -34,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline65"
+        android:id="@+id/guidelineLanding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

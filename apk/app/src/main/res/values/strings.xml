@@ -3,6 +3,11 @@
     <string name="login">Iniciar Sesión</string>
     <string name="signup">Registrarse</string>
     <string name="edit">Editar</string>
+    <string name="continuar">Continuar</string>
+    <string name="email">Correo Electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="confirmar_password">Confirmar Contraseña</string>
+    <string name="nombre">Nombre</string>
 
     <string name="task_status_done">Acabado</string>
     <string name="task_status_in_progress">En progreso</string>

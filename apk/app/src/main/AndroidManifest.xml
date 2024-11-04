@@ -14,22 +14,17 @@
         android:theme="@style/Theme.MelHouse"
         android:screenOrientation="portrait"
         tools:targetApi="31">
-        <!-- TODO - Enable after developing the calendar view -->
-<!--        <activity-->
-<!--            android:name=".presentation.view.CalendarViewActivity"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".presentation.view.MainActivity"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-        <!-- TODO - Delete after developing the calendar view -->
+        <activity
+            android:name=".presentation.view.SignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.view.LoginActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.view.CalendarViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
