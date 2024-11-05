@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:checkable="true"
-        android:clickable="true"
+        android:clickable="false"
         android:focusable="true"
         app:layout_constraintTop_toTopOf="@+id/guidelineLoginLogo"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.54" />
+                app:layout_constraintGuide_percent="0.45" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tfEmail"

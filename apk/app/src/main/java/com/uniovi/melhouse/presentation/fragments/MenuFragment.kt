@@ -27,9 +27,7 @@ class MenuFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding.recyclerTodayTasks.layoutManager = LinearLayoutManager(context)
-
-//        TODO
+//        binding.recyclerTodayTasks.layoutManager = LinearLayoutManager(context)
 //        binding.recyclerTodayTasks.adapter = TodayTasksAdapter()
 
         return inflater.inflate(R.layout.fragment_menu, container, false)
