@@ -43,12 +43,11 @@
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     <fragment
-        android:id="@+id/menuFragment"
+        android:id="@+id/menuOptionsFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:navGraph="@navigation/menu_navigation"
-        app:defaultNavHost="true"
         app:layout_constraintTop_toBottomOf="@id/menuToolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

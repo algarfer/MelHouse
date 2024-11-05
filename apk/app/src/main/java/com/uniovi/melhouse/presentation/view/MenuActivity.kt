@@ -10,8 +10,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.commit
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
+import com.uniovi.melhouse.presentation.fragments.MenuFragment
+import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 
 class MenuActivity : AppCompatActivity() {
 
@@ -21,9 +24,17 @@ class MenuActivity : AppCompatActivity() {
     private fun setup(){
         binding.menuNavigationBar.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.menuFragment -> {
+                    supportFragmentManager.commit { replace(R.id.menuOptionsFragment, MenuFragment()) }
+                    true
+                }
                 R.id.calendarFragment -> {
                     val intent = Intent(this, CalendarViewActivity::class.java)
                     startActivity(intent)
+                    true
+                }
+                R.id.settingsFragment -> {
+                    supportFragmentManager.commit { replace(R.id.menuOptionsFragment, SettingsFragment()) }
                     true
                 }
                 else -> false
