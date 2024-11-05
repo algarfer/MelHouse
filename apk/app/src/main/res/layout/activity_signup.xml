@@ -39,6 +39,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
         android:checkable="true"
         android:clickable="false"
         android:focusable="true"

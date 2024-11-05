@@ -32,9 +32,6 @@ class NotRegisteredActivity : AppCompatActivity() {
         binding.signUpButton.setOnClickListener {
             launcher.launch(Intent(this, SignupActivity::class.java))
         }
-        binding.menuButton.setOnClickListener {
-            startActivity(Intent(this, MenuActivity::class.java))
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
