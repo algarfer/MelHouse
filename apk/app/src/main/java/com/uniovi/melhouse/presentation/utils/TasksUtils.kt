@@ -5,6 +5,7 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 fun TaskStatus.getString(context: Context): String {
@@ -48,3 +49,11 @@ fun Task.getDatesString(): String {
 }
 
 val taskDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE'\n'dd MMM'\n'yyyy")
+
+fun today(): LocalDate {
+    return LocalDate.now()
+}
+
+fun maxDate(): LocalDate {
+    return LocalDate.now().plusYears(5)
+}

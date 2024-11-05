@@ -5,7 +5,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class Task(
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     var name: String,
     var description: String?,
     var status: TaskStatus?,
@@ -32,7 +32,7 @@ fun Task.toContentValues(): ContentValues {
     return ContentValues().apply {
         put("id", id.toString())
         put("name", name)
-        put("description", name)
+        put("description", description)
         put("status", status?.value)
         put("priority", priority?.value)
         put("start_date", startDate?.toString())
