@@ -42,10 +42,9 @@ class SignUpViewModel @Inject constructor(
             }
 
             val user = User(
-                id = UUID.randomUUID(),
                 name = name,
                 email = email,
-                null
+                flatId = null
             )
 
             userRepository.insert(user)
@@ -53,6 +52,7 @@ class SignUpViewModel @Inject constructor(
             Prefs.setUserId(user.id)
             Prefs.setEmail(user.email)
             Prefs.setFlatId(user.flatId)
+            Prefs.setName(user.name)
 
             signupSuccessfull.postValue(true)
         }

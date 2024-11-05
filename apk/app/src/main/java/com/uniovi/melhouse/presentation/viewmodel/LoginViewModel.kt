@@ -32,6 +32,7 @@ class LoginViewModel @Inject constructor(
                 Prefs.setUserId(user.id)
                 Prefs.setEmail(user.email)
                 Prefs.setFlatId(user.flatId)
+                Prefs.setName(user.name)
                 loginSuccessfull.postValue(true)
             } else {
                 emailError.postValue(context.getString(R.string.error_form_login_user_not_found))

@@ -7,6 +7,7 @@ import java.util.UUID
 object Prefs {
 
     private const val SHARED_NAME = "MelhousePrefs"
+    private const val SHARED_NAME_USER = "name"
     private const val SHARED_EMAIL = "email"
     private const val SHARED_USER_ID = "user_id"
     private const val SHARED_FLAT_ID = "flat_id"
@@ -46,5 +47,13 @@ object Prefs {
 
     fun getUserId(): UUID {
         return UUID.fromString(storage!!.getString(SHARED_USER_ID, "")!!)
+    }
+
+    fun setName(name: String) {
+        storage!!.edit().putString(SHARED_NAME_USER, name).apply()
+    }
+
+    fun getName(): String {
+        return storage!!.getString(SHARED_NAME_USER, "")!!
     }
 }

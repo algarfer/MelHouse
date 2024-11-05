@@ -2,6 +2,7 @@ package com.uniovi.melhouse.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.uniovi.melhouse.presentation.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -13,8 +14,9 @@ class SplashScreenViewModel @Inject constructor() : ViewModel() {
 
     // TODO - Move to usecase
     fun initApp() {
-        // TODO - Handle session recover and determine if the user isLogged
-
+        Prefs.getEmail().isEmpty().let {
+            isLogged = !it
+        }
         isReady.postValue(true)
     }
 }
