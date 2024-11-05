@@ -2,8 +2,12 @@ package com.uniovi.melhouse.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.database.SQLite
 import com.uniovi.melhouse.data.model.Task
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class CalendarViewModel : ViewModel() {
@@ -17,11 +21,13 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun updateTasks() {
-        tasks.postValue(tasksRepository
-            .findAll()
-            .filter { it.endDate != null }
-            .groupBy { it.endDate }
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            tasks.postValue(tasksRepository
+                .findAll()
+                .filter { it.endDate != null }
+                .groupBy { it.endDate }
+            )
+        }
     }
 
     fun updateDailyTasks(date: LocalDate?) {

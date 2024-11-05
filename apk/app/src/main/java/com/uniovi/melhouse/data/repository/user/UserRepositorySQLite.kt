@@ -10,27 +10,33 @@ class UserRepositorySQLite(
 
     private val TABLE_NAME = "users"
 
-    override fun insert(entity: User) {
+    override suspend fun insert(entity: User) {
         db.insertOrThrow(TABLE_NAME, null, entity.toContentValues())
     }
 
-    override fun update(entity: User) {
+    override suspend fun update(entity: User) {
         db.update(TABLE_NAME, entity.toContentValues(), "id = ?", arrayOf(entity.id.toString()))
     }
 
-    override fun delete(entity: User) {
+    override suspend fun delete(entity: User) {
         db.delete(TABLE_NAME, "id = ?", arrayOf(entity.id.toString()))
     }
 
-    override fun findById(id: Any): User? {
+    override suspend fun findById(id: Any): User? {
         db.rawQuery("SELECT * FROM $TABLE_NAME WHERE id = ?", arrayOf(id.toString())).use { cursor ->
             return UserAssembler.toUser(cursor)
         }
     }
 
-    override fun findAll(): List<User> {
+    override suspend fun findAll(): List<User> {
         db.rawQuery("SELECT * FROM $TABLE_NAME", null).use { cursor ->
             return UserAssembler.toList(cursor)
+        }
+    }
+
+    override suspend fun findByEmail(email: String): User? {
+        db.rawQuery("SELECT * FROM $TABLE_NAME WHERE email = ?", arrayOf(email)).use { cursor ->
+            return UserAssembler.toUser(cursor)
         }
     }
 }
