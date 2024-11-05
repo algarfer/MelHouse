@@ -12,7 +12,6 @@ import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.presentation.utils.getColor
 import com.uniovi.melhouse.presentation.utils.getDatesString
-import com.uniovi.melhouse.presentation.utils.getString
 import com.uniovi.melhouse.presentation.utils.makeGone
 import com.uniovi.melhouse.presentation.utils.showWipToast
 

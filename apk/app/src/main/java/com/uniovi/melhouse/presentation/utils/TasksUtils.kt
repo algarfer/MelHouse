@@ -8,23 +8,6 @@ import com.uniovi.melhouse.data.model.TaskStatus
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-fun TaskStatus.getString(context: Context): String {
-    return when (this) {
-        TaskStatus.DONE -> context.getString(R.string.task_status_done)
-        TaskStatus.INPROGRESS -> context.getString(R.string.task_status_in_progress)
-        TaskStatus.PENDING -> context.getString(R.string.task_status_pending)
-        TaskStatus.CANCELLED -> context.getString(R.string.task_status_cancelled)
-    }
-}
-
-fun TaskPriority.getString(context: Context): String {
-    return when (this) {
-        TaskPriority.LOW -> context.getString(R.string.task_priority_low)
-        TaskPriority.MEDIUM -> context.getString(R.string.task_priority_medium)
-        TaskPriority.HIGH -> context.getString(R.string.task_priority_high)
-    }
-}
-
 fun TaskStatus.getColor(context: Context): Int {
     return when (this) {
         TaskStatus.DONE -> context.getColorCompat(R.color.task_status_done)
