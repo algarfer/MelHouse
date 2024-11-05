@@ -2,10 +2,13 @@ package com.uniovi.melhouse.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.database.SQLite
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.UUID
 
@@ -47,6 +50,8 @@ class AddTaskViewModel : ViewModel() {
             endDate = endDate.value,
             flatId = UUID.randomUUID())
 
-        taskRepository.insert(task)
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepository.insert(task)
+        }
     }
 }

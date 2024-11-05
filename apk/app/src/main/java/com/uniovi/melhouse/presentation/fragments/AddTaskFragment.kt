@@ -173,7 +173,7 @@ class AddTaskFragment : Fragment() {
             viewModel.setPriority(null)
         }
 
-        addStatusBarColorUpdate(R.color.background_white)
+        addStatusBarColorUpdate(R.color.background)
     }
 
     private fun showDatePickerDialog(title: String, startDate: LocalDate, endDate: LocalDate, listener: (LocalDate) -> Unit) {
