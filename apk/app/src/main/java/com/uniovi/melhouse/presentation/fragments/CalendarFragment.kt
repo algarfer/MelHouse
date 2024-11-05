@@ -57,6 +57,11 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateTasks()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,6 +97,16 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                 binding.calendarView.notifyDateChanged(it)
                 viewModel.updateDailyTasks(null)
             }
+        }
+
+        binding.addTaskFab.setOnClickListener {
+            val fragment = AddTaskFragment()
+            parentFragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true) //
+                .replace(R.id.calendar_fragment_container, fragment, AddTaskFragment.TAG)
+                .addToBackStack(null)
+                .commit()
         }
     }
 

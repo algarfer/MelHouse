@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
