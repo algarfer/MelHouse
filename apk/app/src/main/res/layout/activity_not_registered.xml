@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
-    tools:context=".presentation.view.MainActivity">
+    tools:context=".presentation.view.NotRegisteredActivity">
 
     <Button
         android:id="@+id/loginButton"
