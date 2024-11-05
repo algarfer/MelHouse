@@ -2,6 +2,7 @@ package com.uniovi.melhouse.presentation.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.text.Editable
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -39,4 +40,11 @@ internal fun Int.lighterColor(color: Int = Color.WHITE) = ColorUtils.blendARGB(t
 
 fun showWipToast(context: Context) {
     Toast.makeText(context, "WIP", Toast.LENGTH_SHORT).show()
+}
+
+fun String.toEditable(): Editable {
+    return Editable
+        .Factory
+        .getInstance()
+        .newEditable(this)
 }

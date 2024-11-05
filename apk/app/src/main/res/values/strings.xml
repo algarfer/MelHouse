@@ -8,7 +8,18 @@
     <string name="name">Nombre</string>
     <string name="password">Contraseña</string>
     <string name="profile_image">Imagen de perfil</string>
+    <string name="save">Guardar</string>
     <string name="signup">Registrarse</string>
+
+    <string name="task_title">Título</string>
+    <string name="task_description">Descripción</string>
+    <string name="task_start_date">Fecha de inicio</string>
+    <string name="task_end_date">Fecha de fin</string>
+    <string name="task_priority">Prioridad</string>
+    <string name="task_status">Estado</string>
+
+    <string name="task_select_start_date">Selecciona la fecha de inicio</string>
+    <string name="task_select_end_date">Selecciona la fecha de fin</string>
 
     <string name="task_status_done">Acabado</string>
     <string name="task_status_in_progress">En progreso</string>
@@ -18,10 +29,15 @@
     <string name="task_priority_low">Baja</string>
     <string name="task_priority_medium">Media</string>
     <string name="task_priority_high">Alta</string>
+
     <string name="title_home">Inicio</string>
     <string name="title_calendar">Calendario</string>
-    <string name="title_settings">Ajustes</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_settings">Ajustes</string>
     <string name="title_today_tasks">Tareas para hoy</string>
+
+    <string name="error_form_login_user_not_found">No existe un usuario asociado a este email</string>
+    <string name="error_form_signup_password_not_match">Las contraseñas no coinciden</string>
+    <string name="error_form_signup_user_already_exists">Ya existe un usuario con este email</string>
 </resources>

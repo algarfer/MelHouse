@@ -35,6 +35,8 @@
         <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
         <item name="colorSurfaceInverse">@color/inverse_surface</item>
         <item name="colorOnSurfaceInverse">@color/inverse_on_surface</item>
+
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="Theme.MelHouse" parent="Base.Theme.MelHouse" />

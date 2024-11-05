@@ -3,11 +3,8 @@
     <!-- Light theme colors -->
 
     <!-- Background colors -->
-    <color name="background">#647dff</color>
+    <color name="background">#FFFFFF</color>
     <color name="on_background">#000000</color>
-
-    <color name="background_white">#FFFFFF</color>
-    <color name="on_background_white">#000000</color>
 
     <!-- Primary colors -->
     <color name="primary">#053B7A</color>

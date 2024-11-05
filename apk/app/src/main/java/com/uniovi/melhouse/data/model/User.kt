@@ -4,7 +4,7 @@ import android.content.ContentValues
 import java.util.UUID
 
 data class User (
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     var name: String,
     var email: String,
     var flatId: UUID?

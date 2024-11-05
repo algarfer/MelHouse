@@ -4,7 +4,7 @@ import android.content.ContentValues
 import java.util.UUID
 
 data class Flat(
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     var name: String,
     var address: String,
     var floor: Int?,
