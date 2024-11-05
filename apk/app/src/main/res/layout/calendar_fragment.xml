@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:background="@color/background_white"
+    android:background="@color/background"
     tools:context=".presentation.fragments.CalendarFragment"
     android:orientation="vertical">
 
