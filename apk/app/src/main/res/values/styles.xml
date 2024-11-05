@@ -66,4 +66,12 @@
     <style name="TitleSmall" parent="BoldText">
         <item name="android:textSize">14sp</item>
     </style>
+    
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MelHouse</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/brandimage</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+    </style>
 </resources>
