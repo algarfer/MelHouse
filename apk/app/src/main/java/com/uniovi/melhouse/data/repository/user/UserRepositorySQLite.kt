@@ -33,4 +33,10 @@ class UserRepositorySQLite(
             return UserAssembler.toList(cursor)
         }
     }
+
+    override suspend fun findByEmail(email: String): User? {
+        db.rawQuery("SELECT * FROM $TABLE_NAME WHERE email = ?", arrayOf(email)).use { cursor ->
+            return UserAssembler.toUser(cursor)
+        }
+    }
 }

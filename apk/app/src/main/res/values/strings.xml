@@ -23,4 +23,8 @@
     <string name="title_settings">Ajustes</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="error_form_login_user_not_found">No existe un usuario asociado a este email</string>
+    <string name="error_form_signup_password_not_match">Las contraseñas no coinciden</string>
+    <string name="error_form_signup_user_already_exists">Ya existe un usuario con este email</string>
 </resources>

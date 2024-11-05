@@ -3,6 +3,7 @@ package com.uniovi.melhouse.presentation.view
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,15 +15,22 @@ class NotRegisteredActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNotRegisteredBinding
 
     private fun setup() {
+        val launcher = registerForActivityResult((ActivityResultContracts.StartActivityForResult())) {
+            when(it.resultCode) {
+                RESULT_OK -> {
+                    finish()
+                }
+            }
+        }
 
         binding = ActivityNotRegisteredBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.loginButton.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            launcher.launch(Intent(this, LoginActivity::class.java))
         }
         binding.signUpButton.setOnClickListener {
-            startActivity(Intent(this, SignupActivity::class.java))
+            launcher.launch(Intent(this, SignupActivity::class.java))
         }
         binding.menuButton.setOnClickListener {
             startActivity(Intent(this, MenuActivity::class.java))
