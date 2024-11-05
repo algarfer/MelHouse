@@ -12,7 +12,9 @@
         android:id="@+id/menuToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <ImageView
             android:id="@+id/ivLogoMelhouse"
@@ -21,7 +23,7 @@
             android:contentDescription="@string/app_name"
             android:src="@drawable/title" />
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/profileImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -30,7 +32,12 @@
             android:layout_gravity="end"
             android:layout_marginEnd="8dp"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"/>-->
+        <include
+            android:id="@+id/ivProfile"
+            layout="@layout/menu_profile_layout" />
+
+
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

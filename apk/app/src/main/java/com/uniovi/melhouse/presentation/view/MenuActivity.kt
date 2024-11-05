@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.commit
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
+import com.uniovi.melhouse.presentation.Prefs
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 
@@ -47,6 +48,7 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMenuBinding.inflate(layoutInflater)
+        binding.ivProfile.tvProfile.text = Prefs.getEmail().substring(0,1).uppercase()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
