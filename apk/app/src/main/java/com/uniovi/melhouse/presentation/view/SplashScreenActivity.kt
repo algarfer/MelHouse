@@ -48,9 +48,7 @@ class SplashScreenActivity : AppCompatActivity() {
             if(!it) return@observe
 
             val intent = if(viewModel.isLogged) {
-                // TODO - Change to MenuActivity when implemented
-                // intent = Intent(this, MenuActivity::class.java)
-                Intent(this, CalendarViewActivity::class.java)
+                Intent(this, MenuActivity::class.java)
             } else {
                 Intent(this, NotRegisteredActivity::class.java)
             }
