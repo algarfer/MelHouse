@@ -3,6 +3,17 @@
     <string name="login">Iniciar Sesión</string>
     <string name="signup">Registrarse</string>
     <string name="edit">Editar</string>
+    <string name="save">Guardar</string>
+
+    <string name="task_title">Título</string>
+    <string name="task_description">Descripción</string>
+    <string name="task_start_date">Fecha de inicio</string>
+    <string name="task_end_date">Fecha de fin</string>
+    <string name="task_priority">Prioridad</string>
+    <string name="task_status">Estado</string>
+
+    <string name="task_select_start_date">Selecciona la fecha de inicio</string>
+    <string name="task_select_end_date">Selecciona la fecha de fin</string>
 
     <string name="task_status_done">Acabado</string>
     <string name="task_status_in_progress">En progreso</string>
