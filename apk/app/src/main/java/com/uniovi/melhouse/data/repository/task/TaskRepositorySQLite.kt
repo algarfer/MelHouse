@@ -10,25 +10,25 @@ class TaskRepositorySQLite(
 
     private val TABLE_NAME = "tasks"
 
-    override fun insert(entity: Task) {
+    override suspend fun insert(entity: Task) {
         db.insertOrThrow(TABLE_NAME, null, entity.toContentValues())
     }
 
-    override fun update(entity: Task) {
+    override suspend fun update(entity: Task) {
         db.update(TABLE_NAME, entity.toContentValues(), "id = ?", arrayOf(entity.id.toString()))
     }
 
-    override fun delete(entity: Task) {
+    override suspend fun delete(entity: Task) {
         db.delete(TABLE_NAME, "id = ?", arrayOf(entity.id.toString()))
     }
 
-    override fun findById(id: Any): Task? {
+    override suspend fun findById(id: Any): Task? {
         db.rawQuery("SELECT * FROM $TABLE_NAME WHERE id = ?", arrayOf(id.toString())).use { cursor ->
             return TaskAssembler.toTask(cursor)
         }
     }
 
-    override fun findAll(): List<Task> {
+    override suspend fun findAll(): List<Task> {
         db.rawQuery("SELECT * FROM $TABLE_NAME", null).use { cursor ->
             return TaskAssembler.toList(cursor)
         }
