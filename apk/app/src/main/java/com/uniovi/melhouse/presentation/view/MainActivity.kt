@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         binding.signUpButton.setOnClickListener {
             startActivity(Intent(this, SignupActivity::class.java))
         }
+        binding.menuButton.setOnClickListener {
+            startActivity(Intent(this, MenuActivity::class.java))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

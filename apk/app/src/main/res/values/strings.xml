@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">MelHouse</string>
-    <string name="login">Iniciar Sesión</string>
-    <string name="signup">Registrarse</string>
-    <string name="edit">Editar</string>
+    <string name="confirm_password">Confirmar Contraseña</string>
     <string name="continuar">Continuar</string>
+    <string name="edit">Editar</string>
     <string name="email">Correo Electrónico</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="name">Nombre</string>
     <string name="password">Contraseña</string>
-    <string name="confirmar_password">Confirmar Contraseña</string>
-    <string name="nombre">Nombre</string>
+    <string name="profile_image">Imagen de perfil</string>
+    <string name="signup">Registrarse</string>
 
     <string name="task_status_done">Acabado</string>
     <string name="task_status_in_progress">En progreso</string>
@@ -17,8 +18,9 @@
     <string name="task_priority_low">Baja</string>
     <string name="task_priority_medium">Media</string>
     <string name="task_priority_high">Alta</string>
-    <string name="title_activity_menu">MenuActivity</string>
-    <string name="title_home">Home</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_calendar">Calendario</string>
+    <string name="title_settings">Ajustes</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 </resources>
