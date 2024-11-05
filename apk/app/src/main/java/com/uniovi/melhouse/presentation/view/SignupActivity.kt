@@ -10,7 +10,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivitySignupBinding
 import com.uniovi.melhouse.presentation.viewmodel.SignUpViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupBinding

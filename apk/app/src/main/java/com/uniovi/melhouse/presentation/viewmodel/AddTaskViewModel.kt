@@ -3,16 +3,22 @@ package com.uniovi.melhouse.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.uniovi.melhouse.data.database.SQLite
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
+import com.uniovi.melhouse.data.repository.task.TaskRepository
+import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.UUID
+import javax.inject.Inject
 
-class AddTaskViewModel : ViewModel() {
+@HiltViewModel
+class AddTaskViewModel @Inject constructor(
+    @SQLiteDatabaseQualifier private val taskRepository: TaskRepository
+) : ViewModel() {
 
     private var title: String? = null
     private var description: String? = null
@@ -20,8 +26,6 @@ class AddTaskViewModel : ViewModel() {
     val endDate = MutableLiveData<LocalDate?>()
     val status = MutableLiveData<TaskStatus?>()
     val priority = MutableLiveData<TaskPriority?>()
-
-    private val taskRepository = SQLite.getTaskRepository()
 
     fun setTitle(title: String) {
         this.title = title

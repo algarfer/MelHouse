@@ -11,7 +11,9 @@ import androidx.fragment.app.add
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityCalendarViewBinding
 import com.uniovi.melhouse.presentation.fragments.CalendarFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CalendarViewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCalendarViewBinding
 

@@ -5,14 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.database.SQLite
 import com.uniovi.melhouse.data.model.User
+import com.uniovi.melhouse.data.repository.user.UserRepository
+import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
 import com.uniovi.melhouse.presentation.Prefs
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
-class SignUpViewModel : ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    @SQLiteDatabaseQualifier private val userRepository: UserRepository
+) : ViewModel() {
     val emailError: MutableLiveData<String?> = MutableLiveData(null)
     val passwordError: MutableLiveData<String?> = MutableLiveData(null)
     val password2Error: MutableLiveData<String?> = MutableLiveData(null)
@@ -28,7 +34,7 @@ class SignUpViewModel : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            val previous = SQLite.getUserRepository().findByEmail(email)
+            val previous = userRepository.findByEmail(email)
 
             if(previous != null) {
                 emailError.postValue(context.getString(R.string.error_form_signup_user_already_exists))
@@ -42,7 +48,7 @@ class SignUpViewModel : ViewModel() {
                 null
             )
 
-            SQLite.getUserRepository().insert(user)
+            userRepository.insert(user)
 
             Prefs.setUserId(user.id)
             Prefs.setEmail(user.email)

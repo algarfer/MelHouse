@@ -9,7 +9,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityNotRegisteredBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NotRegisteredActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNotRegisteredBinding

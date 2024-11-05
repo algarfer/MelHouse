@@ -3,18 +3,22 @@ package com.uniovi.melhouse.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.uniovi.melhouse.data.database.SQLite
 import com.uniovi.melhouse.data.model.Task
+import com.uniovi.melhouse.data.repository.task.TaskRepository
+import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import javax.inject.Inject
 
-class CalendarViewModel : ViewModel() {
+@HiltViewModel
+class CalendarViewModel @Inject constructor(
+    @SQLiteDatabaseQualifier private val tasksRepository: TaskRepository
+) : ViewModel() {
 
     val tasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
     val dailyTasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
-    private val tasksRepository = SQLite.getTaskRepository()
 
     fun onCreate() {
         updateTasks()

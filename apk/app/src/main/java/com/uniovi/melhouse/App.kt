@@ -4,7 +4,9 @@ import android.app.Application
 import android.app.UiModeManager
 import com.uniovi.melhouse.data.database.SQLite
 import com.uniovi.melhouse.presentation.Prefs
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
         super.onCreate()

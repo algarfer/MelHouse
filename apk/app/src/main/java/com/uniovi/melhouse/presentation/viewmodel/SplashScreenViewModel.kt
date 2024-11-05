@@ -2,8 +2,11 @@ package com.uniovi.melhouse.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SplashScreenViewModel : ViewModel() {
+@HiltViewModel
+class SplashScreenViewModel @Inject constructor() : ViewModel() {
     val isReady: MutableLiveData<Boolean> = MutableLiveData(false)
     var isLogged: Boolean = false
         private set
