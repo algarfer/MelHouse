@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.databinding.FragmentMenuBinding
 
 /**
  * A simple [Fragment] subclass.
@@ -13,6 +15,8 @@ import com.uniovi.melhouse.R
  * create an instance of this fragment.
  */
 class MenuFragment : Fragment() {
+
+    private lateinit var binding: FragmentMenuBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +26,12 @@ class MenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
+        binding.recyclerTodayTasks.layoutManager = LinearLayoutManager(context)
+
+//        TODO
+//        binding.recyclerTodayTasks.adapter = TodayTasksAdapter()
+
         return inflater.inflate(R.layout.fragment_menu, container, false)
     }
 

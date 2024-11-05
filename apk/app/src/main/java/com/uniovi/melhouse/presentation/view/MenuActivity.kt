@@ -2,6 +2,7 @@ package com.uniovi.melhouse.presentation.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
@@ -13,8 +14,22 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMenuBinding
     private var androidOsBarColor: Int? = null
+
+    private fun setup(){
+        binding.menuNavigationBar.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.calendarFragment -> {
+                    val intent = Intent(this, CalendarViewActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
 
     @SuppressLint("PrivateResource")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +45,9 @@ class MenuActivity : AppCompatActivity() {
         androidOsBarColor = window.navigationBarColor
         // Review - This may not work with dark mode
         window.navigationBarColor = getColor(com.google.android.material.R.color.m3_ref_palette_neutral94)
+
+        setup()
+
     }
 
     override fun onPause() {
