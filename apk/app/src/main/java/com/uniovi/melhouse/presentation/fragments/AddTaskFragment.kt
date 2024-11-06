@@ -25,9 +25,12 @@ import com.uniovi.melhouse.utils.maxDate
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.AddTaskViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
+import javax.inject.Inject
 
-class AddTaskFragment : Fragment() {
+@AndroidEntryPoint
+class AddTaskFragment @Inject constructor() : Fragment() {
     private val viewModel: AddTaskViewModel by viewModels()
     private lateinit var binding: CalendarAddTaskFragmentBinding
     private val MILLIS_PER_DAY = 86400000
