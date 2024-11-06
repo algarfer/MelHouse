@@ -23,19 +23,34 @@ class LoginViewModel @Inject constructor(
     val loginSuccessfull: MutableLiveData<Boolean> = MutableLiveData(false)
 
     // TODO - Improve for backend server
-    // TODO - Add fields validation
     fun login(email: String, password: String, context: Context) {
+        var areErrors = false
+        if(email.isEmpty()) {
+            emailError.postValue(context.getString(R.string.error_form_login_email_empty))
+            areErrors = true
+        }
+
+        if(password.isEmpty()) {
+            passwordError.postValue(context.getString(R.string.error_form_login_password_empty))
+            areErrors = true
+        }
+
+        if(areErrors) return
+
         viewModelScope.launch(Dispatchers.IO) {
             val user = userRepository.findByEmail(email)
-            if (user != null) {
-                Prefs.setUserId(user.id)
-                Prefs.setEmail(user.email)
-                Prefs.setFlatId(user.flatId)
-                Prefs.setName(user.name)
-                loginSuccessfull.postValue(true)
-            } else {
+            if (user == null) {
                 emailError.postValue(context.getString(R.string.error_form_login_user_not_found))
+                return@launch
             }
+
+            // TODO - Add password check
+
+            Prefs.setUserId(user.id)
+            Prefs.setEmail(user.email)
+            Prefs.setFlatId(user.flatId)
+            Prefs.setName(user.name)
+            loginSuccessfull.postValue(true)
         }
     }
 }

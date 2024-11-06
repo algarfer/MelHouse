@@ -34,6 +34,10 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
+        viewModel.nameError.observe(this) {
+            binding.nameLayout.error = it
+        }
+
         viewModel.emailError.observe(this) {
             binding.emailLayout.error = it
         }

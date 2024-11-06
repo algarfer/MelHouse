@@ -21,7 +21,10 @@ object Prefs {
     }
 
     fun setEmail(newEmail: String) {
-        storage!!.edit().putString(SHARED_EMAIL, newEmail).apply()
+        storage!!
+            .edit()
+            .putString(SHARED_EMAIL, newEmail)
+            .apply()
     }
 
     fun getEmail(): String {
@@ -29,7 +32,10 @@ object Prefs {
     }
 
     fun setFlatId(newId: UUID?) {
-        storage!!.edit().putString(SHARED_FLAT_ID, newId.toString()).apply()
+        storage!!
+            .edit()
+            .putString(SHARED_FLAT_ID, newId.toString())
+            .apply()
     }
 
     fun getFlatId(): UUID? {
@@ -42,7 +48,10 @@ object Prefs {
     }
 
     fun setUserId(newId: UUID) {
-        storage!!.edit().putString(SHARED_USER_ID, newId.toString()).apply()
+        storage!!
+            .edit()
+            .putString(SHARED_USER_ID, newId.toString())
+            .apply()
     }
 
     fun getUserId(): UUID {
@@ -50,10 +59,20 @@ object Prefs {
     }
 
     fun setName(name: String) {
-        storage!!.edit().putString(SHARED_NAME_USER, name).apply()
+        storage!!
+            .edit()
+            .putString(SHARED_NAME_USER, name)
+            .apply()
     }
 
     fun getName(): String {
         return storage!!.getString(SHARED_NAME_USER, "")!!
+    }
+
+    fun clearAll() {
+        storage!!
+            .edit()
+            .clear()
+            .apply()
     }
 }
