@@ -5,6 +5,7 @@
     <string name="edit">Editar</string>
     <string name="email">Correo Electrónico</string>
     <string name="login">Iniciar Sesión</string>
+    <string name="logout">Cerrar sesión</string>
     <string name="name">Nombre</string>
     <string name="password">Contraseña</string>
     <string name="profile_image">Imagen de perfil</string>

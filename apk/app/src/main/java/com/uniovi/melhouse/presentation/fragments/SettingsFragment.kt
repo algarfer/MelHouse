@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.uniovi.melhouse.R
+import com.uniovi.melhouse.databinding.FragmentSettingsBinding
 
 /**
  * A simple [Fragment] subclass.
@@ -14,16 +14,19 @@ import com.uniovi.melhouse.R
  */
 class SettingsFragment : Fragment() {
 
+    private lateinit var binding: FragmentSettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+        binding = FragmentSettingsBinding.inflate(layoutInflater)
+        return binding.root
     }
 
 }
