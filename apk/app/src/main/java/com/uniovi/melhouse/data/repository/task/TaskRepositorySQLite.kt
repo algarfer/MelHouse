@@ -35,7 +35,7 @@ class TaskRepositorySQLite(
         }
     }
 
-    override fun findByDate(date: LocalDate?): List<Task> {
+    override suspend fun findByDate(date: LocalDate?): List<Task> {
         if(date == null) return emptyList()
         db.rawQuery("SELECT * FROM $TABLE_NAME WHERE end_date = '$date'", null).use { cursor ->
             return TaskAssembler.toList(cursor)

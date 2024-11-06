@@ -35,10 +35,12 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun updateDailyTasks(date: LocalDate?) {
-        dailyTasks.postValue(tasksRepository
-            .findByDate(date)
-            .filter { it.endDate != null }
-            .groupBy { it.endDate }
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            dailyTasks.postValue(tasksRepository
+                .findByDate(date)
+                .filter { it.endDate != null }
+                .groupBy { it.endDate }
+            )
+        }
     }
 }

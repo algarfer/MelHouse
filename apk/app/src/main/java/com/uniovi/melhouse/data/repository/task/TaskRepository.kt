@@ -10,7 +10,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 interface TaskRepository : Repository<Task> {
-    fun findByDate(date: LocalDate?): List<Task>
+    suspend fun findByDate(date: LocalDate?): List<Task>
 }
 
 class TaskAssembler {
