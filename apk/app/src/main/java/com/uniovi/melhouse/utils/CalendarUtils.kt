@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.utils
+package com.uniovi.melhouse.utils
 
 import java.time.DayOfWeek
 import java.time.Month

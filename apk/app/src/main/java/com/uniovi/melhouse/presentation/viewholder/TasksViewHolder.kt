@@ -5,9 +5,9 @@ import androidx.fragment.app.FragmentManager
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.databinding.CalendarTaskLayoutBinding
 import com.uniovi.melhouse.presentation.fragments.TaskBottomSheetDialog
-import com.uniovi.melhouse.presentation.utils.makeGone
-import com.uniovi.melhouse.presentation.utils.makeVisible
-import com.uniovi.melhouse.presentation.utils.taskDateFormatter
+import com.uniovi.melhouse.utils.makeGone
+import com.uniovi.melhouse.utils.makeVisible
+import com.uniovi.melhouse.utils.taskDateFormatter
 
 class TasksViewHolder(view: View, private val taskpressedHandler: (Task) -> Unit) : AbstractViewHolder<Task>(view) {
 

@@ -43,7 +43,6 @@ class AddTaskViewModel @Inject constructor(
 
     fun setPriority(status: TaskPriority?) = this.priority.postValue(status)
 
-    // TODO - Move to usecase
     fun saveTask() {
         val task = Task(
             name = title!!,

@@ -3,7 +3,7 @@ package com.uniovi.melhouse
 import android.app.Application
 import android.app.UiModeManager
 import com.uniovi.melhouse.data.database.SQLite
-import com.uniovi.melhouse.presentation.Prefs
+import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

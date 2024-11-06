@@ -1,11 +1,11 @@
-package com.uniovi.melhouse.presentation.adapter
+package com.uniovi.melhouse.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
-import com.uniovi.melhouse.presentation.diffutil.TasksDiffUtil
+import com.uniovi.melhouse.presentation.adapters.diffutil.TasksDiffUtil
 import com.uniovi.melhouse.presentation.viewholder.TasksViewHolder
 
 class TasksAdapter(list: List<Task>, private val taskHandler: (Task) -> Unit) : AbstractAdapter<Task, TasksViewHolder>(list) {

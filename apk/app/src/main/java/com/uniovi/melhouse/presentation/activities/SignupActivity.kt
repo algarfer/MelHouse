@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.view
+package com.uniovi.melhouse.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivitySignupBinding
 import com.uniovi.melhouse.presentation.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint

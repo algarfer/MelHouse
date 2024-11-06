@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.adapter
+package com.uniovi.melhouse.presentation.adapters
 
 import androidx.recyclerview.widget.RecyclerView
 import com.uniovi.melhouse.presentation.viewholder.AbstractViewHolder

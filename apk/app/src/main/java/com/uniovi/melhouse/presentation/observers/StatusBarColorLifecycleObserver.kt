@@ -7,7 +7,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.presentation.utils.getColorCompat
+import com.uniovi.melhouse.utils.getColorCompat
 import java.lang.ref.WeakReference
 
 @Suppress("DEPRECATION")

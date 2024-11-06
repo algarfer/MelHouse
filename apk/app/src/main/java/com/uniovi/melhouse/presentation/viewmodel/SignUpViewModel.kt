@@ -8,11 +8,10 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
-import com.uniovi.melhouse.presentation.Prefs
+import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +23,6 @@ class SignUpViewModel @Inject constructor(
     val password2Error: MutableLiveData<String?> = MutableLiveData(null)
     val signupSuccessfull: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    // TODO - Move to correct layer
     // TODO - Add fields validation
     fun signup(name: String, email: String, password: String, password2: String, context: Context) {
 

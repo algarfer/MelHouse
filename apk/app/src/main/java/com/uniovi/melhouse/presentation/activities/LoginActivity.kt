@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.view
+package com.uniovi.melhouse.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle

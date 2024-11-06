@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.view
+package com.uniovi.melhouse.presentation.activities
 
 import android.os.Bundle
 import android.view.MenuItem

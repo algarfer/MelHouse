@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
-import com.uniovi.melhouse.presentation.Prefs
+import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +23,6 @@ class LoginViewModel @Inject constructor(
     val loginSuccessfull: MutableLiveData<Boolean> = MutableLiveData(false)
 
     // TODO - Improve for backend server
-    // TODO - Move to correct layer
     // TODO - Add fields validation
     fun login(email: String, password: String, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {

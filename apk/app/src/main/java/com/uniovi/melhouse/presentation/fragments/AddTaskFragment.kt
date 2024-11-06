@@ -16,14 +16,14 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.databinding.CalendarAddTaskFragmentBinding
-import com.uniovi.melhouse.presentation.adapter.array.TaskPriorityDropDownMenuAdapter
-import com.uniovi.melhouse.presentation.adapter.array.TaskStatusDropDownMenuAdapter
-import com.uniovi.melhouse.presentation.utils.addStatusBarColorUpdate
-import com.uniovi.melhouse.presentation.utils.makeGone
-import com.uniovi.melhouse.presentation.utils.makeVisible
-import com.uniovi.melhouse.presentation.utils.maxDate
-import com.uniovi.melhouse.presentation.utils.toEditable
-import com.uniovi.melhouse.presentation.utils.today
+import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
+import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
+import com.uniovi.melhouse.utils.addStatusBarColorUpdate
+import com.uniovi.melhouse.utils.makeGone
+import com.uniovi.melhouse.utils.makeVisible
+import com.uniovi.melhouse.utils.maxDate
+import com.uniovi.melhouse.utils.toEditable
+import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.presentation.viewmodel.AddTaskViewModel
 import java.time.LocalDate
 

@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.diffutil
+package com.uniovi.melhouse.presentation.adapters.diffutil
 
 import com.uniovi.melhouse.data.model.Task
 

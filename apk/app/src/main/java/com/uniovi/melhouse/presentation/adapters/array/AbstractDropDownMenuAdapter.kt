@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.adapter.array
+package com.uniovi.melhouse.presentation.adapters.array
 
 import android.content.Context
 import android.view.LayoutInflater

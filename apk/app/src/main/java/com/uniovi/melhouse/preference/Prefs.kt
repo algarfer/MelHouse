@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation
+package com.uniovi.melhouse.preference
 
 import android.content.Context
 import android.content.SharedPreferences
