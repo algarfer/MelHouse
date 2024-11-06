@@ -17,6 +17,7 @@
     <string name="task_end_date">Fecha de fin</string>
     <string name="task_priority">Prioridad</string>
     <string name="task_status">Estado</string>
+    <string name="task_asignee">Asignados</string>
 
     <string name="task_select_start_date">Selecciona la fecha de inicio</string>
     <string name="task_select_end_date">Selecciona la fecha de fin</string>
