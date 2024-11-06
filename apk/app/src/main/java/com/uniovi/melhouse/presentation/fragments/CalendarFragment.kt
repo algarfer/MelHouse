@@ -28,18 +28,31 @@ import com.uniovi.melhouse.utils.displayText
 import com.uniovi.melhouse.utils.getColorCompat
 import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.setTextColorRes
-import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
+import javax.inject.Inject
 
-class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
+@AndroidEntryPoint
+class CalendarFragment @Inject constructor(
+    private val taskDetailsDialog: TaskBottomSheetDialog
+) : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
+
+    constructor() : this(TaskBottomSheetDialog())
+
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
-    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it) }
+    private val tasksAdapter = TasksAdapter(listOf()) { task ->
+        val dialog = taskDetailsDialog
+        taskDetailsDialog.setTask(task)
+        parentFragmentManager.let {
+            taskDetailsDialog.show(it, TaskBottomSheetDialog.TAG)
+        }
+    }
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding

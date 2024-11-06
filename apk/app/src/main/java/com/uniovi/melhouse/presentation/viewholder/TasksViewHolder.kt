@@ -31,7 +31,3 @@ class TasksViewHolder(view: View, private val taskpressedHandler: (Task) -> Unit
     }
 }
 
-fun taskPressedHandler(fragmentManager: FragmentManager, task: Task) {
-    val modal = TaskBottomSheetDialog(task)
-    fragmentManager.let { modal.show(it, TaskBottomSheetDialog.TAG) }
-}
