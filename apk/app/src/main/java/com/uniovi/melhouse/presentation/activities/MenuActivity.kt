@@ -11,7 +11,7 @@ import androidx.fragment.app.commit
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 import dagger.hilt.android.AndroidEntryPoint
-import com.uniovi.melhouse.presentation.Prefs
+import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 
