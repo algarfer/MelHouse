@@ -30,12 +30,15 @@ import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.setTextColorRes
 import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
+import javax.inject.Inject
 
-class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
+@AndroidEntryPoint
+class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
