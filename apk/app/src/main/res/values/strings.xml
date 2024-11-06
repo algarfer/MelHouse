@@ -1,3 +1,55 @@
 <resources>
     <string name="app_name">MelHouse</string>
+    <string name="confirm_password">Confirmar Contraseña</string>
+    <string name="continuar">Continuar</string>
+    <string name="edit">Editar</string>
+    <string name="email">Correo Electrónico</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="name">Nombre</string>
+    <string name="password">Contraseña</string>
+    <string name="profile_image">Imagen de perfil</string>
+    <string name="save">Guardar</string>
+    <string name="signup">Registrarse</string>
+
+    <string name="task_title">Título</string>
+    <string name="task_description">Descripción</string>
+    <string name="task_start_date">Fecha de inicio</string>
+    <string name="task_end_date">Fecha de fin</string>
+    <string name="task_priority">Prioridad</string>
+    <string name="task_status">Estado</string>
+
+    <string name="task_select_start_date">Selecciona la fecha de inicio</string>
+    <string name="task_select_end_date">Selecciona la fecha de fin</string>
+
+    <string name="task_status_done">Acabado</string>
+    <string name="task_status_in_progress">En progreso</string>
+    <string name="task_status_pending">Pendiente</string>
+    <string name="task_status_cancelled">Cancelado</string>
+
+    <string name="task_priority_low">Baja</string>
+    <string name="task_priority_medium">Media</string>
+    <string name="task_priority_high">Alta</string>
+
+    <string name="title_home">Inicio</string>
+    <string name="title_calendar">Calendario</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_settings">Ajustes</string>
+    <string name="title_today_tasks">Tareas para hoy</string>
+
+    <string name="error_form_login_user_not_found">No existe un usuario asociado a este email</string>
+    <string name="error_form_login_email_empty">El email no puede estar vacío</string>
+    <string name="error_form_login_password_empty">La contraseña no puede estar vacía</string>
+
+    <string name="error_form_signup_password_not_match">Las contraseñas no coinciden</string>
+    <string name="error_form_signup_user_already_exists">Ya existe un usuario con este email</string>
+    <string name="error_form_signup_name_empty">El nombre no puede estar vacío</string>
+    <string name="error_form_signup_email_empty">El email no puede estar vacío</string>
+    <string name="error_form_signup_password_empty">La contraseña no puede estar vacía</string>
+    <string name="error_form_signup_email_invalid">El email no es válido</string>
+    <string name="error_form_signup_password_invalid">La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número</string>
+    <string name="error_form_signup_name_length">El nombre debe de tener entre 3 y 50 caracteres.</string>
+    <string name="error_form_signup_email_length">El email no puede tener mas de 50 caracteres.</string>
+    <string name="error_form_signup_password_length">La contraseña no puede tener mas de 50 caracteres.</string>
 </resources>
