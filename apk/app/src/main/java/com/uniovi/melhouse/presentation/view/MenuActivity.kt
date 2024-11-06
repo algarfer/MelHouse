@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.commitNow
+import androidx.fragment.app.commit
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 import com.uniovi.melhouse.presentation.Prefs
@@ -23,7 +23,10 @@ class MenuActivity : AppCompatActivity() {
         binding.menuNavigationBar.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menuFragment -> {
-                    supportFragmentManager.commitNow { replace(R.id.menuOptionsFragment, MenuFragment()) }
+                    supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        replace(R.id.menuOptionsFragment, MenuFragment())
+                    }
                     true
                 }
                 R.id.calendarFragment -> {
@@ -32,11 +35,18 @@ class MenuActivity : AppCompatActivity() {
                     true
                 }
                 R.id.settingsFragment -> {
-                    supportFragmentManager.commitNow { replace(R.id.menuOptionsFragment, SettingsFragment()) }
+                    supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        replace(R.id.menuOptionsFragment, SettingsFragment())
+                    }
                     true
                 }
                 else -> false
             }
+        }
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.menuOptionsFragment, MenuFragment())
         }
     }
 
