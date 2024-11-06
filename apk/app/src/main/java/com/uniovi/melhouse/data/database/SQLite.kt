@@ -29,18 +29,6 @@ object SQLite : Database<SQLiteDatabase> {
         return instance!!
     }
 
-    override fun getUserRepository(): UserRepository {
-        return UserRepositorySQLite(getInstance())
-    }
-
-    override fun getFlatRepository(): FlatRepository {
-        return FlatRepositorySQLite(getInstance())
-    }
-
-    override fun getTaskRepository(): TaskRepository {
-        return TaskRepositorySQLite(getInstance())
-    }
-
     private fun configureDatabase(context: Context) {
         executeSqlFile(context, "schema.sql")
         executeSqlFile(context, "data.sql")

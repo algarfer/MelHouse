@@ -10,10 +10,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
-import com.uniovi.melhouse.presentation.utils.getColor
-import com.uniovi.melhouse.presentation.utils.getDatesString
-import com.uniovi.melhouse.presentation.utils.makeGone
-import com.uniovi.melhouse.presentation.utils.showWipToast
+import com.uniovi.melhouse.utils.getColor
+import com.uniovi.melhouse.utils.getDatesString
+import com.uniovi.melhouse.utils.makeGone
+import com.uniovi.melhouse.utils.showWipToast
 
 class TaskBottomSheetDialog(val task: Task) : BottomSheetDialogFragment() {
     private lateinit var binding : TaskDetailsBottomSheetLayoutBinding

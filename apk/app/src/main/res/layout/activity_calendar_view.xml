@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.view.CalendarViewActivity">
+    tools:context=".presentation.activities.CalendarViewActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/calendar_fragment_container"

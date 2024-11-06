@@ -83,6 +83,7 @@
 
             <ImageView
                 android:id="@+id/ivDate"
+                app:tint="@color/on_background"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -2,7 +2,7 @@
 agp = "8.6.0"
 coreSplashscreen = "1.0.1"
 fragmentKtx = "1.8.5"
-hiltAndroid = "2.44"
+hiltAndroid = "2.52"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -45,4 +45,5 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 
