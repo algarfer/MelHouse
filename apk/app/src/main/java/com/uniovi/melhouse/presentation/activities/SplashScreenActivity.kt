@@ -11,7 +11,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.presentation.viewmodel.SplashScreenViewModel
+import com.uniovi.melhouse.viewmodel.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

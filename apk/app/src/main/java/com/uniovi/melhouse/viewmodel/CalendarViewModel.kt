@@ -1,4 +1,4 @@
-package com.uniovi.melhouse.presentation.viewmodel
+package com.uniovi.melhouse.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

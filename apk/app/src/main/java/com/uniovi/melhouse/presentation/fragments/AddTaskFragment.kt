@@ -24,7 +24,7 @@ import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.utils.maxDate
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
-import com.uniovi.melhouse.presentation.viewmodel.AddTaskViewModel
+import com.uniovi.melhouse.viewmodel.AddTaskViewModel
 import java.time.LocalDate
 
 class AddTaskFragment : Fragment() {

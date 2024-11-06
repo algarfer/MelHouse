@@ -29,7 +29,7 @@ import com.uniovi.melhouse.utils.getColorCompat
 import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.setTextColorRes
 import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
-import com.uniovi.melhouse.presentation.viewmodel.CalendarViewModel
+import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth

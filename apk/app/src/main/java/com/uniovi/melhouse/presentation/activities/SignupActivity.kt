@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.databinding.ActivitySignupBinding
-import com.uniovi.melhouse.presentation.viewmodel.SignUpViewModel
+import com.uniovi.melhouse.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
