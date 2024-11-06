@@ -17,7 +17,7 @@ class SignupActivity : AppCompatActivity() {
     private val viewModel: SignUpViewModel by viewModels()
 
     private fun setupListeners() {
-        binding.btnReturn.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
 
