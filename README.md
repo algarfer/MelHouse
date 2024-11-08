@@ -1,6 +1,6 @@
 <div align="center">
 	<img src="./media/logo.png" alt="MelHouse logo" />
-	<img src="./media/title.png" alt="MelHouse title" />
+	<img src="apk/app/src/main/res/drawable/title.png" alt="MelHouse title" />
 </div>
 
 ---

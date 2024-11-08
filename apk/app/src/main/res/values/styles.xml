@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BaseText">
+        <item name="fontFamily">sans-serif</item>
+    </style>
+    <style name="BoldText" parent="BaseText">
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="BodyLarge" parent="BaseText">
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="BodyMedium" parent="BaseText">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="BodySmall" parent="BaseText">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ButtonText" parent="BoldText">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="DisplayLarge" parent="BaseText">
+        <item name="android:textSize">57sp</item>
+    </style>
+    <style name="DisplayMedium" parent="BaseText">
+        <item name="android:textSize">45sp</item>
+    </style>
+    <style name="DisplaySmall" parent="BaseText">
+        <item name="android:textSize">36sp</item>
+    </style>
+
+    <style name="HeadlineLarge" parent="BaseText">
+        <item name="android:textSize">32sp</item>
+    </style>
+    <style name="HeadlineMedium" parent="BaseText">
+        <item name="android:textSize">28sp</item>
+    </style>
+    <style name="HeadlineSmall" parent="BaseText">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="LabelLarge" parent="BoldText">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="LabelMedium" parent="BoldText">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="LabelSmall" parent="BoldText">
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="TitleBold" parent="BoldText">
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="TitleLarge" parent="BaseText">
+        <item name="android:textSize">22sp</item>
+    </style>
+    <style name="TitleMedium" parent="BoldText">
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="TitleSmall" parent="BoldText">
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MelHouse</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/brandimage</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+    </style>
+</resources>
