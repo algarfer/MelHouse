@@ -3,82 +3,76 @@ name: melhouse-penpot
 services:
   penpot-frontend:
     container_name: "${prefix:-melhouse}-penpot-frontend"
-    image: "penpotapp/frontend:${PENPOT_FRONTEND_VERSION}"
+    image: "penpotapp/frontend:${PENPOT_FRONTEND_VERSION:?missing}"
     restart: unless-stopped
     ports:
-      - "${PENPOT_FRONTEND_EXTERNAL_PORT}:${PENPOT_FRONTEND_PORT}"
+      - "${PENPOT_FRONTEND_EXTERNAL_PORT:?missing}:${PENPOT_FRONTEND_PORT:?missing}"
     volumes:
-      - "${PENPOT_ASSETS_STORAGE_DIR}:/opt/data/assets"
+      - "${PENPOT_ASSETS_STORAGE_DIR:?missing}:/opt/data/assets"
     depends_on:
       - penpot-backend
       - penpot-exporter
     networks:
       - penpot_internal
-      - melhouse
     environment:
       PENPOT_FLAGS: enable-login-with-password disable-registration
 
   penpot-backend:
     container_name: "${prefix:-melhouse}-penpot-backend"
-    image: "penpotapp/backend:${PENPOT_BACKEND_VERSION}"
+    image: "penpotapp/backend:${PENPOT_BACKEND_VERSION:?missing}"
     restart: unless-stopped
     volumes:
-      - "${PENPOT_ASSETS_STORAGE_DIR}:/opt/data/assets"
+      - "${PENPOT_ASSETS_STORAGE_DIR:?missing}:/opt/data/assets"
     depends_on:
       - penpot-postgres
       - penpot-redis
     networks:
       - penpot_internal
-      - melhouse
     environment:
       PENPOT_FLAGS: enable-login-with-password disable-email-verification enable-prepl-server disable-secure-session-cookies disable-registration
-      PENPOT_SECRET_KEY: "${PENPOT_BACKEND_SECRET_KEY}"
-      PENPOT_PUBLIC_URI: "${PENPOT_PUBLIC_URI}"
-      PENPOT_DATABASE_URI: "postgresql://${PENPOT_POSTGRES_HOST}/${PENPOT_POSTGRES_DB}"
-      PENPOT_DATABASE_USERNAME: "${PENPOT_POSTGRES_USER}"
-      PENPOT_DATABASE_PASSWORD: "${PENPOT_POSTGRES_PASSWORD}"
-      PENPOT_REDIS_URI: "redis://${PENPOT_REDIS_HOST}/0"
+      PENPOT_SECRET_KEY: "${PENPOT_BACKEND_SECRET_KEY:?missing}"
+      PENPOT_PUBLIC_URI: "${PENPOT_PUBLIC_URI:?missing}"
+      PENPOT_DATABASE_URI: "postgresql://${PENPOT_POSTGRES_HOST:?missing}/${PENPOT_POSTGRES_DB:?missing}"
+      PENPOT_DATABASE_USERNAME: "${PENPOT_POSTGRES_USER:?missing}"
+      PENPOT_DATABASE_PASSWORD: "${PENPOT_POSTGRES_PASSWORD:?missing}"
+      PENPOT_REDIS_URI: "redis://${PENPOT_REDIS_HOST:?missing}/0"
       PENPOT_ASSETS_STORAGE_BACKEND: assets-fs
       PENPOT_STORAGE_ASSETS_FS_DIRECTORY: /opt/data/assets
       PENPOT_TELEMETRY_ENABLED: false
 
   penpot-exporter:
     container_name: "${prefix:-melhouse}-penpot-exporter"
-    image: "penpotapp/exporter:${PENPOT_EXPORTER_VERSION}"
+    image: "penpotapp/exporter:${PENPOT_EXPORTER_VERSION:?missing}"
     restart: unless-stopped
     networks:
       - penpot_internal
-      - melhouse
     environment:
-      PENPOT_PUBLIC_URI: "http://${PENPOT_FRONTEND_HOST}"
-      PENPOT_REDIS_URI: "redis://${PENPOT_REDIS_HOST}/0"
+      PENPOT_PUBLIC_URI: "http://${PENPOT_FRONTEND_HOST:?missing}"
+      PENPOT_REDIS_URI: "redis://${PENPOT_REDIS_HOST:?missing}/0"
 
   penpot-postgres:
     container_name: "${prefix:-melhouse}-penpot-postgres"
-    image: "postgres:${PENPOT_POSTGRES_VERSION}"
+    image: "postgres:${PENPOT_POSTGRES_VERSION:?missing}"
     restart: unless-stopped
     stop_signal: SIGINT
     volumes:
-      - "${PENPOT_POSTGRES_STORAGE_DIR}:/var/lib/postgresql/data"
+      - "${PENPOT_POSTGRES_STORAGE_DIR:?missing}:/var/lib/postgresql/data"
     networks:
       - penpot_internal
     environment:
       POSTGRES_INITDB_ARGS: "--data-checksums"
-      POSTGRES_DB: "${PENPOT_POSTGRES_DB}"
-      POSTGRES_USER: "${PENPOT_POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${PENPOT_POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${PENPOT_POSTGRES_DB:?missing}"
+      POSTGRES_USER: "${PENPOT_POSTGRES_USER:?missing}"
+      POSTGRES_PASSWORD: "${PENPOT_POSTGRES_PASSWORD:?missing}"
 
   penpot-redis:
     container_name: "${prefix:-melhouse}-redis"
-    image: "redis:${PENPOT_REDIS_VERSION}"
+    image: "redis:${PENPOT_REDIS_VERSION:?missing}"
     restart: unless-stopped
     networks:
       - penpot_internal
 
 networks:
   penpot_internal:
-    name: forgejo_internal
+    name: penpot
     driver: bridge
-  melhouse:
-    name: melhouse
-    external: true

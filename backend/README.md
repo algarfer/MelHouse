@@ -32,8 +32,27 @@ This command sets up necessary directories for all services:
 make init_dirs
 ```
 
+### Initialize Environment Files
+These commands create the `.env.service` files based on the `.env.service.example` files.
+
+```bash
+make generate_envs
+```
+
+After the environment files are generated, add the required data so the services can work as spected.
+
 ## Managing Services
 You can manage all the services at once or control individual services. Below are the commands to handle each scenario.
+
+### Generate Environment File
+```bash
+make .env.penpot
+```
+
+After creating the environment file, overwrite at least these fields:
+- `PENPOT_PUBLIC_URI`
+- `PENPOT_BACKEND_SECRET_KEY`
+- `PENPOT_POSTGRES_PASSWORD`
 
 ### Start All Services
 ```bash

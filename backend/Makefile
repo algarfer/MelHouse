@@ -1,6 +1,6 @@
-start_penpot:
+start_penpot: .env.penpot
 	@echo "Starting penpot server..."
-	docker compose -f docker-compose.penpot.yml up -d
+	docker compose --env-file .env.penpot -f docker-compose.penpot.yml up -d
 
 stop_penpot:
 	@echo "Stopping penpot server..."
@@ -13,6 +13,12 @@ start_all: start_penpot
 stop_all: stop_penpot
 
 restart_all: restart_penpot
+
+.env.penpot : .env.penpot.example
+	@echo "Creating penpot env file..."
+	cp .env.penpot.example .env.penpot
+
+generate_envs: .env.penpot
 
 init_dirs:
 	@echo "Creating directories..."
