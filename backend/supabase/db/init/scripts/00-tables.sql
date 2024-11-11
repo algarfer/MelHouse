@@ -8,7 +8,8 @@ create table public.flats(
     invitation_code text not null,
     admin_id uuid not null,
     constraint pk_flats primary key (id),
-    constraint uq_flats_invitation_code unique (invitation_code)
+    constraint uq_flats_invitation_code unique (invitation_code),
+    constraint uq_admin_id unique(admin_id)
 );
 
 create table public.users(
