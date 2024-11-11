@@ -1,13 +1,3 @@
-start_proxy:
-	@echo "Starting proxy server..."
-	docker compose -f docker-compose.proxy.yml up -d --build
-
-stop_proxy:
-	@echo "Stopping proxy server..."
-	docker compose -f docker-compose.proxy.yml down
-
-restart_proxy: stop_proxy start_proxy
-
 start_penpot:
 	@echo "Starting penpot server..."
 	docker compose -f docker-compose.penpot.yml up -d
@@ -18,11 +8,11 @@ stop_penpot:
 
 restart_penpot: stop_penpot start_penpot
 
-start_all: start_proxy start_penpot
+start_all: start_penpot
 
-stop_all: stop_penpot stop_proxy
+stop_all: stop_penpot
 
-restart_all: restart_proxy restart_penpot
+restart_all: restart_penpot
 
 init_dirs:
 	@echo "Creating directories..."

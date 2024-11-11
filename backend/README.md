@@ -1,7 +1,6 @@
 <h1 align="center">Backend</h1>
 
 <div align="center">
-    <img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white" alt="Nginx" />
     <img src="https://img.shields.io/badge/penpot-%23000000.svg?style=for-the-badge&logo=penpot&logoColor=white" alt="Penpot" />
     <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
 </div>
@@ -11,7 +10,6 @@ This folder contains the backend infrastructure for the MelHouse application.
 
 It includes the following services:
 
-- **Nginx**: A high-performance reverse proxy server.
 - **Penpot**: An open-source design and prototyping tool.
 - **Supabase**: A back-end service providing authentication, database, and real-time APIs.
 
@@ -52,24 +50,6 @@ make stop_all
 make restart_all
 ```
 
-## Reverse Proxy (Nginx)
-Nginx is used as a reverse proxy to handle traffic and direct it to the appropriate services. You can control the reverse proxy using the following commands:
-
-### Start Nginx Reverse Proxy
-```bash
-make start_proxy
-```
-
-### Stop Nginx Reverse Proxy
-```bash
-make stop_proxy
-```
-
-### Restart Nginx Reverse Proxy
-```bash
-make restart_proxy
-```
-
 ## Penpot
 Penpot is an open-source tool used for designing wireframes and prototypes. It provides a collaborative design platform for working on vector graphics and interactive UX flows.
 
@@ -95,6 +75,5 @@ make restart_penpot
 > [!NOTE]
 > - Ensure that you have all required dependencies installed before starting the services.
 > - For detailed information on configuring each service, refer to their respective documentation:
->   - [Nginx Documentation](https://docs.nginx.com/)
 >   - [Penpot Documentation](https://help.penpot.app/)
 >   - [Supabase Documentation](https://supabase.com/docs)
