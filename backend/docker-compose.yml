@@ -394,6 +394,10 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXP: ${JWT_EXPIRY}
     volumes:
+      # Initialize the database with the custom data
+      - ./supabase/db/init/init.sh:/docker-entrypoint-initdb.d/99-melhouse.sh:Z
+      - ./supabase/db/init/scripts:/docker-entrypoint-initdb.d/melhouse-scripts:Z
+
       - ./supabase/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
       # Must be superuser to create event trigger
       - ./supabase/db/webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql:Z
