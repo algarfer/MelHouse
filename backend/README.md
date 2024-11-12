@@ -1,4 +1,4 @@
-<h1 align="center">Backend</h1>
+<h1 align="center">MelHouse Backend</h1>
 
 <div align="center">
     <img src="https://img.shields.io/badge/penpot-%23000000.svg?style=for-the-badge&logo=penpot&logoColor=white" alt="Penpot" />
@@ -33,26 +33,16 @@ make init_dirs
 ```
 
 ### Initialize Environment Files
-These commands create the `.env.service` files based on the `.env.service.example` files.
+This command create the `.env.service` files based on the `.env.service.example` files.
 
 ```bash
 make generate_envs
 ```
 
-After the environment files are generated, add the required data so the services can work as spected.
+After the environment files are generated, add the required data (commented fields with _!MISSING_ value) so the services can work as expected.
 
 ## Managing Services
 You can manage all the services at once or control individual services. Below are the commands to handle each scenario.
-
-### Generate Environment File
-```bash
-make .env.penpot
-```
-
-After creating the environment file, overwrite at least these fields:
-- `PENPOT_PUBLIC_URI`
-- `PENPOT_BACKEND_SECRET_KEY`
-- `PENPOT_POSTGRES_PASSWORD`
 
 ### Start All Services
 ```bash
@@ -76,6 +66,16 @@ In this project, all wireframes and design prototypes are managed using Penpot.
 
 You can control the Penpot service using the following commands:
 
+### Generate Environment File
+```bash
+make .env.penpot
+```
+
+After creating the environment file, overwrite at least these fields:
+- `PENPOT_PUBLIC_URI`
+- `PENPOT_BACKEND_SECRET_KEY`
+- `PENPOT_POSTGRES_PASSWORD`
+
 ### Start Penpot
 ```bash
 make start_penpot
@@ -90,6 +90,48 @@ make stop_penpot
 ```bash
 make restart_penpot
 ```
+
+## Supabase
+Supabase is an open-source backend-as-a-service platform that provides authentication, real-time databases, and APIs. It is used in this project to manage user data, application state, and serverless functions.
+
+You can control the Supabase service using the following commands:
+
+### Generate Environment File
+```bash
+make .env.supabase
+```
+
+After creating the environment file, overwrite at least these fields:
+- `POSTGRES_PASSWORD`
+- `JWT_SECRET`
+- `ANON_KEY`
+- `SERVICE_ROLE_KEY`
+- `DASHBOARD_USERNAME`
+- `DASHBOARD_PASSWORD`
+- `SITE_URL`
+- `API_EXTERNAL_URL`
+- `SUPABASE_PUBLIC_URL`
+- `LOGFLARE_LOGGER_BACKEND_API_KEY`
+- `LOGFLARE_API_KEY`
+- `GOOGLE_PROJECT_ID`
+- `GOOGLE_PROJECT_NUMBER`
+
+### Start Supabase
+```bash
+make start_supabase
+```
+
+### Stop Supabase
+```bash
+make stop_supabase
+```
+
+### Restart Supabase
+```bash
+make restart_supabase
+```
+
+---
 
 > [!NOTE]
 > - Ensure that you have all required dependencies installed before starting the services.
