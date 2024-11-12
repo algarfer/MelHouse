@@ -385,7 +385,7 @@ services:
       JWT_EXP: ${JWT_EXPIRY:?missing}
     volumes:
       # Initialize the database with the custom data
-      - ./supabase/db/init/init.sh:/docker-entrypoint-initdb.d/99-melhouse.sh:Z
+      - ./supabase/db/init/init.sh:/docker-entrypoint-initdb.d/n-melhouse.sh:Z
       - ./supabase/db/init/scripts:/docker-entrypoint-initdb.d/melhouse-scripts:Z
 
       - ./supabase/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
