@@ -101,7 +101,7 @@ services:
       GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD:?missing}@${POSTGRES_HOST:?missing}:${POSTGRES_PORT:?missing}/${POSTGRES_DB:?missing}
 
       GOTRUE_SITE_URL: ${SITE_URL:?missing}
-      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS:?missing}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
       GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:?missing}
 
       GOTRUE_JWT_ADMIN_ROLES: service_role
