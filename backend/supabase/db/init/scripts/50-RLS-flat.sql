@@ -1,10 +1,13 @@
 alter table public.flats enable row level security;
 
-create policy "Enable insert for users if they are the admin of the flat"
+create policy "Enable admin users if they are the admin of the flat"
 on public.flats
 as PERMISSIVE
-for INSERT
+for ALL
 to authenticated
+using(
+  (select auth.uid()) = admin_id
+)
 with check (
   (select auth.uid()) = admin_id
 );
