@@ -1,20 +1,21 @@
 
-import os, multiprocessing
+import os
 from dotenv import load_dotenv
 from supabase import create_client
 from uuid import uuid4
 
 load_dotenv()
 
-def create_flat(n: int) -> None:
-    supabase = create_client(
-        os.getenv("SUPABASE_URL"),
-        os.getenv("SUPABASE_ANON_KEY")
-    )
+supabase = create_client(
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_ANON_KEY")
+)
 
+def create_flat(n: int) -> None:
     supabase.auth.sign_in_with_password({
+        # TODO - Recover users from database with service key
         "email": f"user{n}@email.com",
-        "password": f"user-{n}-password"
+        "password": f"userPassword{n}"
     })
 
     try:
@@ -23,15 +24,10 @@ def create_flat(n: int) -> None:
             "p_name": f"Test Flat {n}",
             "p_address": f"C/Testing {n}"
         }).execute()
+    except Exception as e:
+        raise e
     finally:
         supabase.auth.sign_out()
 
-if __name__ == "__main__":
-    tasks = []
-
-    for i in range(5):
-        p = multiprocessing.Process(target=create_flat, args=(i,))
-        tasks.append(p)
-        p.start()
-
-    for task in tasks: task.join()
+for i in range(3):
+    create_flat(i)

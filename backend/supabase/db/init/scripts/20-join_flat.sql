@@ -3,7 +3,7 @@ create or replace function public.join_flat(
 )
 returns void
 language plpgsql
-security invoker set search_path = ''
+security definer set search_path = ''
 as $$
 declare
     flat uuid;
