@@ -1,0 +1,1 @@
+alter table public.tasks_users enable row level security;

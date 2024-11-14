@@ -1,0 +1,1 @@
+alter table public.tasks enable row level security;
