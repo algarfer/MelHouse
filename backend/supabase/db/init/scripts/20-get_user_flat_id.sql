@@ -12,6 +12,6 @@ begin
 end;
 $$;
 
-revoke execute on function public.join_flat from public;
-revoke execute on function public.join_flat from anon;
-revoke execute on function public.join_flat from postgres;
+revoke execute on function public.get_user_flat_id from public;
+revoke execute on function public.get_user_flat_id from anon;
+revoke execute on function public.get_user_flat_id from postgres;
