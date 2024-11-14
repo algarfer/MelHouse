@@ -21,7 +21,7 @@ def join_flat(email, password, flat_id):
             "p_code": flat_id
         }).execute()
     except Exception as e:
-        raise e
+        print(e)
     finally:
         s.auth.sign_out()
 

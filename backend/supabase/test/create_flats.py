@@ -25,7 +25,7 @@ def create_flat(n: int) -> None:
             "p_address": f"C/Testing {n}"
         }).execute()
     except Exception as e:
-        raise e
+        print(e)
     finally:
         supabase.auth.sign_out()
 
