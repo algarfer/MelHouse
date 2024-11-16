@@ -12,6 +12,10 @@
     <string name="save">Guardar</string>
     <string name="signup">Registrarse</string>
 
+    <string name="flat_no_flat">No perteneces a ningún piso</string>
+    <string name="flat_create_flat">Crear un piso</string>
+    <string name="flat_join_flat">Unirse a un piso</string>
+
     <string name="task_title">Título</string>
     <string name="task_description">Descripción</string>
     <string name="task_start_date">Fecha de inicio</string>

@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/login"
                 android:textAlignment="center"
-                android:textSize="35sp"
+                style="@style/HeadlineLarge"
                 app:layout_constraintBottom_toTopOf="@+id/guidelineCard"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
