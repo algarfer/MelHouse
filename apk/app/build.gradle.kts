@@ -3,7 +3,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("plugin.serialization") version "1.9.0"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

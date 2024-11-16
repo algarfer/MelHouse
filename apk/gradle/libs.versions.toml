@@ -3,7 +3,7 @@ agp = "8.6.0"
 coreSplashscreen = "1.0.1"
 fragmentKtx = "1.8.5"
 hiltAndroid = "2.52"
-kotlin = "1.9.0"
+kotlin = "2.0.21"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -51,5 +51,6 @@ realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 
