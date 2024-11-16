@@ -2,6 +2,7 @@
     <string name="app_name">MelHouse</string>
     <string name="confirm_password">Confirmar Contraseña</string>
     <string name="continuar">Continuar</string>
+    <string name="cancelar">Cancelar</string>
     <string name="edit">Editar</string>
     <string name="email">Correo Electrónico</string>
     <string name="login">Iniciar Sesión</string>
@@ -15,6 +16,12 @@
     <string name="flat_no_flat">No perteneces a ningún piso</string>
     <string name="flat_create_flat">Crear un piso</string>
     <string name="flat_join_flat">Unirse a un piso</string>
+    <string name="flat_name">Nombre</string>
+    <string name="flat_address">Dirección</string>
+    <string name="flat_floor">Piso</string>
+    <string name="flat_door">Puerta</string>
+    <string name="flat_stair">Escalera</string>
+    <string name="flat_bedrooms">Habitaciones</string>
 
     <string name="task_title">Título</string>
     <string name="task_description">Descripción</string>
@@ -56,4 +63,6 @@
     <string name="error_form_signup_name_length">El nombre debe de tener entre 3 y 50 caracteres.</string>
     <string name="error_form_signup_email_length">El email no puede tener mas de 50 caracteres.</string>
     <string name="error_form_signup_password_length">La contraseña no puede tener mas de 50 caracteres.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
