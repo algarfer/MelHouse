@@ -2,6 +2,7 @@
     <string name="app_name">MelHouse</string>
     <string name="confirm_password">Confirmar Contraseña</string>
     <string name="continuar">Continuar</string>
+    <string name="delete">Eliminar</string>
     <string name="edit">Editar</string>
     <string name="email">Correo Electrónico</string>
     <string name="login">Iniciar Sesión</string>
