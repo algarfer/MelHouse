@@ -5,20 +5,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.uniovi.melhouse.R
+import com.uniovi.melhouse.databinding.FragmentCreateFlatBinding
 
 class CreateFlatFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var binding: FragmentCreateFlatBinding
+
+    companion object {
+        const val TAG = "CreateFlatFragment"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_flat, container, false)
+    ): View {
+        binding = FragmentCreateFlatBinding.inflate(inflater, container, false)
+        binding.btnCancelar.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+        return binding.root
     }
 
 }
