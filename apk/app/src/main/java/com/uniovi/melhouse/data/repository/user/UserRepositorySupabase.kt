@@ -3,6 +3,7 @@ package com.uniovi.melhouse.data.repository.user
 import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import java.util.UUID
 
 class UserRepositorySupabase(
     private val supabaseClient: SupabaseClient
@@ -36,17 +37,17 @@ class UserRepositorySupabase(
             }
     }
 
-    override suspend fun delete(entity: User) {
+    override suspend fun delete(id: UUID) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", entity.id)
+                    eq("id", id)
                 }
             }
     }
 
-    override suspend fun findById(id: Any): User? {
+    override suspend fun findById(id: UUID): User? {
         return supabaseClient
             .from(TABLE_NAME)
             .select {
