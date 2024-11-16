@@ -6,6 +6,8 @@ import os
 from supabase import create_client
 from dotenv import load_dotenv
 from uuid import uuid4
+from random import choice, randrange, sample
+from datetime import timedelta, date
 
 load_dotenv()
 
@@ -14,7 +16,6 @@ s = create_client(
     os.getenv("SUPABASE_SERVICE_KEY")
 )
 
-# users = []
 EMAIL_TEMPLATE = "user{0}@email.com"
 USER_NAME_TEMPLATE = "User {0}"
 PASSWORD_TEMPLATE = "userPassword{0}"
@@ -31,8 +32,6 @@ for i in range(20):
             "name": USER_NAME_TEMPLATE.format(i)
         }
     }).user
-
-    # users.append(response.user)
 
 # Create flats
 for i in range(6):
@@ -53,7 +52,6 @@ for i in range(6):
         s.auth.sign_out()
 
 # Join flats
-
 flats = s.table("flats").select("name", "id").execute().data
 
 def update_flat(n_user, flat_id):
@@ -84,3 +82,39 @@ update_flat(14, get_flat_id(3))
 update_flat(15, get_flat_id(3))
 
 update_flat(16, get_flat_id(4))
+
+# Create tasks
+today = date.today()
+delta = timedelta(days=31)
+start_date = today - delta
+end_date = today + delta
+
+def random_date():
+    return start_date + timedelta(
+        days=randrange((end_date - start_date).days)
+    )
+
+generate_task = lambda name, description, flat_id, date: {"id": str(uuid4()), "name": name, "description": description, "status": choice([0, 1, 2, 3]), "priority": choice([0, 1, 2]), "start_date": str(date - timedelta(days=randrange(1, 30))), "end_date": str(date), "flat_id": flat_id}
+
+for flat in flats:
+    tasks = []
+    for i in range(1, 11):
+        tasks.append(generate_task(f"Task {i}", f"Task {i} description", flat["id"], random_date()))
+    s.table("tasks").insert(tasks).execute()
+
+# Assign tasks
+for flat in flats:
+    tasks = s.table("tasks").select("id").eq("flat_id", flat["id"]).execute().data
+    users = s.table("users").select("id").eq("flat_id", flat["id"]).execute().data
+
+    for task in tasks:
+        num_users = randrange(1, len(users) + 1)
+        assigned_users = sample(users, num_users)
+        data = []
+        for user in assigned_users:
+            data.append({
+                "task_id": task["id"],
+                "user_id": user["id"]
+            })
+        s.table("tasks_users").insert(data).execute()
+
