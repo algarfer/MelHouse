@@ -22,6 +22,7 @@
     <string name="flat_door">Puerta</string>
     <string name="flat_stair">Escalera</string>
     <string name="flat_bedrooms">Habitaciones</string>
+    <string name="flat_code">Código del piso</string>
 
     <string name="task_title">Título</string>
     <string name="task_description">Descripción</string>
