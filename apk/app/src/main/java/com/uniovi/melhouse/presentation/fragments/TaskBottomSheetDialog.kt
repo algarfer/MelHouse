@@ -16,7 +16,6 @@ import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
 import com.uniovi.melhouse.utils.makeGone
-import com.uniovi.melhouse.utils.showWipToast
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,7 +43,13 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
             // TODO - Edit Task View
             // showWipToast(requireContext())
 
-
+            val fragment = UpsertTaskFragment(viewModel.task.value!!)
+            parentFragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true) //
+                .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
+                .addToBackStack(null)
+                .commit()
         }
 
         return binding.root

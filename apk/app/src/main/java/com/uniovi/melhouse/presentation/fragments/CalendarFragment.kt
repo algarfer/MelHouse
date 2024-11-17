@@ -103,11 +103,11 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
         }
 
         binding.addTaskFab.setOnClickListener {
-            val fragment = AddTaskFragment()
+            val fragment = UpsertTaskFragment(null)
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true) //
-                .replace(R.id.calendar_fragment_container, fragment, AddTaskFragment.TAG)
+                .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
                 .addToBackStack(null)
                 .commit()
         }

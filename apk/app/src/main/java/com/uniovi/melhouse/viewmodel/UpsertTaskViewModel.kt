@@ -16,9 +16,10 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class AddTaskViewModel @Inject constructor(
+class UpsertTaskViewModel @Inject constructor(
     @SQLiteDatabaseQualifier private val taskRepository: TaskRepository
 ) : ViewModel() {
+    private var id: UUID? = null
 
     private var title: String? = null
     private var description: String? = null
@@ -43,18 +44,46 @@ class AddTaskViewModel @Inject constructor(
 
     fun setPriority(status: TaskPriority?) = this.priority.postValue(status)
 
-    fun saveTask() {
-        val task = Task(
+    fun onViewCreated(task: Task) {
+        id = task.id
+        setTitle(task.name)
+        setDescription(task.description)
+        setStartDate(task.startDate)
+        setEndDate(task.endDate)
+        setStatus(task.status)
+        setPriority(task.priority)
+    }
+
+    fun upsertTask() {
+        if (id == null)
+            saveTask()
+        else
+            updateTask()
+    }
+
+    private fun saveTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepository.insert(getTask())
+        }
+    }
+
+    private fun updateTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepository.update(getTask())
+        }
+    }
+
+    private fun getTask(): Task {
+        val id = this.id ?: UUID.randomUUID()
+        return Task(
+            id = id,
             name = title!!,
             description = description,
             status = status.value,
             priority = priority.value,
             startDate = startDate.value,
             endDate = endDate.value,
-            flatId = UUID.randomUUID())
-
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.insert(task)
-        }
+            flatId = id
+        )
     }
 }
