@@ -19,7 +19,6 @@ import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 class MenuActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMenuBinding
-    private var androidOsBarColor: Int? = null
 
     private fun setup(){
         binding.menuNavigationBar.setOnNavigationItemSelectedListener { item ->
@@ -64,15 +63,8 @@ class MenuActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        androidOsBarColor = window.navigationBarColor
-        // Review - This may not work with dark mode
-        window.navigationBarColor = getColor(com.google.android.material.R.color.m3_ref_palette_neutral94)
 
         setup()
     }
 
-    override fun onPause() {
-        super.onPause()
-        window.navigationBarColor = androidOsBarColor!!
-    }
 }

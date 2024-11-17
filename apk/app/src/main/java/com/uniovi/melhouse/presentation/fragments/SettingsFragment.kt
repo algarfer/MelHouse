@@ -17,13 +17,17 @@ class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel: SettingViewModel by viewModels()
 
+    companion object {
+        const val TAG = "SettingsFragment"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.isLogged.observe(this) {
             if(it) return@observe
 
-            val activity = activity!!
+            val activity = requireActivity()
             activity.startActivity(Intent(activity, NotRegisteredActivity::class.java))
             activity.finish()
         }
