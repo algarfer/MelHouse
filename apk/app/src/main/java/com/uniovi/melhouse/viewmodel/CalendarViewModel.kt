@@ -19,6 +19,7 @@ class CalendarViewModel @Inject constructor(
 
     val tasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
     val dailyTasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
+    var date: LocalDate? = null
 
     fun onCreate() {
         updateTasks()

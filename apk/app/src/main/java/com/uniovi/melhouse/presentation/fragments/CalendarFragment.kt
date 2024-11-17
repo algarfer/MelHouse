@@ -15,6 +15,7 @@ import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import com.kizitonwose.calendar.core.yearMonth
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
@@ -63,6 +64,13 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
     override fun onResume() {
         super.onResume()
         viewModel.updateTasks()
+
+        if (viewModel.date != null) {
+            binding.calendarView.scrollToMonth(viewModel.date!!.yearMonth)
+            binding.calendarView.notifyDateChanged(viewModel.date!!)
+            viewModel.updateDailyTasks(viewModel.date!!)
+            selectedDate = viewModel.date
+        }
     }
 
     override fun onCreateView(
@@ -94,7 +102,6 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
 
         binding.calendarView.monthScrollListener = { month ->
             binding.calendarViewCurrentMonth.text = month.yearMonth.displayText()
-
             selectedDate?.let {
                 selectedDate = null
                 binding.calendarView.notifyDateChanged(it)
@@ -180,4 +187,11 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
                 }
             }
     }
+
+    override fun onPause() {
+        super.onPause()
+
+        viewModel.date = selectedDate
+    }
+
 }

@@ -40,8 +40,7 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
         }
 
         binding.btnEditTask.setOnClickListener {
-            // TODO - Edit Task View
-            // showWipToast(requireContext())
+            dismiss()
 
             val fragment = UpsertTaskFragment(viewModel.task.value!!)
             parentFragmentManager
