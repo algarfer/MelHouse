@@ -44,7 +44,7 @@ class FlatRepositorySupabase(
                 filter {
                     eq("id", id)
                 }
-            }.decodeAsOrNull()
+            }.decodeSingleOrNull()
     }
 
     override suspend fun findAll(): List<Flat> {

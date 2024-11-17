@@ -17,7 +17,7 @@ class TaskRepositorySupabase(
             .from(TABLE_NAME)
             .select {
                 filter {
-                    eq("start_date", date.toString())
+                    eq("end_date", date.toString())
                 }
             }.decodeList()
     }
@@ -55,7 +55,7 @@ class TaskRepositorySupabase(
                 filter {
                     eq("id", id)
                 }
-            }.decodeAsOrNull()
+            }.decodeSingleOrNull()
     }
 
     override suspend fun findAll(): List<Task> {

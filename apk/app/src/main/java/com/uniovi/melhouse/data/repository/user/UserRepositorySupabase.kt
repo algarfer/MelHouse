@@ -18,7 +18,7 @@ class UserRepositorySupabase(
                 filter {
                     eq("email", email)
                 }
-            }.decodeAsOrNull()
+            }.decodeSingleOrNull()
     }
 
     override suspend fun insert(entity: User) {
@@ -54,7 +54,7 @@ class UserRepositorySupabase(
                 filter {
                     eq("id", id)
                 }
-            }.decodeAsOrNull()
+            }.decodeSingleOrNull()
     }
 
     override suspend fun findAll(): List<User> {

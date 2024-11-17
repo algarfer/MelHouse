@@ -35,6 +35,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun updateDailyTasks(date: LocalDate?) {
+        if (date == null) return
         viewModelScope.launch(Dispatchers.IO) {
             dailyTasks.postValue(tasksRepository
                 .findByDate(date)
