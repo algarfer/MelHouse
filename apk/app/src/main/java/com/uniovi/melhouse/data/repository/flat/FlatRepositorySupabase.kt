@@ -4,8 +4,9 @@ import com.uniovi.melhouse.data.model.Flat
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import java.util.UUID
+import javax.inject.Inject
 
-class FlatRepositorySupabase(
+class FlatRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : FlatRepository {
 

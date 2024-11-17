@@ -8,7 +8,6 @@ import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.data.repository.task.TaskRepository
-import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTaskViewModel @Inject constructor(
-    @SupabaseDatabaseQualifier private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository
 ) : ViewModel() {
 
     private var title: String? = null

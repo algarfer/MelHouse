@@ -6,9 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.database.Database
 import com.uniovi.melhouse.data.repository.user.UserRepository
-import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
@@ -21,8 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    @SupabaseDatabaseQualifier private val userRepository: UserRepository,
-    private val supabase: Database<SupabaseClient>
+    private val userRepository: UserRepository,
+    private val supabase: SupabaseClient
 ) : ViewModel() {
 
     val passwordError: LiveData<String?>
@@ -49,18 +47,16 @@ class LoginViewModel @Inject constructor(
 
         if(areErrors) return
 
-        val supabaseClient = supabase.getInstance()
-
         viewModelScope.launch(Dispatchers.IO) {
-            supabaseClient.auth.signInWith(Email) {
+            supabase.auth.signInWith(Email) {
                 this.email = email
                 this.password = password
             }
 
-            supabaseClient
+            supabase
                 .auth.sessionManager
                 .saveSession(
-                    supabaseClient
+                    supabase
                         .auth
                         .currentSessionOrNull()!!
                 )
@@ -69,7 +65,7 @@ class LoginViewModel @Inject constructor(
                 .findById(
                     UUID
                         .fromString(
-                            supabaseClient
+                            supabase
                                 .auth
                                 .currentUserOrNull()!!
                                 .id))

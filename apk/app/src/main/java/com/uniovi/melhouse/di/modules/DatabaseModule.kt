@@ -1,14 +1,14 @@
 package com.uniovi.melhouse.di.modules
 
-import android.database.sqlite.SQLiteDatabase
-import com.uniovi.melhouse.data.database.Database
-import com.uniovi.melhouse.data.database.SQLite
-import com.uniovi.melhouse.data.database.Supabase
+import com.uniovi.melhouse.preference.Config
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
 import javax.inject.Singleton
 
 @Module
@@ -17,14 +17,14 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun getSQLiteDatabase(): Database<SQLiteDatabase> {
-        return SQLite
-    }
-
-    @Provides
-    @Singleton
-    fun getSupabaseDatabase(): Database<SupabaseClient> {
-        return Supabase
+    fun provideSupabase() : SupabaseClient {
+        return createSupabaseClient(
+            Config.SUPABASE_URL,
+            Config.SUPABASE_ANON_KEY
+        ) {
+            install(Auth)
+            install(Postgrest)
+        }
     }
 
 }

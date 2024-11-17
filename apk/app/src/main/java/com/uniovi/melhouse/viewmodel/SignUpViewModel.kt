@@ -6,9 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.database.Database
 import com.uniovi.melhouse.data.repository.user.UserRepository
-import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateEmail
 import com.uniovi.melhouse.utils.validateLength
@@ -26,8 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    @SupabaseDatabaseQualifier private val userRepository: UserRepository,
-    private val supabase: Database<SupabaseClient>
+    private val userRepository: UserRepository,
+    private val supabase: SupabaseClient
 ) : ViewModel() {
 
     val nameError: LiveData<String?>
@@ -47,13 +45,10 @@ class SignUpViewModel @Inject constructor(
     private val _signupSuccessfull = MutableLiveData(false)
 
     fun signup(name: String, email: String, password: String, password2: String, context: Context) {
-
         if(preCheck(context, name, email, password, password2)) return
 
-        val supabaseClient = supabase.getInstance()
-
         viewModelScope.launch(Dispatchers.IO) {
-            supabaseClient.auth.signUpWith(Email) {
+            supabase.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
                 data = buildJsonObject {
@@ -61,15 +56,15 @@ class SignUpViewModel @Inject constructor(
                 }
             }
 
-            supabaseClient
+            supabase
                 .auth
                 .sessionManager
                 .saveSession(
-                    supabaseClient
+                    supabase
                         .auth
                         .currentSessionOrNull()!!)
 
-            userRepository.findById(UUID.fromString(supabaseClient.auth.currentUserOrNull()!!.id))?.let {
+            userRepository.findById(UUID.fromString(supabase.auth.currentUserOrNull()!!.id))?.let {
                 Prefs.setUserId(it.id)
                 Prefs.setEmail(it.email)
                 Prefs.setFlatId(it.flatId)

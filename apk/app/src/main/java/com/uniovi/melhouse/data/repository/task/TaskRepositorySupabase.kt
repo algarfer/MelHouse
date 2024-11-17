@@ -5,8 +5,9 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import java.time.LocalDate
 import java.util.UUID
+import javax.inject.Inject
 
-class TaskRepositorySupabase(
+class TaskRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : TaskRepository {
 
