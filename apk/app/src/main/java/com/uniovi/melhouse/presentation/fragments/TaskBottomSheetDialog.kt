@@ -16,6 +16,7 @@ import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
 import com.uniovi.melhouse.utils.makeGone
+import com.uniovi.melhouse.utils.showWipToast
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,8 +33,6 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
         viewModel.task.observe(this){
             updateTask()
         }
-
-        //updateTask()
 
         binding.btnDeleteTask.setOnClickListener {
             showConfirmDialog()
@@ -57,16 +56,9 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
     private fun showConfirmDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.task_elimination_dialog_title))
-            .setMessage(
-                resources.getString(
-                    R.string.task_elimination_dialog_supporting_text,
-                    task.name
-                )
-            )
-            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ ->
-                // Respond to neutral button press
-            }
-            .setPositiveButton(resources.getString(R.string.continuar)) { dialog, which ->
+            .setMessage(resources.getString(R.string.task_elimination_dialog_supporting_text, task.name))
+            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(resources.getString(R.string.continuar)) { _, _ ->
                 viewModel.deleteTask()
             }
             .show()

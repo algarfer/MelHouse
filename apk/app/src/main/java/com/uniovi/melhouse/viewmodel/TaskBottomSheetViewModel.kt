@@ -21,22 +21,22 @@ class TaskBottomSheetViewModel  @Inject constructor(
     private var updateTasksViewHolder: (() -> Unit)? = null
     private var updateCalendarViewModel: (() -> Unit)? = null
 
-
-
-    fun onCreateView(task: Task, updateCalendarViewModel: (() -> Unit), updateTasksViewHolder: (() -> Unit), closeTaskBottomSheetDialog: (() -> Unit)){
+    fun onCreateView(task: Task, updateCalendarViewModel: (() -> Unit),
+                     updateTasksViewHolder: (() -> Unit),
+                     closeTaskBottomSheetDialog: (() -> Unit)) {
         this.task.postValue(task)
         this.closeTaskBottomSheetDialog = closeTaskBottomSheetDialog
         this.updateTasksViewHolder = updateTasksViewHolder
         this.updateCalendarViewModel = updateCalendarViewModel
     }
+
     fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            tasksRepository.delete(task.value!!)
+            tasksRepository.delete(task.value!!.id)
         }
 
         closeTaskBottomSheetDialog!!()
         updateTasksViewHolder!!()
         updateCalendarViewModel!!()
-
     }
 }

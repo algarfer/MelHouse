@@ -20,7 +20,7 @@ object Prefs {
         storage = context.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE)
     }
 
-    fun setEmail(newEmail: String) {
+    fun setEmail(newEmail: String?) {
         storage!!
             .edit()
             .putString(SHARED_EMAIL, newEmail)
@@ -39,11 +39,8 @@ object Prefs {
     }
 
     fun getFlatId(): UUID? {
-        val uuid = storage!!.getString(SHARED_FLAT_ID, "")
-        return if(uuid!!.isEmpty()) {
-            null
-        } else {
-            UUID.fromString(uuid)
+        return storage!!.getString(SHARED_FLAT_ID, null)?.let {
+            UUID.fromString(it)
         }
     }
 
