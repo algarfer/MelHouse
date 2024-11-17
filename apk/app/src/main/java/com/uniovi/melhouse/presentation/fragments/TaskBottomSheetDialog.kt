@@ -30,56 +30,86 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
 
         viewModel.onCreateView(task, updateCalendarViewModel, updateTasksViewHolder) { dismiss() }
 
-        /*viewModel.task.observe(this){
-            binding.
-        }*/
-
-        binding.tvTaskTitle.text = task.name
-
-        val priority = task.priority
-        val status = task.status
-
-        if(priority == null) {
-            binding.badgeTaskPriority.root.makeGone()
-        } else {
-            binding.badgeTaskPriority.tvStatus.text = priority.getString(requireContext())
-            binding.badgeTaskPriority.ivStatus.setColorFilter(priority.getColor(requireContext()))
+        viewModel.task.observe(this){
+            updateTask()
         }
 
-        if(status == null) {
+        //updateTask()
+
+        binding.btnDeleteTask.setOnClickListener {
+            showConfirmDialog()
+        }
+
+        binding.btnEditTask.setOnClickListener {
+            // TODO - Edit Task View
+            // showWipToast(requireContext())
+
+
+        }
+
+        return binding.root
+    }
+
+    private fun showConfirmDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.task_elimination_dialog_title))
+            .setMessage(
+                resources.getString(
+                    R.string.task_elimination_dialog_supporting_text,
+                    task.name
+                )
+            )
+            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton(resources.getString(R.string.continuar)) { dialog, which ->
+                viewModel.deleteTask()
+            }
+            .show()
+    }
+
+    private fun updateTask() {
+        // Update name
+        binding.tvTaskTitle.text = viewModel.task.value!!.name
+
+        updatePriority()
+
+        updateStatus()
+
+        // Update description
+        binding.tvTaskDescription.text = viewModel.task.value!!.description.orEmpty()
+
+        updateTaskDays()
+    }
+
+    private fun updateTaskDays() {
+        if (viewModel.task.value!!.endDate == null) {
+            binding.taskDaysLayout.makeGone()
+        } else {
+            binding.tvTaskDates.text = viewModel.task.value!!.getDatesString()
+        }
+    }
+
+    private fun updateStatus() {
+        val status = viewModel.task.value!!.status
+
+        if (status == null) {
             binding.badgeTaskStatus.root.makeGone()
         } else {
             binding.badgeTaskStatus.tvStatus.text = status.getString(requireContext())
             binding.badgeTaskStatus.ivStatus.setColorFilter(status.getColor(requireContext()))
         }
+    }
 
-        binding.tvTaskDescription.text = task.description.orEmpty()
+    private fun updatePriority() {
+        val priority = viewModel.task.value!!.priority
 
-        if(task.endDate == null) {
-            binding.taskDaysLayout.makeGone()
+        if (priority == null) {
+            binding.badgeTaskPriority.root.makeGone()
         } else {
-            binding.tvTaskDates.text = task.getDatesString()
+            binding.badgeTaskPriority.tvStatus.text = priority.getString(requireContext())
+            binding.badgeTaskPriority.ivStatus.setColorFilter(priority.getColor(requireContext()))
         }
-
-        binding.btnDeleteTask.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(resources.getString(R.string.task_elimination_dialog_title))
-                .setMessage(resources.getString(R.string.task_elimination_dialog_supporting_text, task.name))
-                .setNeutralButton(resources.getString(R.string.cancel)) { _, _ ->
-                    // Respond to neutral button press
-                }
-                .setPositiveButton(resources.getString(R.string.continuar)) { dialog, which ->
-                    viewModel.deleteTask()
-                }
-                .show()
-        }
-
-        binding.btnEditTask.setOnClickListener {
-            // TODO - Edit Task View
-            showWipToast(requireContext())
-        }
-
-        return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
