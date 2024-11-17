@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/user_item"
+        android:title="@string/user_self">
+        <menu>
+            <item
+                android:id="@+id/navigation_home"
+                android:icon="@drawable/ic_home_black_24dp"
+                android:title="@string/title_home" />
+
+            <item
+                android:id="@+id/navigation_calendar"
+                android:icon="@drawable/baseline_calendar_month_24"
+                android:title="@string/title_calendar" />
+
+            <item
+                android:id="@+id/navigation_flat"
+                android:icon="@drawable/ic_home_black_24dp"
+                android:title="@string/title_flat" />
+            <item
+                android:id="@+id/navigation_account"
+                android:icon="@drawable/baseline_person_24"
+                android:title="@string/title_account" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/melhouse_item"
+        android:title="@string/app_name">
+        <menu>
+            <item
+                android:id="@+id/navigation_settings"
+                android:icon="@drawable/baseline_settings_24"
+                android:title="@string/title_settings" />
+            <item
+                android:id="@+id/navigation_logout"
+                android:icon="@drawable/baseline_logout_24"
+                android:title="@string/logout" />
+        </menu>
+    </item>
+
+
+</menu>

@@ -3,10 +3,12 @@ package com.uniovi.melhouse.presentation.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.commit
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
@@ -19,32 +21,9 @@ import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 class MenuActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMenuBinding
+    private lateinit var drawerLayout: DrawerLayout
 
     private fun setup(){
-        binding.menuNavigationBar.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.menuFragment -> {
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        replace(R.id.menuOptionsFragment, MenuFragment())
-                    }
-                    true
-                }
-                R.id.calendarFragment -> {
-                    val intent = Intent(this, CalendarViewActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.settingsFragment -> {
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        replace(R.id.menuOptionsFragment, SettingsFragment())
-                    }
-                    true
-                }
-                else -> false
-            }
-        }
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace(R.id.menuOptionsFragment, MenuFragment())
@@ -56,8 +35,22 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMenuBinding.inflate(layoutInflater)
-//        binding.ivProfile.tvProfile.text = Prefs.getEmail().substring(0,1).uppercase()
         setContentView(binding.root)
+
+        val headerView = binding.navigationView.getHeaderView(0)
+        var userInitial = Prefs.getEmail().substring(0,1).uppercase()
+        headerView.findViewById<TextView>(R.id.tvProfile).text = userInitial
+        headerView.findViewById<TextView>(R.id.tvUsername).text = Prefs.getEmail()
+
+        drawerLayout = binding.drawerLayout
+        binding.btnMenuLines.setOnClickListener {
+            if (drawerLayout.isDrawerOpen(binding.navigationView)) {
+                drawerLayout.closeDrawer(binding.navigationView)
+            } else {
+                drawerLayout.openDrawer(binding.navigationView)
+            }
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

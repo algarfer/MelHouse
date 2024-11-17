@@ -47,9 +47,9 @@
     <string name="title_home">Inicio</string>
     <string name="title_calendar">Calendario</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_flat">Mi piso</string>
+    <string name="title_account">Cuenta</string>
     <string name="title_settings">Ajustes</string>
-    <string name="title_today_tasks">Tareas para hoy</string>
 
     <string name="error_form_login_user_not_found">No existe un usuario asociado a este email</string>
     <string name="error_form_login_email_empty">El email no puede estar vacío</string>
@@ -65,6 +65,9 @@
     <string name="error_form_signup_name_length">El nombre debe de tener entre 3 y 50 caracteres.</string>
     <string name="error_form_signup_email_length">El email no puede tener mas de 50 caracteres.</string>
     <string name="error_form_signup_password_length">La contraseña no puede tener mas de 50 caracteres.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="user_name">Nombre del usuario</string>
+    <string name="user_image">Imagen del usuario</string>
+    <string name="user_self">Yo</string>
+
 </resources>
