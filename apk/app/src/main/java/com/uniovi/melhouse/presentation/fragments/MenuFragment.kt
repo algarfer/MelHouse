@@ -28,15 +28,6 @@ class MenuFragment : Fragment() {
                 .commit()
         }
 
-        binding.btnLogout.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.menuOptionsFragment, SettingsFragment(), SettingsFragment.TAG)
-                .addToBackStack(null)
-                .commit()
-        }
-
         return view
     }
 

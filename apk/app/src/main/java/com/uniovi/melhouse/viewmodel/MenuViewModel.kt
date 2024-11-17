@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel @Inject constructor() : ViewModel() {
+class MenuViewModel @Inject constructor() : ViewModel() {
 
     val isLogged: MutableLiveData<Boolean> = MutableLiveData(true)
 
@@ -15,4 +15,5 @@ class SettingViewModel @Inject constructor() : ViewModel() {
         Prefs.clearAll()
         isLogged.postValue(false)
     }
+
 }
