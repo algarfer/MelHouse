@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.toContentValues
 import java.time.LocalDate
+import java.util.UUID
 
 class TaskRepositorySQLite(
     private val db: SQLiteDatabase
@@ -19,11 +20,11 @@ class TaskRepositorySQLite(
         db.update(TABLE_NAME, entity.toContentValues(), "id = ?", arrayOf(entity.id.toString()))
     }
 
-    override suspend fun delete(entity: Task) {
-        db.delete(TABLE_NAME, "id = ?", arrayOf(entity.id.toString()))
+    override suspend fun delete(id: UUID) {
+        db.delete(TABLE_NAME, "id = ?", arrayOf(id.toString()))
     }
 
-    override suspend fun findById(id: Any): Task? {
+    override suspend fun findById(id: UUID): Task? {
         db.rawQuery("SELECT * FROM $TABLE_NAME WHERE id = ?", arrayOf(id.toString())).use { cursor ->
             return TaskAssembler.toTask(cursor)
         }

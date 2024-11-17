@@ -3,6 +3,7 @@ package com.uniovi.melhouse.data.repository.flat
 import android.database.sqlite.SQLiteDatabase
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.toContentValues
+import java.util.UUID
 
 class FlatRepositorySQLite(
     private val db: SQLiteDatabase
@@ -18,11 +19,11 @@ class FlatRepositorySQLite(
         db.update(TABLE_NAME, entity.toContentValues(), "id = ?", arrayOf(entity.id.toString()))
     }
 
-    override suspend fun delete(entity: Flat) {
-        db.delete(TABLE_NAME, "id = ?", arrayOf(entity.id.toString()))
+    override suspend fun delete(id: UUID) {
+        db.delete(TABLE_NAME, "id = ?", arrayOf(id.toString()))
     }
 
-    override suspend fun findById(id: Any): Flat? {
+    override suspend fun findById(id: UUID): Flat? {
         db.rawQuery("SELECT * FROM $TABLE_NAME WHERE id = ?", arrayOf(id.toString())).use { cursor ->
             return FlatAssembler.toFlat(cursor)
         }

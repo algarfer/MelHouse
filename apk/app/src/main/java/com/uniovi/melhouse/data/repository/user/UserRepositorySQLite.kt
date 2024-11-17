@@ -3,6 +3,7 @@ package com.uniovi.melhouse.data.repository.user
 import android.database.sqlite.SQLiteDatabase
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.model.toContentValues
+import java.util.UUID
 
 class UserRepositorySQLite(
     private val db: SQLiteDatabase
@@ -18,11 +19,11 @@ class UserRepositorySQLite(
         db.update(TABLE_NAME, entity.toContentValues(), "id = ?", arrayOf(entity.id.toString()))
     }
 
-    override suspend fun delete(entity: User) {
-        db.delete(TABLE_NAME, "id = ?", arrayOf(entity.id.toString()))
+    override suspend fun delete(id: UUID) {
+        db.delete(TABLE_NAME, "id = ?", arrayOf(id.toString()))
     }
 
-    override suspend fun findById(id: Any): User? {
+    override suspend fun findById(id: UUID): User? {
         db.rawQuery("SELECT * FROM $TABLE_NAME WHERE id = ?", arrayOf(id.toString())).use { cursor ->
             return UserAssembler.toUser(cursor)
         }
