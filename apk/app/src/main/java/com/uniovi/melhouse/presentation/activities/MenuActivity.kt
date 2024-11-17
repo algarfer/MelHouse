@@ -57,7 +57,7 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMenuBinding.inflate(layoutInflater)
-        binding.ivProfile.tvProfile.text = Prefs.getEmail().substring(0,1).uppercase()
+//        binding.ivProfile.tvProfile.text = Prefs.getEmail().substring(0,1).uppercase()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

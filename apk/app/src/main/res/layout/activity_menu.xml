@@ -8,7 +8,6 @@
     android:background="@color/background"
     tools:context=".presentation.activities.MenuActivity">
 
-    <!-- TODO - Toolbar can be removed -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/menuToolbar"
         android:layout_width="match_parent"
@@ -27,26 +26,15 @@
             android:contentDescription="@string/app_name"
             android:src="@drawable/title" />
 
-        <!--<ImageView
-            android:id="@+id/profileImage"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/logo"
-            android:contentDescription="@string/profile_image"
-            android:layout_gravity="end"
-            android:layout_marginEnd="8dp"
-            android:clickable="true"
-            android:focusable="true"/>-->
-
         <include
-            android:id="@+id/ivProfile"
+            android:id="@+id/menuLines"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/menuToolbar"
-            layout="@layout/menu_profile_layout" />
+            layout="@layout/menu_drawer_opener_layout" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/menuNavigationBar"
