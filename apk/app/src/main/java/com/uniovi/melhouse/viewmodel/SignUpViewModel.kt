@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.database.Database
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
@@ -13,13 +14,20 @@ import com.uniovi.melhouse.utils.validateEmail
 import com.uniovi.melhouse.utils.validateLength
 import com.uniovi.melhouse.utils.validatePassword
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     @SupabaseDatabaseQualifier private val userRepository: UserRepository,
+    private val supabase: Database<SupabaseClient>
 ) : ViewModel() {
     val nameError: MutableLiveData<String?> = MutableLiveData(null)
     val emailError: MutableLiveData<String?> = MutableLiveData(null)
@@ -31,26 +39,31 @@ class SignUpViewModel @Inject constructor(
 
         if(preCheck(context, name, email, password, password2)) return
 
-        viewModelScope.launch(Dispatchers.IO) {
-            val previous = userRepository.findByEmail(email)
+        val supabaseClient = supabase.getInstance()
 
-            if(previous != null) {
-                emailError.postValue(context.getString(R.string.error_form_signup_user_already_exists))
-                return@launch
+        viewModelScope.launch(Dispatchers.IO) {
+            supabaseClient.auth.signUpWith(Email) {
+                this.email = email
+                this.password = password
+                data = buildJsonObject {
+                    put("name", name)
+                }
             }
 
-            val user = User(
-                name = name,
-                email = email,
-                flatId = null
-            )
+            supabaseClient
+                .auth
+                .sessionManager
+                .saveSession(
+                    supabaseClient
+                        .auth
+                        .currentSessionOrNull()!!)
 
-            userRepository.insert(user)
-
-            Prefs.setUserId(user.id)
-            Prefs.setEmail(user.email)
-            Prefs.setFlatId(user.flatId)
-            Prefs.setName(user.name)
+            userRepository.findById(UUID.fromString(supabaseClient.auth.currentUserOrNull()!!.id))?.let {
+                Prefs.setUserId(it.id)
+                Prefs.setEmail(it.email)
+                Prefs.setFlatId(it.flatId)
+                Prefs.setName(it.name)
+            }
 
             signupSuccessfull.postValue(true)
         }
@@ -87,29 +100,28 @@ class SignUpViewModel @Inject constructor(
             }
         }
 
-        // TODO - Enable with remote database
-//        if (password.isEmpty()) {
-//            passwordError.postValue(context.getString(R.string.error_form_signup_password_empty))
-//            areErrors = true
-//        } else {
-//            if(!password.validatePassword()) {
-//                passwordError.postValue(context.getString(R.string.error_form_signup_password_invalid))
-//                areErrors = true
-//            } else {
-//                if(!password.validateLength(0, 50)) {
-//                    passwordError.postValue(context.getString(R.string.error_form_signup_password_length))
-//                    areErrors = true
-//                } else {
-//                    passwordError.postValue(null)
-//                }
-//            }
-//        }
-//        if(password != password2) {
-//            password2Error.postValue(context.getString(R.string.error_form_signup_password_not_match))
-//            areErrors = true
-//        } else {
-//            password2Error.postValue(null)
-//        }
+        if (password.isEmpty()) {
+            passwordError.postValue(context.getString(R.string.error_form_signup_password_empty))
+            areErrors = true
+        } else {
+            if(!password.validatePassword()) {
+                passwordError.postValue(context.getString(R.string.error_form_signup_password_invalid))
+                areErrors = true
+            } else {
+                if(!password.validateLength(0, 50)) {
+                    passwordError.postValue(context.getString(R.string.error_form_signup_password_length))
+                    areErrors = true
+                } else {
+                    passwordError.postValue(null)
+                }
+            }
+        }
+        if(password != password2) {
+            password2Error.postValue(context.getString(R.string.error_form_signup_password_not_match))
+            areErrors = true
+        } else {
+            password2Error.postValue(null)
+        }
 
         return areErrors
     }
