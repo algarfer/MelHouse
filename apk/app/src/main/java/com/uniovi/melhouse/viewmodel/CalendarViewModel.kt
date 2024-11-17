@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
-import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
+import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    @SQLiteDatabaseQualifier private val tasksRepository: TaskRepository
+    @SupabaseDatabaseQualifier private val tasksRepository: TaskRepository
 ) : ViewModel() {
 
     val tasks = MutableLiveData<Map<LocalDate?, List<Task>>>()

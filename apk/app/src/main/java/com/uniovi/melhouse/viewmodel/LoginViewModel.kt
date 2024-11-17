@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.repository.user.UserRepository
-import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
+import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    @SQLiteDatabaseQualifier private val userRepository: UserRepository
+    @SupabaseDatabaseQualifier private val userRepository: UserRepository,
 ) : ViewModel() {
 
     val passwordError: MutableLiveData<String?> = MutableLiveData(null)

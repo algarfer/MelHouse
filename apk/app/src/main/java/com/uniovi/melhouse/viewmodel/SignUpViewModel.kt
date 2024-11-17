@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.user.UserRepository
-import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
+import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateEmail
 import com.uniovi.melhouse.utils.validateLength
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    @SQLiteDatabaseQualifier private val userRepository: UserRepository
+    @SupabaseDatabaseQualifier private val userRepository: UserRepository,
 ) : ViewModel() {
     val nameError: MutableLiveData<String?> = MutableLiveData(null)
     val emailError: MutableLiveData<String?> = MutableLiveData(null)
