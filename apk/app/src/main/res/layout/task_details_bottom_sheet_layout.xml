@@ -95,17 +95,16 @@
         <Button
             android:id="@+id/btnDeleteTask"
             style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete"
-            app:icon="@drawable/baseline_delete_24"
+            app:layout_constraintTop_toBottomOf="@id/tvTaskDescription"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnEditTask"
-            app:layout_constraintTop_toBottomOf="@id/tvTaskDescription"
-            android:backgroundTint="@color/error"
+            app:icon="@drawable/baseline_delete_24"
+            android:text="@string/delete"
             android:textColor="@color/on_error"
+            android:backgroundTint="@color/error"
             android:layout_marginEnd="8dp"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btnEditTask"

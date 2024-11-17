@@ -30,10 +30,6 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
 
         viewModel.onCreateView(task, updateCalendarViewModel, updateTasksViewHolder) { dismiss() }
 
-        /*viewModel.task.observe(this){
-            binding.
-        }*/
-
         binding.tvTaskTitle.text = task.name
 
         val priority = task.priority
@@ -65,10 +61,8 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(resources.getString(R.string.task_elimination_dialog_title))
                 .setMessage(resources.getString(R.string.task_elimination_dialog_supporting_text, task.name))
-                .setNeutralButton(resources.getString(R.string.cancel)) { _, _ ->
-                    // Respond to neutral button press
-                }
-                .setPositiveButton(resources.getString(R.string.continuar)) { dialog, which ->
+                .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+                .setPositiveButton(resources.getString(R.string.continuar)) { _, _ ->
                     viewModel.deleteTask()
                 }
                 .show()
