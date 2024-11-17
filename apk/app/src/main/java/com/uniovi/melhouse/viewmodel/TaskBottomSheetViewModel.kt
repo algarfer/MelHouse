@@ -32,7 +32,7 @@ class TaskBottomSheetViewModel  @Inject constructor(
 
     fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            tasksRepository.delete(task.value!!)
+            tasksRepository.delete(task.value!!.id)
         }
 
         closeTaskBottomSheetDialog!!()
