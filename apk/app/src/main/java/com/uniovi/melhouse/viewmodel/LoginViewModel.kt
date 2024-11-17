@@ -1,6 +1,7 @@
 package com.uniovi.melhouse.viewmodel
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,19 +25,25 @@ class LoginViewModel @Inject constructor(
     private val supabase: Database<SupabaseClient>
 ) : ViewModel() {
 
-    val passwordError: MutableLiveData<String?> = MutableLiveData(null)
-    val emailError: MutableLiveData<String?> = MutableLiveData(null)
-    val loginSuccessfull: MutableLiveData<Boolean> = MutableLiveData(false)
+    val passwordError: LiveData<String?>
+        get() = _passwordError
+    private val _passwordError: MutableLiveData<String?> = MutableLiveData(null)
+    private val _emailError: MutableLiveData<String?> = MutableLiveData(null)
+    val emailError: LiveData<String?>
+        get() = _emailError
+    val loginSuccessfull: LiveData<Boolean>
+        get() = _loginSuccessfull
+    private val _loginSuccessfull = MutableLiveData(false)
 
     fun login(email: String, password: String, context: Context) {
         var areErrors = false
         if(email.isEmpty()) {
-            emailError.postValue(context.getString(R.string.error_form_login_email_empty))
+            _emailError.postValue(context.getString(R.string.error_form_login_email_empty))
             areErrors = true
         }
 
         if(password.isEmpty()) {
-            passwordError.postValue(context.getString(R.string.error_form_login_password_empty))
+            _passwordError.postValue(context.getString(R.string.error_form_login_password_empty))
             areErrors = true
         }
 
@@ -73,7 +80,7 @@ class LoginViewModel @Inject constructor(
                 Prefs.setName(it.name)
             }
 
-            loginSuccessfull.postValue(true)
+            _loginSuccessfull.postValue(true)
         }
     }
 }

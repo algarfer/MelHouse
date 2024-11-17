@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +18,9 @@ class SettingViewModel @Inject constructor(
     private val supabase: Database<SupabaseClient>
 ) : ViewModel() {
 
-    val isLogged: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isLogged: LiveData<Boolean>
+        get() = _isLogged
+    private val _isLogged = MutableLiveData(true)
 
     fun logout() {
         Prefs.clearAll()
@@ -27,7 +30,7 @@ class SettingViewModel @Inject constructor(
             supabaseClient.auth.signOut()
             supabaseClient.auth.clearSession()
 
-            isLogged.postValue(false)
+            _isLogged.postValue(false)
         }
     }
 }
