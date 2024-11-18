@@ -14,10 +14,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MenuActivity : AppCompatActivity() {
 
+    @Inject lateinit var prefs: Prefs
     private lateinit var binding: ActivityMenuBinding
     private var androidOsBarColor: Int? = null
 
@@ -57,7 +59,7 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMenuBinding.inflate(layoutInflater)
-        binding.ivProfile.tvProfile.text = Prefs.getEmail().substring(0,1).uppercase()
+        binding.ivProfile.tvProfile.text = prefs.getEmail().substring(0,1).uppercase()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
-import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskBottomSheetViewModel  @Inject constructor(
-    @SQLiteDatabaseQualifier private val tasksRepository: TaskRepository
+    private val tasksRepository: TaskRepository
 ) : ViewModel() {
 
     val task = MutableLiveData<Task>()
