@@ -4,16 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
-    private val supabase : SupabaseClient
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
 
     val isReady: LiveData<Boolean>
@@ -25,7 +24,7 @@ class SplashScreenViewModel @Inject constructor(
 
     fun initApp() {
         viewModelScope.launch(Dispatchers.IO) {
-            isLogged = supabase.auth.loadFromStorage()
+            isLogged = supabaseUserSessionFacade.loadFromStorage()
 
             _isReady.postValue(true)
         }

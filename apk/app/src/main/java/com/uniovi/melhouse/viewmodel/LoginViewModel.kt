@@ -6,21 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.repository.user.UserRepository
+import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    private val supabase: SupabaseClient
+    private val prefs: Prefs,
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
 
     val passwordError: LiveData<String?>
@@ -48,32 +44,11 @@ class LoginViewModel @Inject constructor(
         if(areErrors) return
 
         viewModelScope.launch(Dispatchers.IO) {
-            supabase.auth.signInWith(Email) {
-                this.email = email
-                this.password = password
-            }
-
-            supabase
-                .auth.sessionManager
-                .saveSession(
-                    supabase
-                        .auth
-                        .currentSessionOrNull()!!
-                )
-
-            userRepository
-                .findById(
-                    UUID
-                        .fromString(
-                            supabase
-                                .auth
-                                .currentUserOrNull()!!
-                                .id))
-                ?.let {
-                Prefs.setUserId(it.id)
-                Prefs.setEmail(it.email)
-                Prefs.setFlatId(it.flatId)
-                Prefs.setName(it.name)
+            supabaseUserSessionFacade.logIn(email, password).let {
+                prefs.setUserId(it.id)
+                prefs.setEmail(it.email)
+                prefs.setFlatId(it.flatId)
+                prefs.setName(it.name)
             }
 
             _loginSuccessfull.postValue(true)

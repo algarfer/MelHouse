@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
+    private val prefs: Prefs,
     private val supabase: SupabaseClient
 ) : ViewModel() {
 
@@ -26,7 +27,7 @@ class SettingViewModel @Inject constructor(
             supabase.auth.signOut()
             supabase.auth.clearSession()
 
-            Prefs.clearAll()
+            prefs.clearAll()
             _isLogged.postValue(false)
         }
     }
