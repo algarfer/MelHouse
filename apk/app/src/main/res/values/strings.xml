@@ -70,4 +70,7 @@
     <string name="user_image">Imagen del usuario</string>
     <string name="user_self">Yo</string>
 
+    <string name="settings_general">General</string>
+    <string name="settings_dark_mode">Modo oscuro</string>
+
 </resources>
