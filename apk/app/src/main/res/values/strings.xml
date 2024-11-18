@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">MelHouse</string>
     <string name="confirm_password">Confirmar Contraseña</string>
+    <string name="cancel">Cancelar</string>
     <string name="continuar">Continuar</string>
-    <string name="cancelar">Cancelar</string>
+    <string name="delete">Eliminar</string>
     <string name="edit">Editar</string>
     <string name="email">Correo Electrónico</string>
     <string name="login">Iniciar Sesión</string>
@@ -31,6 +32,9 @@
     <string name="task_end_date">Fecha de fin</string>
     <string name="task_priority">Prioridad</string>
     <string name="task_status">Estado</string>
+
+    <string name="task_elimination_dialog_title">Eliminar tarea</string>
+    <string name="task_elimination_dialog_supporting_text">Estás a punto de eliminar la tarea \"%1$s\". Esta acción es irreversible</string>
 
     <string name="task_select_start_date">Selecciona la fecha de inicio</string>
     <string name="task_select_end_date">Selecciona la fecha de fin</string>

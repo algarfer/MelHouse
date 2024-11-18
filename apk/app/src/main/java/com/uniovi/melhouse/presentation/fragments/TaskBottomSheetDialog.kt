@@ -5,21 +5,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.showWipToast
+import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class TaskBottomSheetDialog(val task: Task) : BottomSheetDialogFragment() {
+@AndroidEntryPoint
+class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel: () -> Unit, private val updateTasksViewHolder: () -> Unit) : BottomSheetDialogFragment() {
     private lateinit var binding : TaskDetailsBottomSheetLayoutBinding
+    private val viewModel: TaskBottomSheetViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = TaskDetailsBottomSheetLayoutBinding.inflate(inflater, container, false)
+
+        viewModel.onCreateView(task, updateCalendarViewModel, updateTasksViewHolder) { dismiss() }
 
         binding.tvTaskTitle.text = task.name
 
@@ -46,6 +55,17 @@ class TaskBottomSheetDialog(val task: Task) : BottomSheetDialogFragment() {
             binding.taskDaysLayout.makeGone()
         } else {
             binding.tvTaskDates.text = task.getDatesString()
+        }
+
+        binding.btnDeleteTask.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.task_elimination_dialog_title))
+                .setMessage(resources.getString(R.string.task_elimination_dialog_supporting_text, task.name))
+                .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+                .setPositiveButton(resources.getString(R.string.continuar)) { _, _ ->
+                    viewModel.deleteTask()
+                }
+                .show()
         }
 
         binding.btnEditTask.setOnClickListener {

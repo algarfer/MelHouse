@@ -3,24 +3,26 @@ package com.uniovi.melhouse.preference
 import android.content.Context
 import android.content.SharedPreferences
 import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object Prefs {
+@Singleton
+class Prefs @Inject constructor() {
 
-    private const val SHARED_NAME = "MelhousePrefs"
-    private const val SHARED_NAME_USER = "name"
-    private const val SHARED_EMAIL = "email"
-    private const val SHARED_USER_ID = "user_id"
-    private const val SHARED_FLAT_ID = "flat_id"
+    private val SHARED_NAME = "MelhousePrefs"
+    private val SHARED_NAME_USER = "name"
+    private val SHARED_EMAIL = "email"
+    private val SHARED_USER_ID = "user_id"
+    private val SHARED_FLAT_ID = "flat_id"
 
     @Volatile
     private var storage: SharedPreferences? = null
 
-    fun init(context: Context) {
-        if(storage != null) return
+    fun setContext(context: Context) {
         storage = context.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE)
     }
 
-    fun setEmail(newEmail: String) {
+    fun setEmail(newEmail: String?) {
         storage!!
             .edit()
             .putString(SHARED_EMAIL, newEmail)
@@ -39,11 +41,8 @@ object Prefs {
     }
 
     fun getFlatId(): UUID? {
-        val uuid = storage!!.getString(SHARED_FLAT_ID, "")
-        return if(uuid!!.isEmpty()) {
-            null
-        } else {
-            UUID.fromString(uuid)
+        return storage!!.getString(SHARED_FLAT_ID, null)?.let {
+            UUID.fromString(it)
         }
     }
 

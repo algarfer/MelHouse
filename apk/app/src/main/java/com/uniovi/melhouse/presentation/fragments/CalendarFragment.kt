@@ -42,7 +42,7 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
-    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it) }
+    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){viewModel.updateTasks()} }
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
