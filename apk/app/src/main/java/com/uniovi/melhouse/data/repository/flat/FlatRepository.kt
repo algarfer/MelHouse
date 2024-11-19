@@ -9,6 +9,7 @@ import java.util.UUID
 
 interface FlatRepository : Repository<Flat> {
     suspend fun joinFlat(invitationCode: String)
+    suspend fun createFlat(flat: Flat)
 }
 
 class FlatAssembler {
