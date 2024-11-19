@@ -1,6 +1,7 @@
 package com.uniovi.melhouse.data.repository.task
 
 import com.uniovi.melhouse.data.model.Task
+import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import java.time.LocalDate
@@ -19,6 +20,23 @@ class TaskRepositorySupabase @Inject constructor(
             .select {
                 filter {
                     eq("end_date", date.toString())
+                }
+            }.decodeList()
+    }
+
+    override suspend fun findAsigneesById(taskId: UUID): List<User> {
+        val ids = supabaseClient
+            .from("tasks_users")
+            .select {
+                filter {
+                    eq("task_id", taskId)
+                }
+            }.decodeList<UUID>()
+        return supabaseClient
+            .from("users")
+            .select {
+                filter {
+                    contains("id", ids)
                 }
             }.decodeList()
     }

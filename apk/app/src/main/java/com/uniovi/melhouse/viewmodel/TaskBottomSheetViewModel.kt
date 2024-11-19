@@ -16,7 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskBottomSheetViewModel  @Inject constructor(
     private val tasksRepository: TaskRepository,
-    private val userRepository: UserRepository
 ) : ViewModel() {
 
     val task = MutableLiveData<Task>()
@@ -36,7 +35,7 @@ class TaskBottomSheetViewModel  @Inject constructor(
 
     fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            tasksRepository.delete(task.value!!)
+            tasksRepository.delete(task.value!!.id)
         }
 
         closeTaskBottomSheetDialog!!()
@@ -47,9 +46,7 @@ class TaskBottomSheetViewModel  @Inject constructor(
     fun setAsignees(task: Task) {
         Log.d("test", "hit")
         viewModelScope.launch(Dispatchers.IO) {
-            val asigneesId = tasksRepository.findAsigneesById(task.id)
-
-            val asignees = userRepository.findByIds(asigneesId)
+            val asignees = tasksRepository.findAsigneesById(task.id)
 
             asignees.forEach{
                 Log.d("test", it.toString())
