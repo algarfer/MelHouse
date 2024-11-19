@@ -12,6 +12,10 @@ class MenuFragment : Fragment() {
 
     private lateinit var binding: FragmentMenuBinding
 
+    companion object {
+        const val TAG = "MenuFragment"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
