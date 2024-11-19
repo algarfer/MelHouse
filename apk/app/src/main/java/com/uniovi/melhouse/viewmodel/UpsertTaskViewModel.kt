@@ -16,9 +16,10 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class AddTaskViewModel @Inject constructor(
+class UpsertTaskViewModel @Inject constructor(
     private val taskRepository: TaskRepository
 ) : ViewModel() {
+    private var task: Task? = null
 
     private var title: String? = null
     private var description: String? = null
@@ -52,18 +53,43 @@ class AddTaskViewModel @Inject constructor(
 
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
-    fun saveTask() {
-        val task = Task(
+    fun onViewCreated(task: Task) {
+        this.task = task
+        setTitle(task.name)
+        setDescription(task.description)
+        setStartDate(task.startDate)
+        setEndDate(task.endDate)
+        setStatus(task.status)
+        setPriority(task.priority)
+    }
+
+    fun upsertTask() {
+        if (task == null)
+            saveTask()
+        else
+            updateTask()
+    }
+
+    private fun saveTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepository.insert(getTask())
+        }
+    }
+
+    private fun updateTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepository.update(getTask())
+        }
+    }
+
+    private fun getTask(): Task {
+        return task!!.copy(
             name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
             startDate = _startDate.value,
             endDate = _endDate.value,
-            flatId = UUID.randomUUID())
-
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.insert(task)
-        }
+        )
     }
 }

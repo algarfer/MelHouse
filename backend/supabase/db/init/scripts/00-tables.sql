@@ -19,7 +19,7 @@ create table public.users(
     flat_id uuid,
     constraint pk_users primary key (id),
     constraint uq_users_email unique (email),
-    constraint fk_user_id foreign key (id) references auth.users (id),
+    constraint fk_user_id foreign key (id) references auth.users (id) on delete cascade,
     constraint fk_users_flats foreign key (flat_id) references public.flats (id)
 );
 
@@ -44,8 +44,8 @@ create table public.tasks_users(
     user_id uuid not null,
     task_id uuid not null,
     constraint pk_tasks_users primary key (user_id, task_id),
-    constraint fk_tasks_users_tasks foreign key (task_id) references public.tasks (id),
-    constraint fk_tasks_users_users foreign key (user_id) references public.users (id)
+    constraint fk_tasks_users_tasks foreign key (task_id) references public.tasks (id) on delete cascade,
+    constraint fk_tasks_users_users foreign key (user_id) references public.users (id) on delete cascade
 );
 
 -- Add circular foreign key constraints
