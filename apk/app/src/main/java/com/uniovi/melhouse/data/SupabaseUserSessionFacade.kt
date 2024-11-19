@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.data
 
+import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import io.github.jan.supabase.SupabaseClient
@@ -75,4 +76,18 @@ class SupabaseUserSessionFacade @Inject constructor(
                     )
             )!!
     }
+
+    suspend fun getFlatId() : UUID? {
+        return userRepository
+            .findById(
+                UUID
+                    .fromString(
+                        supabase
+                            .auth
+                            .currentUserOrNull()!!
+                            .id
+                    )
+            )?.flatId
+    }
+
 }
