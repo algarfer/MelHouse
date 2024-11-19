@@ -8,7 +8,6 @@ import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.data.repository.task.TaskRepository
-import com.uniovi.melhouse.di.qualifiers.SupabaseDatabaseQualifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,9 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpsertTaskViewModel @Inject constructor(
-    @SupabaseDatabaseQualifier private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository
 ) : ViewModel() {
-    private var id: UUID? = null
+    private var task: Task? = null
 
     private var title: String? = null
     private var description: String? = null
@@ -55,7 +54,7 @@ class UpsertTaskViewModel @Inject constructor(
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
     fun onViewCreated(task: Task) {
-        id = task.id
+        this.task = task
         setTitle(task.name)
         setDescription(task.description)
         setStartDate(task.startDate)
@@ -65,7 +64,7 @@ class UpsertTaskViewModel @Inject constructor(
     }
 
     fun upsertTask() {
-        if (id == null)
+        if (task == null)
             saveTask()
         else
             updateTask()
@@ -84,16 +83,13 @@ class UpsertTaskViewModel @Inject constructor(
     }
 
     private fun getTask(): Task {
-        val id = this.id ?: UUID.randomUUID()
-        return Task(
-            id = id,
+        return task!!.copy(
             name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
             startDate = _startDate.value,
             endDate = _endDate.value,
-            flatId = id
         )
     }
 }
