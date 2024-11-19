@@ -1,22 +1,24 @@
 package com.uniovi.melhouse.viewmodel
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.Flat
+import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateFlatViewModel @Inject constructor(
     private val prefs: Prefs,
+    private val flatRepository: FlatRepositorySupabase
 ) : ViewModel() {
 
     private val _nameError: MutableLiveData<String?> = MutableLiveData(null)
@@ -43,7 +45,17 @@ class CreateFlatViewModel @Inject constructor(
         if(areErrors) return
 
         viewModelScope.launch(Dispatchers.IO) {
-
+            flatRepository.createFlat(
+                Flat(
+                    name = name,
+                    address = address,
+                    floor = floor.toIntOrNull(),
+                    door = door,
+                    stair = stair,
+                    adminId = prefs.getUserId()
+                )
+            )
+            prefs.setFlatId(flatRepository.findByAdminId(prefs.getUserId())?.id)
             _creationSuccessful.postValue(true)
         }
     }

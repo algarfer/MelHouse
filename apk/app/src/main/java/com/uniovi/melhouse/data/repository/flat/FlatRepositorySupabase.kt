@@ -28,6 +28,7 @@ class FlatRepositorySupabase @Inject constructor(
         supabaseClient
             .postgrest
             .rpc("create_flat", buildJsonObject {
+                put("p_id", flat.id.toString())
                 put("p_name", flat.name)
                 put("p_address", flat.address)
                 put("p_floor", flat.floor)
@@ -77,5 +78,15 @@ class FlatRepositorySupabase @Inject constructor(
             .from(TABLE_NAME)
             .select()
             .decodeList()
+    }
+
+    suspend fun findByAdminId(id: UUID): Flat? {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .select {
+                filter {
+                    eq("admin_id", id)
+                }
+            }.decodeSingleOrNull()
     }
 }
