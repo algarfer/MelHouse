@@ -21,7 +21,10 @@ android {
     }
 
     buildTypes {
-        val supabasePort = 8000
+        val supabaseDevPort = 8000
+        val supabaseDevHost = "10.0.2.2"
+        val supabaseDeployPort = 8000
+        val supabaseDeployHost = "!MISSING"
 
         release {
             isMinifyEnabled = false
@@ -29,12 +32,16 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "SUPABASE_URL", "TODO")
+            buildConfigField("String", "SUPABASE_URL", "\"http://$supabaseDeployHost:$supabaseDeployPort\"")
+            buildConfigField("Int", "SUPABASE_PORT", supabaseDeployPort.toString())
+            buildConfigField("String", "SUPABASE_HOST", "\"$supabaseDeployHost\"")
             buildConfigField("String", "SUPABASE_ANON_KEY", "TODO")
         }
 
         debug {
-            buildConfigField("String", "SUPABASE_URL", "\"http://10.0.2.2:$supabasePort\"")
+            buildConfigField("String", "SUPABASE_URL", "\"http://$supabaseDevHost:$supabaseDevPort\"")
+            buildConfigField("int", "SUPABASE_PORT", supabaseDevPort.toString())
+            buildConfigField("String", "SUPABASE_HOST", "\"$supabaseDevHost\"")
             buildConfigField("String", "SUPABASE_ANON_KEY", "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE\"")
         }
     }

@@ -7,7 +7,9 @@ import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.repository.Repository
 import java.util.UUID
 
-interface FlatRepository : Repository<Flat>
+interface FlatRepository : Repository<Flat> {
+    suspend fun joinFlat(invitationCode: String)
+}
 
 class FlatAssembler {
     companion object {

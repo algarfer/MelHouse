@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -24,7 +23,7 @@ import javax.inject.Inject
 import com.uniovi.melhouse.viewmodel.MenuViewModel
 
 @AndroidEntryPoint
-class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener  {
 
     @Inject lateinit var prefs: Prefs
     private lateinit var binding: ActivityMenuBinding

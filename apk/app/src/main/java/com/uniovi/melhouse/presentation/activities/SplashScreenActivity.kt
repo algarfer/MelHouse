@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.network.InternetConnectionObserver
 import com.uniovi.melhouse.viewmodel.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SplashScreenActivity : AppCompatActivity() {
+class SplashScreenActivity : AbstractActivity() {
     private val viewModel: SplashScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +48,11 @@ class SplashScreenActivity : AppCompatActivity() {
         // Determine the next activity to start
         viewModel.isReady.observe(this) {
             if(!it) return@observe
+
+            if(!InternetConnectionObserver.hasConnection()) {
+                showConnectionLostDialog()
+                return@observe
+            }
 
             val intent = if(viewModel.isLogged) {
                 Intent(this, MenuActivity::class.java)
