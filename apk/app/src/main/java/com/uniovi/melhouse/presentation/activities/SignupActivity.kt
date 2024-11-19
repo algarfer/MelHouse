@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.databinding.ActivitySignupBinding
@@ -12,7 +11,7 @@ import com.uniovi.melhouse.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : AbstractActivity() {
 
     private lateinit var binding: ActivitySignupBinding
     private val viewModel: SignUpViewModel by viewModels()

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.commit
@@ -17,7 +16,7 @@ import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MenuActivity : AppCompatActivity() {
+class MenuActivity : AbstractActivity() {
 
     @Inject lateinit var prefs: Prefs
     private lateinit var binding: ActivityMenuBinding
