@@ -15,6 +15,7 @@ import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import com.kizitonwose.calendar.core.yearMonth
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
@@ -28,6 +29,7 @@ import com.uniovi.melhouse.utils.displayText
 import com.uniovi.melhouse.utils.getColorCompat
 import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.setTextColorRes
+import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
@@ -37,22 +39,18 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CalendarFragment @Inject constructor(
-    private val taskDetailsDialog: TaskBottomSheetDialog
-) : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
-
-    constructor() : this(TaskBottomSheetDialog())
-
+class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
-    private val tasksAdapter = TasksAdapter(listOf()) { task ->
+    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)},{viewModel.updateTasks()})
+    { task ->
         val dialog = taskDetailsDialog
         taskDetailsDialog.setTask(task)
         parentFragmentManager.let {
             taskDetailsDialog.show(it, TaskBottomSheetDialog.TAG)
         }
-    }
+    }}
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
@@ -73,6 +71,13 @@ class CalendarFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         viewModel.updateTasks()
+
+        if (viewModel.date != null) {
+            binding.calendarView.scrollToMonth(viewModel.date!!.yearMonth)
+            binding.calendarView.notifyDateChanged(viewModel.date!!)
+            viewModel.updateDailyTasks(viewModel.date!!)
+            selectedDate = viewModel.date
+        }
     }
 
     override fun onCreateView(
@@ -104,7 +109,6 @@ class CalendarFragment @Inject constructor(
 
         binding.calendarView.monthScrollListener = { month ->
             binding.calendarViewCurrentMonth.text = month.yearMonth.displayText()
-
             selectedDate?.let {
                 selectedDate = null
                 binding.calendarView.notifyDateChanged(it)
@@ -113,11 +117,11 @@ class CalendarFragment @Inject constructor(
         }
 
         binding.addTaskFab.setOnClickListener {
-            val fragment = AddTaskFragment()
+            val fragment = UpsertTaskFragment(null)
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true) //
-                .replace(R.id.calendar_fragment_container, fragment, AddTaskFragment.TAG)
+                .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
                 .addToBackStack(null)
                 .commit()
         }
@@ -190,4 +194,11 @@ class CalendarFragment @Inject constructor(
                 }
             }
     }
+
+    override fun onPause() {
+        super.onPause()
+
+        viewModel.date = selectedDate
+    }
+
 }

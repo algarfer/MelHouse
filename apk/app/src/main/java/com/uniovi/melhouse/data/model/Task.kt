@@ -3,18 +3,25 @@ package com.uniovi.melhouse.data.model
 import android.content.ContentValues
 import android.content.Context
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.serializers.LocalDateSerializer
+import com.uniovi.melhouse.data.serializers.TaskPrioritySerializer
+import com.uniovi.melhouse.data.serializers.TaskStatusSerializer
+import com.uniovi.melhouse.data.serializers.UUIDSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.util.UUID
 
+@Serializable
 data class Task(
-    val id: UUID = UUID.randomUUID(),
+    @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     var name: String,
     var description: String?,
-    var status: TaskStatus?,
-    var priority: TaskPriority?,
-    var startDate: LocalDate?,
-    var endDate: LocalDate?,
-    var flatId: UUID,
+    @Serializable(with = TaskStatusSerializer::class) var status: TaskStatus?,
+    @Serializable(with = TaskPrioritySerializer::class) var priority: TaskPriority?,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") var startDate: LocalDate?,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") var endDate: LocalDate?,
+    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID,
 )
 
 enum class TaskStatus(val value: Int) : LocaleEnum {
