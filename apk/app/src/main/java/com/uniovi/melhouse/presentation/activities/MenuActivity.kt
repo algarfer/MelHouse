@@ -17,6 +17,7 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
+import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 import com.uniovi.melhouse.viewmodel.MenuViewModel
 
@@ -47,10 +48,11 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
 
         viewModel.user.observe(this) {
             if (it == null) return@observe
-
             headerView.findViewById<TextView>(R.id.tvProfile).text = it.name.substring(0,1).uppercase()
             headerView.findViewById<TextView>(R.id.tvUsername).text = it.email
         }
+
+        observeFlat()
 
         drawerLayout = binding.drawerLayout
         binding.btnMenuLines.setOnClickListener {
@@ -74,7 +76,10 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val fragment: Fragment? = when (item.itemId) {
-            R.id.navigation_home -> MenuFragment()
+            R.id.navigation_home -> {
+                observeFlat()
+                return true
+            }
             R.id.navigation_calendar -> {
                 val intent = Intent(this, CalendarViewActivity::class.java)
                 startActivity(intent)
@@ -94,15 +99,29 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         }
 
         if (fragment != null) {
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace(R.id.menuOptionsFragment, fragment)
-                addToBackStack(null)
-            }
-            drawerLayout.closeDrawer(binding.navigationView)
+            loadFragment(fragment)
             return true
         }
 
         return false
     }
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.menuOptionsFragment, fragment)
+        }
+        drawerLayout.closeDrawer(binding.navigationView)
+    }
+
+    private fun observeFlat() {
+        viewModel.flat.observe(this) {
+            if (it == null) {
+                loadFragment(NoFlatFragment())
+                return@observe
+            }
+            loadFragment(MenuFragment())
+        }
+    }
+
 }

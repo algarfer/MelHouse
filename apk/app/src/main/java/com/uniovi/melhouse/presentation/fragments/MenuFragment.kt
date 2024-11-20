@@ -23,14 +23,14 @@ class MenuFragment : Fragment() {
         binding = FragmentMenuBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        binding.btnFlats.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.menuOptionsFragment, NoFlatFragment(), NoFlatFragment.TAG)
-                .addToBackStack(null)
-                .commit()
-        }
+//        binding.btnFlats.setOnClickListener {
+//            parentFragmentManager
+//                .beginTransaction()
+//                .setReorderingAllowed(true)
+//                .replace(R.id.menuOptionsFragment, NoFlatFragment(), NoFlatFragment.TAG)
+//                .addToBackStack(null)
+//                .commit()
+//        }
 
         return view
     }
