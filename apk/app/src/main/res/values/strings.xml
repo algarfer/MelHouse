@@ -43,6 +43,11 @@
     <string name="title_settings">Ajustes</string>
     <string name="title_today_tasks">Tareas para hoy</string>
 
+    <string name="error_invalid_login_credentials">Credenciales de acceso no validas</string>
+    <string name="error_unknown">Error desconocido</string>
+
+    <string name="error_flat_not_found">El piso indicado no existe.</string>
+
     <string name="error_lost_connection_title">Conexión perdida</string>
     <string name="error_lost_connection_msg">Has perdido la conexión con el servidor. Comprueba tu conexión a internet y vuelve a intentarlo.</string>
     <string name="error_lost_connection_btn">Reintentar</string>

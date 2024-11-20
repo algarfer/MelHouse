@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.databinding.ActivityLoginBinding
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,6 +45,11 @@ class LoginActivity : AbstractActivity() {
 
             setResult(RESULT_OK)
             finish()
+        }
+
+        viewModel.snackBarMsg.observe(this) {
+            if(it.isNullOrEmpty()) return@observe
+            getWarningSnackbar(binding.root, it).show()
         }
     }
 

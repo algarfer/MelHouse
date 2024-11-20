@@ -22,11 +22,13 @@ class SupabaseUserSessionFacade @Inject constructor(
     }
 
     suspend fun signUp(email: String, password: String, name: String) : User {
-        supabase.auth.signUpWith(Email) {
-            this.email = email
-            this.password = password
-            data = buildJsonObject {
-                put("name", name)
+        Executor.safeCall {
+            supabase.auth.signUpWith(Email) {
+                this.email = email
+                this.password = password
+                data = buildJsonObject {
+                    put("name", name)
+                }
             }
         }
 
@@ -39,20 +41,24 @@ class SupabaseUserSessionFacade @Inject constructor(
                     .currentSessionOrNull()!!
             )
 
-        return userRepository
-            .findById(UUID
-                .fromString(supabase
-                    .auth
-                    .currentUserOrNull()!!
-                    .id
-                )
-            )!!
+        return Executor.safeCall {
+            userRepository
+                .findById(UUID
+                    .fromString(supabase
+                        .auth
+                        .currentUserOrNull()!!
+                        .id
+                    )
+                )!!
+        }
     }
 
     suspend fun logIn(email: String, password: String) : User {
-        supabase.auth.signInWith(Email) {
-            this.email = email
-            this.password = password
+        Executor.safeCall {
+            supabase.auth.signInWith(Email) {
+                this.email = email
+                this.password = password
+            }
         }
 
         supabase
@@ -64,15 +70,17 @@ class SupabaseUserSessionFacade @Inject constructor(
                     .currentSessionOrNull()!!
             )
 
-        return userRepository
-            .findById(
-                UUID
-                    .fromString(
-                        supabase
-                            .auth
-                            .currentUserOrNull()!!
-                            .id
-                    )
-            )!!
+        return Executor.safeCall {
+            userRepository
+                .findById(
+                    UUID
+                        .fromString(
+                            supabase
+                                .auth
+                                .currentUserOrNull()!!
+                                .id
+                        )
+                )!!
+        }
     }
 }

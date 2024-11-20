@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,10 +31,13 @@ class CalendarViewModel @Inject constructor(
 
     fun updateTasks() {
         viewModelScope.launch(Dispatchers.IO) {
-            _tasks.postValue(tasksRepository
-                .findAll()
-                .filter { it.endDate != null }
-                .groupBy { it.endDate }
+            _tasks.postValue(
+                Executor.safeCall {
+                    tasksRepository
+                        .findAll()
+                        .filter { it.endDate != null }
+                        .groupBy { it.endDate }
+                }
             )
         }
     }
@@ -41,10 +45,13 @@ class CalendarViewModel @Inject constructor(
     fun updateDailyTasks(date: LocalDate?) {
         if (date == null) return
         viewModelScope.launch(Dispatchers.IO) {
-            _dailyTasks.postValue(tasksRepository
-                .findByDate(date)
-                .filter { it.endDate != null }
-                .groupBy { it.endDate }
+            _dailyTasks.postValue(
+                Executor.safeCall {
+                    tasksRepository
+                        .findByDate(date)
+                        .filter { it.endDate != null }
+                        .groupBy { it.endDate }
+                }
             )
         }
     }

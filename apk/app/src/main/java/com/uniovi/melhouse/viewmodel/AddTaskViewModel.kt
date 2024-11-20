@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
@@ -63,7 +64,9 @@ class AddTaskViewModel @Inject constructor(
             flatId = UUID.randomUUID())
 
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.insert(task)
+            Executor.safeCall {
+                taskRepository.insert(task)
+            }
         }
     }
 }

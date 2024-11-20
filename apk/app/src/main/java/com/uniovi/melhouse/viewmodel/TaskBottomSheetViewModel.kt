@@ -3,6 +3,7 @@ package com.uniovi.melhouse.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +32,9 @@ class TaskBottomSheetViewModel  @Inject constructor(
 
     fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            tasksRepository.delete(task.value!!.id)
+            Executor.safeCall {
+                tasksRepository.delete(task.value!!.id)
+            }
         }
 
         closeTaskBottomSheetDialog!!()
