@@ -13,6 +13,7 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.databinding.CalendarAddTaskFragmentBinding
@@ -24,14 +25,14 @@ import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.utils.maxDate
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
-import com.uniovi.melhouse.viewmodel.AddTaskViewModel
+import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AddTaskFragment @Inject constructor() : Fragment() {
-    private val viewModel: AddTaskViewModel by viewModels()
+class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment() {
+    private val viewModel: UpsertTaskViewModel by viewModels()
     private lateinit var binding: CalendarAddTaskFragmentBinding
     private val MILLIS_PER_DAY = 86400000
 
@@ -89,6 +90,12 @@ class AddTaskFragment @Inject constructor() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(task != null) {
+            viewModel.onViewCreated(task)
+            binding.etTaskTitle.text = task.name.toEditable()
+            binding.etTaskDescription.text = task.description?.toEditable()
+        }
 
         binding.dmStatus.dropdownLayout.hint = getString(R.string.task_status)
         binding.dmPriority.dropdownLayout.hint = getString(R.string.task_priority)
@@ -156,7 +163,7 @@ class AddTaskFragment @Inject constructor() : Fragment() {
         }
 
         binding.btnSave.setOnClickListener {
-            viewModel.saveTask()
+            viewModel.upsertTask()
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
@@ -205,6 +212,6 @@ class AddTaskFragment @Inject constructor() : Fragment() {
     }
 
     companion object {
-        const val TAG = "AddTaskFragment"
+        const val TAG = "UpsertTaskFragment"
     }
 }

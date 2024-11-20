@@ -24,6 +24,18 @@ class FlatRepositorySupabase @Inject constructor(
             })
     }
 
+    override suspend fun createFlat(flat: Flat) {
+        supabaseClient
+            .postgrest
+            .rpc("create_flat", buildJsonObject {
+                put("p_name", flat.name)
+                put("p_address", flat.address)
+                put("p_floor", flat.floor)
+                put("p_door", flat.door)
+                put("p_stair", flat.stair)
+            })
+    }
+
     override suspend fun insert(entity: Flat) {
         supabaseClient
             .from(TABLE_NAME)
