@@ -12,6 +12,8 @@ begin
     from public.flats
     where invitation_code = p_code;
 
+    assert flat is not null, 'flat_not_found';
+
     update public.users
     set flat_id = flat
     where id = (select auth.uid());

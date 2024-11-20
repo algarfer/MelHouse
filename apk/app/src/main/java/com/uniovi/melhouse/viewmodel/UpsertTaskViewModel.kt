@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
@@ -16,9 +17,10 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class AddTaskViewModel @Inject constructor(
+class UpsertTaskViewModel @Inject constructor(
     private val taskRepository: TaskRepository
 ) : ViewModel() {
+    private var task: Task? = null
 
     private var title: String? = null
     private var description: String? = null
@@ -52,18 +54,47 @@ class AddTaskViewModel @Inject constructor(
 
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
-    fun saveTask() {
-        val task = Task(
+    fun onViewCreated(task: Task) {
+        this.task = task
+        setTitle(task.name)
+        setDescription(task.description)
+        setStartDate(task.startDate)
+        setEndDate(task.endDate)
+        setStatus(task.status)
+        setPriority(task.priority)
+    }
+
+    fun upsertTask() {
+        if (task == null)
+            saveTask()
+        else
+            updateTask()
+    }
+
+    private fun saveTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            Executor.safeCall {
+                taskRepository.insert(generateTask())
+            }
+        }
+    }
+
+    private fun updateTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            Executor.safeCall {
+                taskRepository.update(generateTask())
+            }
+        }
+    }
+
+    private fun generateTask(): Task {
+        return task!!.copy(
             name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
             startDate = _startDate.value,
             endDate = _endDate.value,
-            flatId = UUID.randomUUID())
-
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.insert(task)
-        }
+        )
     }
 }

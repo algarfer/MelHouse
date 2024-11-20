@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,6 +27,9 @@ class LoginViewModel @Inject constructor(
     val loginSuccessfull: LiveData<Boolean>
         get() = _loginSuccessfull
     private val _loginSuccessfull = MutableLiveData(false)
+    val snackBarMsg
+        get() = _snackBarMsg
+    private val _snackBarMsg = MutableLiveData<String>(null)
 
     fun login(email: String, password: String, context: Context) {
         var areErrors = false
@@ -42,9 +46,12 @@ class LoginViewModel @Inject constructor(
         if(areErrors) return
 
         viewModelScope.launch(Dispatchers.IO) {
-            supabaseUserSessionFacade.logIn(email, password)
-
-            _loginSuccessfull.postValue(true)
+            try {
+                supabaseUserSessionFacade.logIn(email.trim(), password)
+                _loginSuccessfull.postValue(true)
+            } catch (e: PersistenceLayerException) {
+                _snackBarMsg.postValue(e.getMessage(context))
+            }
         }
     }
 }
