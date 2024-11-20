@@ -6,19 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
-import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateFlatViewModel @Inject constructor(
-    private val prefs: Prefs,
-    private val flatRepository: FlatRepositorySupabase
+    private val flatRepository: FlatRepositorySupabase,
+    private val userSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
 
     private val _nameError: MutableLiveData<String?> = MutableLiveData(null)
@@ -52,10 +51,9 @@ class CreateFlatViewModel @Inject constructor(
                     floor = floor.toIntOrNull(),
                     door = door,
                     stair = stair,
-                    adminId = prefs.getUserId()
+                    adminId = userSessionFacade.getUserId()!!
                 )
             )
-            prefs.setFlatId(flatRepository.findByAdminId(prefs.getUserId())?.id)
             _creationSuccessful.postValue(true)
         }
     }

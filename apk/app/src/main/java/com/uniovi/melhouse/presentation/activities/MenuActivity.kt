@@ -16,16 +16,13 @@ import com.google.android.material.navigation.NavigationView
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 import dagger.hilt.android.AndroidEntryPoint
-import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
-import javax.inject.Inject
 import com.uniovi.melhouse.viewmodel.MenuViewModel
 
 @AndroidEntryPoint
 class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener  {
 
-    @Inject lateinit var prefs: Prefs
     private lateinit var binding: ActivityMenuBinding
     private lateinit var drawerLayout: DrawerLayout
     private val viewModel: MenuViewModel by viewModels()
@@ -44,10 +41,16 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.onCreate()
+
         val headerView = binding.navigationView.getHeaderView(0)
-        var userInitial = prefs.getEmail().substring(0,1).uppercase()
-        headerView.findViewById<TextView>(R.id.tvProfile).text = userInitial
-        headerView.findViewById<TextView>(R.id.tvUsername).text = prefs.getEmail()
+
+        viewModel.user.observe(this) {
+            if (it == null) return@observe
+
+            headerView.findViewById<TextView>(R.id.tvProfile).text = it.name.substring(0,1).uppercase()
+            headerView.findViewById<TextView>(R.id.tvUsername).text = it.email
+        }
 
         drawerLayout = binding.drawerLayout
         binding.btnMenuLines.setOnClickListener {

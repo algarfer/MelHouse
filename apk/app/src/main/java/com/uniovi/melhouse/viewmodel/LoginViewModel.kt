@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
-import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val prefs: Prefs,
     private val supabaseUserSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
 
@@ -44,12 +42,7 @@ class LoginViewModel @Inject constructor(
         if(areErrors) return
 
         viewModelScope.launch(Dispatchers.IO) {
-            supabaseUserSessionFacade.logIn(email, password).let {
-                prefs.setUserId(it.id)
-                prefs.setEmail(it.email)
-                prefs.setFlatId(it.flatId)
-                prefs.setName(it.name)
-            }
+            supabaseUserSessionFacade.logIn(email, password)
 
             _loginSuccessfull.postValue(true)
         }

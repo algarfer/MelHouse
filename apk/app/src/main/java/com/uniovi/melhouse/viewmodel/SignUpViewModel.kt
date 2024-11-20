@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
-import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateEmail
 import com.uniovi.melhouse.utils.validateLength
 import com.uniovi.melhouse.utils.validatePassword
@@ -18,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val prefs: Prefs,
     private val supabaseUserSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
 
@@ -42,12 +40,7 @@ class SignUpViewModel @Inject constructor(
         if(preCheck(context, name, email, password, password2)) return
 
         viewModelScope.launch(Dispatchers.IO) {
-            supabaseUserSessionFacade.signUp(email, password, name).let {
-                prefs.setUserId(it.id)
-                prefs.setEmail(it.email)
-                prefs.setFlatId(it.flatId)
-                prefs.setName(it.name)
-            }
+            supabaseUserSessionFacade.signUp(email, password, name)
 
             _signupSuccessfull.postValue(true)
         }
