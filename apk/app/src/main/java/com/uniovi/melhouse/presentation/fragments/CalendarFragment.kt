@@ -15,6 +15,7 @@ import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import com.kizitonwose.calendar.core.yearMonth
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
@@ -42,7 +43,7 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
-    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it) }
+    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){viewModel.updateTasks()} }
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
@@ -63,6 +64,13 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
     override fun onResume() {
         super.onResume()
         viewModel.updateTasks()
+
+        if (viewModel.date != null) {
+            binding.calendarView.scrollToMonth(viewModel.date!!.yearMonth)
+            binding.calendarView.notifyDateChanged(viewModel.date!!)
+            viewModel.updateDailyTasks(viewModel.date!!)
+            selectedDate = viewModel.date
+        }
     }
 
     override fun onCreateView(
@@ -94,7 +102,6 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
 
         binding.calendarView.monthScrollListener = { month ->
             binding.calendarViewCurrentMonth.text = month.yearMonth.displayText()
-
             selectedDate?.let {
                 selectedDate = null
                 binding.calendarView.notifyDateChanged(it)
@@ -103,11 +110,11 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
         }
 
         binding.addTaskFab.setOnClickListener {
-            val fragment = AddTaskFragment()
+            val fragment = UpsertTaskFragment(null)
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true) //
-                .replace(R.id.calendar_fragment_container, fragment, AddTaskFragment.TAG)
+                .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
                 .addToBackStack(null)
                 .commit()
         }
@@ -180,4 +187,11 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
                 }
             }
     }
+
+    override fun onPause() {
+        super.onPause()
+
+        viewModel.date = selectedDate
+    }
+
 }

@@ -11,11 +11,18 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.FragmentSettingsBinding
 import com.uniovi.melhouse.presentation.activities.NotRegisteredActivity
 import com.uniovi.melhouse.viewmodel.SettingViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class SettingsFragment : Fragment() {
+@AndroidEntryPoint
+class SettingsFragment @Inject constructor() : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel: SettingViewModel by viewModels()
+
+    companion object {
+        const val TAG = "SettingsFragment"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +30,7 @@ class SettingsFragment : Fragment() {
         viewModel.isLogged.observe(this) {
             if(it) return@observe
 
-            val activity = activity!!
+            val activity = requireActivity()
             activity.startActivity(Intent(activity, NotRegisteredActivity::class.java))
             activity.finish()
         }

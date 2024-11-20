@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import com.google.android.material.snackbar.Snackbar
 import com.uniovi.melhouse.presentation.observers.StatusBarColorLifecycleObserver
 
 fun View.makeVisible() {
@@ -48,3 +49,5 @@ fun String.toEditable(): Editable {
         .getInstance()
         .newEditable(this)
 }
+
+fun getWarningSnackbar(view: View, text: String) = Snackbar.make(view, text, Snackbar.LENGTH_SHORT)

@@ -1,21 +1,32 @@
 package com.uniovi.melhouse.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.uniovi.melhouse.preference.Prefs
+import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashScreenViewModel @Inject constructor() : ViewModel() {
-    val isReady: MutableLiveData<Boolean> = MutableLiveData(false)
+class SplashScreenViewModel @Inject constructor(
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
+) : ViewModel() {
+
+    val isReady: LiveData<Boolean>
+        get() = _isReady
+    private val _isReady = MutableLiveData(false)
+
     var isLogged: Boolean = false
         private set
 
     fun initApp() {
-        Prefs.getEmail().isEmpty().let {
-            isLogged = !it
+        viewModelScope.launch(Dispatchers.IO) {
+            isLogged = supabaseUserSessionFacade.loadFromStorage()
+
+            _isReady.postValue(true)
         }
-        isReady.postValue(true)
     }
 }

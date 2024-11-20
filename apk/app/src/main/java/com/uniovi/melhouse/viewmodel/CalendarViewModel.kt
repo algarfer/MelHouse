@@ -1,11 +1,12 @@
 package com.uniovi.melhouse.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
-import com.uniovi.melhouse.di.qualifiers.SQLiteDatabaseQualifier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,11 +15,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    @SQLiteDatabaseQualifier private val tasksRepository: TaskRepository
+    private val tasksRepository: TaskRepository
 ) : ViewModel() {
 
-    val tasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
-    val dailyTasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
+    val tasks: LiveData<Map<LocalDate?, List<Task>>>
+        get() = _tasks
+    private val _tasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
+    val dailyTasks: LiveData<Map<LocalDate?, List<Task>>>
+        get() = _dailyTasks
+    private val _dailyTasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
+    var date: LocalDate? = null
 
     fun onCreate() {
         updateTasks()
@@ -26,20 +32,27 @@ class CalendarViewModel @Inject constructor(
 
     fun updateTasks() {
         viewModelScope.launch(Dispatchers.IO) {
-            tasks.postValue(tasksRepository
-                .findAll()
-                .filter { it.endDate != null }
-                .groupBy { it.endDate }
+            _tasks.postValue(
+                Executor.safeCall {
+                    tasksRepository
+                        .findAll()
+                        .filter { it.endDate != null }
+                        .groupBy { it.endDate }
+                }
             )
         }
     }
 
     fun updateDailyTasks(date: LocalDate?) {
+        if (date == null) return
         viewModelScope.launch(Dispatchers.IO) {
-            dailyTasks.postValue(tasksRepository
-                .findByDate(date)
-                .filter { it.endDate != null }
-                .groupBy { it.endDate }
+            _dailyTasks.postValue(
+                Executor.safeCall {
+                    tasksRepository
+                        .findByDate(date)
+                        .filter { it.endDate != null }
+                        .groupBy { it.endDate }
+                }
             )
         }
     }
