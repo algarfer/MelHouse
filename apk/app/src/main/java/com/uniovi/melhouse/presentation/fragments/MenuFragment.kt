@@ -5,32 +5,34 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.FragmentMenuBinding
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MenuFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MenuFragment : Fragment() {
 
     private lateinit var binding: FragmentMenuBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    companion object {
+        const val TAG = "MenuFragment"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        binding = FragmentMenuBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-//        binding.recyclerTodayTasks.layoutManager = LinearLayoutManager(context)
-//        binding.recyclerTodayTasks.adapter = TodayTasksAdapter()
+//        binding.btnFlats.setOnClickListener {
+//            parentFragmentManager
+//                .beginTransaction()
+//                .setReorderingAllowed(true)
+//                .replace(R.id.menuOptionsFragment, NoFlatFragment(), NoFlatFragment.TAG)
+//                .addToBackStack(null)
+//                .commit()
+//        }
 
-        return inflater.inflate(R.layout.fragment_menu, container, false)
+        return view
     }
 
 }

@@ -1,6 +1,8 @@
 package com.uniovi.melhouse.data
 
+import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.User
+import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -14,7 +16,8 @@ import javax.inject.Singleton
 @Singleton
 class SupabaseUserSessionFacade @Inject constructor(
     private val supabase: SupabaseClient,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val flatRepository: FlatRepository
 ) {
 
     suspend fun loadFromStorage() : Boolean {
@@ -41,16 +44,7 @@ class SupabaseUserSessionFacade @Inject constructor(
                     .currentSessionOrNull()!!
             )
 
-        return Executor.safeCall {
-            userRepository
-                .findById(UUID
-                    .fromString(supabase
-                        .auth
-                        .currentUserOrNull()!!
-                        .id
-                    )
-                )!!
-        }
+        return getUserData()
     }
 
     suspend fun logIn(email: String, password: String) : User {
@@ -70,6 +64,18 @@ class SupabaseUserSessionFacade @Inject constructor(
                     .currentSessionOrNull()!!
             )
 
+        return getUserData()
+    }
+
+    suspend fun getFlat(): Flat? {
+        return Executor.safeCall {
+            getUserData().flatId?.let {
+                flatRepository.findById(it)
+            }
+        }
+    }
+
+    suspend fun getUserData(): User {
         return Executor.safeCall {
             userRepository
                 .findById(
@@ -83,4 +89,13 @@ class SupabaseUserSessionFacade @Inject constructor(
                 )!!
         }
     }
+
+    fun getUserId(): UUID? {
+        return supabase
+            .auth
+            .currentUserOrNull()?.let {
+                UUID.fromString(it.id)
+            }
+    }
+
 }

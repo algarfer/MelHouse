@@ -82,6 +82,8 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.hilt.android)
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.android.embedded)
     kapt(libs.hilt.android.compiler)
     implementation(platform(libs.bom))
     implementation(libs.postgrest.kt)

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
-import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateEmail
 import com.uniovi.melhouse.utils.validateLength
 import com.uniovi.melhouse.utils.validatePassword
@@ -19,7 +18,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val prefs: Prefs,
     private val supabaseUserSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
 
@@ -49,12 +47,7 @@ class SignUpViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                supabaseUserSessionFacade.signUp(emailTrimmed, password, nameTrimmed).let {
-                    prefs.setUserId(it.id)
-                    prefs.setEmail(it.email)
-                    prefs.setFlatId(it.flatId)
-                    prefs.setName(it.name)
-                }
+                supabaseUserSessionFacade.signUp(emailTrimmed, password, nameTrimmed)
                 _signupSuccessfull.postValue(true)
             } catch (e: PersistenceLayerException) {
                 _snackBarMsg.postValue(e.getMessage(context))

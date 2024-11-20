@@ -14,6 +14,18 @@
     <string name="save">Guardar</string>
     <string name="signup">Registrarse</string>
 
+    <string name="flat_no_flat">Entrar a un piso</string>
+    <string name="flat_code">Código del piso</string>
+    <string name="flat_create_qr">Tengo un código QR</string>
+    <string name="flat_join">Unirse</string>
+    <string name="flat_create">Crear</string>
+    <string name="flat_name">Nombre</string>
+    <string name="flat_address">Dirección</string>
+    <string name="flat_floor">Piso</string>
+    <string name="flat_door">Puerta</string>
+    <string name="flat_stair">Escalera</string>
+    <string name="flat_bedrooms">Habitaciones</string>
+
     <string name="task_title">Título</string>
     <string name="task_description">Descripción</string>
     <string name="task_start_date">Fecha de inicio</string>
@@ -39,9 +51,10 @@
     <string name="title_home">Inicio</string>
     <string name="title_calendar">Calendario</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_flat">Mi piso</string>
+    <string name="title_account">Cuenta</string>
     <string name="title_settings">Ajustes</string>
-    <string name="title_today_tasks">Tareas para hoy</string>
+    <string name="title_today_tasks">Tareas de hoy</string>
 
     <string name="error_invalid_login_credentials">Credenciales de acceso no validas</string>
     <string name="error_unknown">Error desconocido</string>
@@ -51,6 +64,9 @@
     <string name="error_lost_connection_title">Conexión perdida</string>
     <string name="error_lost_connection_msg">Has perdido la conexión con el servidor. Comprueba tu conexión a internet y vuelve a intentarlo.</string>
     <string name="error_lost_connection_btn">Reintentar</string>
+
+    <string name="error_form_flat_name_empty">El nombre del piso no puede estar vacío</string>
+    <string name="error_form_flat_address_empty">La dirección del piso no puede estar vacía</string>
 
     <string name="error_form_login_user_not_found">No existe un usuario asociado a este email</string>
     <string name="error_form_login_email_empty">El email no puede estar vacío</string>
@@ -66,4 +82,12 @@
     <string name="error_form_signup_name_length">El nombre debe de tener entre 3 y 50 caracteres.</string>
     <string name="error_form_signup_email_length">El email no puede tener mas de 50 caracteres.</string>
     <string name="error_form_signup_password_length">La contraseña no puede tener mas de 50 caracteres.</string>
+
+    <string name="user_name">Nombre del usuario</string>
+    <string name="user_image">Imagen del usuario</string>
+    <string name="user_self">Yo</string>
+
+    <string name="settings_general">General</string>
+    <string name="settings_dark_mode">Modo oscuro</string>
+
 </resources>
