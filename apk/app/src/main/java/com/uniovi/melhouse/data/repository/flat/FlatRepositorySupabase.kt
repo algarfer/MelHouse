@@ -79,14 +79,4 @@ class FlatRepositorySupabase @Inject constructor(
             .select()
             .decodeList()
     }
-
-    suspend fun findByAdminId(id: UUID): Flat? {
-        return supabaseClient
-            .from(TABLE_NAME)
-            .select {
-                filter {
-                    eq("admin_id", id)
-                }
-            }.decodeSingleOrNull()
-    }
 }
