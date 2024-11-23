@@ -9,6 +9,8 @@ import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MenuViewModel @Inject constructor(
     private val prefs:Prefs,
-    private val userSessionFacade: SupabaseUserSessionFacade
+    private val userSessionFacade: SupabaseUserSessionFacade,
+    private val supabase: SupabaseClient
 ) : ViewModel() {
 
     val user: LiveData<User?>
@@ -26,6 +29,9 @@ class MenuViewModel @Inject constructor(
     val flat: LiveData<Flat?>
         get() = _flat
     private val _flat = MutableLiveData<Flat?>(null)
+    val isLogged: LiveData<Boolean>
+        get() = _isLogged
+    private val _isLogged = MutableLiveData(true)
 
     fun onCreate() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -35,7 +41,13 @@ class MenuViewModel @Inject constructor(
     }
 
     fun logout() {
-        prefs.clearAll()
+        viewModelScope.launch(Dispatchers.IO) {
+            supabase.auth.signOut()
+            supabase.auth.clearSession()
+
+            prefs.clearAll()
+            _isLogged.postValue(false)
+        }
     }
 
     private fun getFlat() {

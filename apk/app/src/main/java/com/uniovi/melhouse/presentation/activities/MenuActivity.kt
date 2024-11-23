@@ -52,6 +52,13 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
             headerView.findViewById<TextView>(R.id.tvUsername).text = it.email
         }
 
+        viewModel.isLogged.observe(this) {
+            if(it) return@observe
+
+            startActivity(Intent(this, NotRegisteredActivity::class.java))
+            finish()
+        }
+
         observeFlat()
 
         drawerLayout = binding.drawerLayout
@@ -91,8 +98,6 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
             R.id.navigation_settings -> SettingsFragment()
             R.id.navigation_logout -> {
                 viewModel.logout()
-                startActivity(Intent(this, NotRegisteredActivity::class.java))
-                finish()
                 return true
             }
             else -> null
