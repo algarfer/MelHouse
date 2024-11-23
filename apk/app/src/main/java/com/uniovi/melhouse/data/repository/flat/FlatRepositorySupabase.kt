@@ -4,7 +4,6 @@ import com.uniovi.melhouse.data.model.Flat
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.rpc
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.util.UUID
@@ -16,25 +15,24 @@ class FlatRepositorySupabase @Inject constructor(
 
     private val TABLE_NAME = "flats"
 
-    override suspend fun joinFlat(invitationCode: String) {
-        supabaseClient
+    override suspend fun joinFlat(invitationCode: String): Flat {
+        return supabaseClient
             .postgrest
             .rpc("join_flat", buildJsonObject {
                 put("p_code", invitationCode)
-            })
+            }).decodeSingle()
     }
 
-    override suspend fun createFlat(flat: Flat) {
-        supabaseClient
+    override suspend fun createFlat(flat: Flat): Flat {
+        return supabaseClient
             .postgrest
             .rpc("create_flat", buildJsonObject {
-                put("p_id", flat.id.toString())
                 put("p_name", flat.name)
                 put("p_address", flat.address)
                 put("p_floor", flat.floor)
                 put("p_door", flat.door)
                 put("p_stair", flat.stair)
-            })
+            }).decodeSingle();
     }
 
     override suspend fun insert(entity: Flat) {
