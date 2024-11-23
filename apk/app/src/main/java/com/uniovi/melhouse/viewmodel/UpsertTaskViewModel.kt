@@ -4,20 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.data.repository.task.TaskRepository
+import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class UpsertTaskViewModel @Inject constructor(
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    private val prefs: Prefs
 ) : ViewModel() {
     private var task: Task? = null
 
@@ -72,24 +74,37 @@ class UpsertTaskViewModel @Inject constructor(
 
     private fun saveTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.insert(getTask())
+            Executor.safeCall {
+                taskRepository.insert(generateTask())
+            }
         }
     }
 
     private fun updateTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.update(getTask())
+            Executor.safeCall {
+                taskRepository.update(generateTask())
+            }
         }
     }
 
-    private fun getTask(): Task {
-        return task!!.copy(
+    private fun generateTask(): Task {
+        return task?.copy(
             name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
             startDate = _startDate.value,
             endDate = _endDate.value,
+        ) ?:
+        Task(
+            name = title!!,
+            description = description,
+            status = _status.value,
+            priority = _priority.value,
+            startDate = _startDate.value,
+            endDate = _endDate.value,
+            flatId = prefs.getFlatId()!!
         )
     }
 }

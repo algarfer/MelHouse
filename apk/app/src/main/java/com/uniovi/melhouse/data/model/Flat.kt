@@ -14,7 +14,7 @@ data class Flat(
     var floor: Int?,
     var door: String?,
     var stair: String?,
-    @SerialName("invitation_code") var invitationCode: String,
+    @SerialName("invitation_code") var invitationCode: String = "",
     @Serializable(with = UUIDSerializer::class) @SerialName("admin_id") var adminId: UUID
 )
 

@@ -1,6 +1,5 @@
-
-INSERT INTO users (id, name, email) VALUES ('2c023e9e-fbfc-4df4-a417-8ad6dddd6ac4', 'Juan', 'juan@example.com');
-INSERT INTO users (id, name, email) VALUES ('67fa41e2-85ee-4407-880c-589ef46f576a', 'Pepe', 'pepe@example.com');
+INSERT INTO users (id, name, email) VALUES ('2c023e9e-fbfc-4df4-a417-8ad6dddd6ac4', 'Juan Ramón', 'jrpp@example.com');
+INSERT INTO users (id, name, email) VALUES ('67fa41e2-85ee-4407-880c-589ef46f576a', 'Pepe Mel', 'pepemel@example.com');
 INSERT INTO users (id, name, email, flat_id) VALUES ('eb06c7e1-8674-4280-8413-6883cc4c5776', 'Jose', 'jose@example.com', '986255a0-57e8-4d1f-b16e-eb1efdd17407');
 INSERT INTO users (id, name, email) VALUES ('a170ceee-f292-4265-b980-ecd154f2783b', 'Ana', 'ana@example.com');
 INSERT INTO users (id, name, email, flat_id) VALUES ('bf66312e-5c9d-425a-9e6e-e8fb76a03d11', 'Claudia', 'claudia@example.com', '59f35c62-c24b-4991-984c-08b064abd34f');

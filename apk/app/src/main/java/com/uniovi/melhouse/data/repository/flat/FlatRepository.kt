@@ -8,8 +8,8 @@ import com.uniovi.melhouse.data.repository.Repository
 import java.util.UUID
 
 interface FlatRepository : Repository<Flat> {
-    suspend fun joinFlat(invitationCode: String)
-    suspend fun createFlat(flat: Flat)
+    suspend fun joinFlat(invitationCode: String): Flat
+    suspend fun createFlat(flat: Flat): Flat
 }
 
 class FlatAssembler {

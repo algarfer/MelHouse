@@ -24,7 +24,7 @@ android {
         val supabaseDevPort = 8000
         val supabaseDevHost = "10.0.2.2"
         val supabaseDeployPort = 8000
-        val supabaseDeployHost = "!MISSING"
+        val supabaseDeployHost = "158.179.219.235"
 
         release {
             isMinifyEnabled = false
@@ -33,9 +33,10 @@ android {
                 "proguard-rules.pro"
             )
             buildConfigField("String", "SUPABASE_URL", "\"http://$supabaseDeployHost:$supabaseDeployPort\"")
-            buildConfigField("Int", "SUPABASE_PORT", supabaseDeployPort.toString())
+            buildConfigField("int", "SUPABASE_PORT", supabaseDeployPort.toString())
             buildConfigField("String", "SUPABASE_HOST", "\"$supabaseDeployHost\"")
-            buildConfigField("String", "SUPABASE_ANON_KEY", "TODO")
+            buildConfigField("String", "SUPABASE_ANON_KEY", "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAiTWVsaG91c2UtU3VwYWJhc2UiLAogICJpYXQiOiAxNzMxMTA2ODAwLAogICJleHAiOiAxODg4ODczMjAwCn0.MTWFEMifuvTyyUhjdlCam0EQWDuZKoe_4iHclRrhtYk\"")
+            signingConfig = signingConfigs.getByName("debug")
         }
 
         debug {
@@ -81,6 +82,8 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.hilt.android)
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.android.embedded)
     kapt(libs.hilt.android.compiler)
     implementation(platform(libs.bom))
     implementation(libs.postgrest.kt)

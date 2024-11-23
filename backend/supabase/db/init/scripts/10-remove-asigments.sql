@@ -1,0 +1,14 @@
+create or replace function private.remove_asigments()
+returns trigger
+language plpgsql
+security definer set search_path = ''
+as $$
+begin
+    delete from public.tasks_users where user_id = old.id;
+    return new;
+end;
+$$;
+
+create or replace trigger trg_remove_asigments
+after update on public.users
+for each row execute procedure private.remove_asigments();

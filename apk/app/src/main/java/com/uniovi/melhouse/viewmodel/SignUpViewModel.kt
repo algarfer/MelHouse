@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateEmail
 import com.uniovi.melhouse.utils.validateLength
@@ -18,8 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val prefs: Prefs,
-    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade,
+    private val prefs: Prefs
 ) : ViewModel() {
 
     val nameError: LiveData<String?>
@@ -37,19 +38,25 @@ class SignUpViewModel @Inject constructor(
     val signupSuccessfull: LiveData<Boolean>
         get() = _signupSuccessfull
     private val _signupSuccessfull = MutableLiveData(false)
+    val snackBarMsg
+        get() = _snackBarMsg
+    private val _snackBarMsg = MutableLiveData<String?>(null)
 
     fun signup(name: String, email: String, password: String, password2: String, context: Context) {
-        if(preCheck(context, name, email, password, password2)) return
+        val nameTrimmed = name.trim()
+        val emailTrimmed = email.trim()
+        if(preCheck(context, nameTrimmed, emailTrimmed, password, password2)) return
 
         viewModelScope.launch(Dispatchers.IO) {
-            supabaseUserSessionFacade.signUp(email, password, name).let {
-                prefs.setUserId(it.id)
-                prefs.setEmail(it.email)
-                prefs.setFlatId(it.flatId)
-                prefs.setName(it.name)
+            try {
+                supabaseUserSessionFacade.signUp(emailTrimmed, password, nameTrimmed)
+                supabaseUserSessionFacade.getUserData().let {
+                    prefs.setFlatId(it.flatId)
+                }
+                _signupSuccessfull.postValue(true)
+            } catch (e: PersistenceLayerException) {
+                _snackBarMsg.postValue(e.getMessage(context))
             }
-
-            _signupSuccessfull.postValue(true)
         }
     }
 

@@ -1,20 +1,24 @@
 create or replace function public.join_flat(
     p_code text
 )
-returns void
+returns public.flats
 language plpgsql
 security definer set search_path = ''
 as $$
 declare
-    flat uuid;
+    flat public.flats%rowtype;
 begin
-    select id into flat
+    select * into flat
     from public.flats
     where invitation_code = p_code;
 
+    assert flat is not null, 'flat_not_found';
+
     update public.users
-    set flat_id = flat
+    set flat_id = flat.id
     where id = (select auth.uid());
+
+    return flat;
 end;
 $$;
 

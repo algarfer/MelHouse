@@ -1,4 +1,4 @@
-create or replace function public.check_user_email_consistency()
+create or replace function private.check_user_email_consistency()
 returns trigger
 language plpgsql
 security definer set search_path = ''
@@ -13,4 +13,4 @@ $$;
 
 create or replace trigger trg_check_user_email_consistency
 before insert or update on public.users
-for each row execute function check_user_email_consistency();
+for each row execute function private.check_user_email_consistency();

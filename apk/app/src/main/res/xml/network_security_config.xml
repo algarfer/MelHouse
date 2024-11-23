@@ -3,5 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <!-- Allow connections over HTTP without SSL for local development -->
         <domain includeSubdomains="true">10.0.2.2</domain>
+        <!-- FIXME - Configure SSL Encryption for the deployed backend -->
+        <domain includeSubdomains="true">158.179.219.235</domain>
     </domain-config>
 </network-security-config>

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val prefs: Prefs,
-    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade,
+    private val prefs: Prefs
 ) : ViewModel() {
 
     val passwordError: LiveData<String?>
@@ -28,6 +29,9 @@ class LoginViewModel @Inject constructor(
     val loginSuccessfull: LiveData<Boolean>
         get() = _loginSuccessfull
     private val _loginSuccessfull = MutableLiveData(false)
+    val snackBarMsg
+        get() = _snackBarMsg
+    private val _snackBarMsg = MutableLiveData<String>(null)
 
     fun login(email: String, password: String, context: Context) {
         var areErrors = false
@@ -44,14 +48,15 @@ class LoginViewModel @Inject constructor(
         if(areErrors) return
 
         viewModelScope.launch(Dispatchers.IO) {
-            supabaseUserSessionFacade.logIn(email, password).let {
-                prefs.setUserId(it.id)
-                prefs.setEmail(it.email)
-                prefs.setFlatId(it.flatId)
-                prefs.setName(it.name)
+            try {
+                supabaseUserSessionFacade.logIn(email.trim(), password)
+                supabaseUserSessionFacade.getUserData().let {
+                    prefs.setFlatId(it.flatId)
+                }
+                _loginSuccessfull.postValue(true)
+            } catch (e: PersistenceLayerException) {
+                _snackBarMsg.postValue(e.getMessage(context))
             }
-
-            _loginSuccessfull.postValue(true)
         }
     }
 }

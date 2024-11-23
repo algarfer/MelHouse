@@ -10,10 +10,7 @@ import javax.inject.Singleton
 class Prefs @Inject constructor() {
 
     private val SHARED_NAME = "MelhousePrefs"
-    private val SHARED_NAME_USER = "name"
-    private val SHARED_EMAIL = "email"
-    private val SHARED_USER_ID = "user_id"
-    private val SHARED_FLAT_ID = "flat_id"
+    private val SHARED_FLAT_ID = "flatId"
 
     @Volatile
     private var storage: SharedPreferences? = null
@@ -22,50 +19,17 @@ class Prefs @Inject constructor() {
         storage = context.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE)
     }
 
-    fun setEmail(newEmail: String?) {
+    fun setFlatId(flatId: UUID?) {
         storage!!
             .edit()
-            .putString(SHARED_EMAIL, newEmail)
-            .apply()
-    }
-
-    fun getEmail(): String {
-        return storage!!.getString(SHARED_EMAIL, "")!!
-    }
-
-    fun setFlatId(newId: UUID?) {
-        storage!!
-            .edit()
-            .putString(SHARED_FLAT_ID, newId.toString())
+            .putString(SHARED_FLAT_ID, flatId?.toString())
             .apply()
     }
 
     fun getFlatId(): UUID? {
-        return storage!!.getString(SHARED_FLAT_ID, null)?.let {
-            UUID.fromString(it)
-        }
-    }
-
-    fun setUserId(newId: UUID) {
-        storage!!
-            .edit()
-            .putString(SHARED_USER_ID, newId.toString())
-            .apply()
-    }
-
-    fun getUserId(): UUID {
-        return UUID.fromString(storage!!.getString(SHARED_USER_ID, "")!!)
-    }
-
-    fun setName(name: String) {
-        storage!!
-            .edit()
-            .putString(SHARED_NAME_USER, name)
-            .apply()
-    }
-
-    fun getName(): String {
-        return storage!!.getString(SHARED_NAME_USER, "")!!
+        return storage!!
+            .getString(SHARED_FLAT_ID, null)
+            ?.let { UUID.fromString(it) }
     }
 
     fun clearAll() {

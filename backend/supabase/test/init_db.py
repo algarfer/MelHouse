@@ -42,7 +42,6 @@ for i in range(6):
 
     try:
         s.rpc("create_flat", {
-            "p_id": str(uuid4()),
             "p_name": FLAT_NAME_TEMPLATE.format(i),
             "p_address": STREET_TEMPLATE.format(i),
         }).execute()
