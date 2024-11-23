@@ -1,4 +1,4 @@
-create or replace function public.get_user_flat_id(
+create or replace function private.get_user_flat_id(
     user_id uuid
 )
 returns uuid
@@ -12,6 +12,6 @@ begin
 end;
 $$;
 
-revoke execute on function public.get_user_flat_id from public;
-revoke execute on function public.get_user_flat_id from anon;
-revoke execute on function public.get_user_flat_id from postgres;
+revoke execute on function private.get_user_flat_id from public;
+revoke execute on function private.get_user_flat_id from anon;
+revoke execute on function private.get_user_flat_id from postgres;

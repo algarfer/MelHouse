@@ -18,7 +18,7 @@ as PERMISSIVE
 for SELECT
 to authenticated
 using (
-  flat_id = get_user_flat_id((select auth.uid()))
+  flat_id = private.get_user_flat_id((select auth.uid()))
 );
 
 create policy "A user can see their own profile"
