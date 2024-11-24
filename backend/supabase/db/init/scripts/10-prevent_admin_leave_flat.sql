@@ -19,5 +19,5 @@ end;
 $$;
 
 create or replace trigger tgr_prevent_admin_leave_flat
-before each update on public.users
+before update on public.users
 for each row execute procedure private.prevent_admin_leave_flat();

@@ -60,10 +60,16 @@ grant select, insert, update, delete, truncate, references, trigger on public.ta
 
 create schema private;
 
+grant usage on schema private to service_role;
+grant usage on schema private to anon;
+grant usage on schema private to authenticated;
+
 alter default privileges for role postgres in schema private grant all on tables to service_role;
 alter default privileges for role postgres in schema private grant all on routines to service_role;
 alter default privileges for role postgres in schema private grant all on sequences to service_role;
+alter default privileges for role postgres in schema private grant all on functions to service_role;
 
 alter default privileges for role postgres in schema private grant select on tables to anon, authenticated;
 alter default privileges for role postgres in schema private grant execute on routines to anon, authenticated;
 alter default privileges for role postgres in schema private grant select on sequences to anon, authenticated;
+alter default privileges for role postgres in schema private grant execute on functions to anon, authenticated;
