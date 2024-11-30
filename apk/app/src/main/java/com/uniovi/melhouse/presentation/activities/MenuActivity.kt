@@ -122,9 +122,13 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
     private fun observeFlat() {
         viewModel.flat.observe(this) {
             if (it == null) {
+                binding.navigationView.menu.findItem(R.id.navigation_calendar).isVisible = false
+                binding.navigationView.menu.findItem(R.id.navigation_flat).isVisible = false
                 loadFragment(NoFlatFragment())
                 return@observe
             }
+            binding.navigationView.menu.findItem(R.id.navigation_calendar).isVisible = true
+            binding.navigationView.menu.findItem(R.id.navigation_flat).isVisible = true
             loadFragment(MenuFragment())
         }
     }
