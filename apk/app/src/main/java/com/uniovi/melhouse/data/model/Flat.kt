@@ -17,4 +17,7 @@ data class Flat(
     @Serializable(with = UUIDSerializer::class) @SerialName("admin_id") var adminId: UUID
 )
 
+fun Flat.getFullAddress(): String {
+    val details = listOfNotNull(floor?.toString(), stair, door).joinToString("")
+    return if (details.isNotEmpty()) "$address, $details" else address
 }
