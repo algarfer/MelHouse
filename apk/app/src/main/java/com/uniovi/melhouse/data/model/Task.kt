@@ -1,6 +1,5 @@
 package com.uniovi.melhouse.data.model
 
-import android.content.ContentValues
 import android.content.Context
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.serializers.LocalDateSerializer
@@ -49,17 +48,4 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
     HIGH(2) {
         override fun getString(context: Context) = context.getString(R.string.task_priority_high)
     },
-}
-
-fun Task.toContentValues(): ContentValues {
-    return ContentValues().apply {
-        put("id", id.toString())
-        put("name", name)
-        put("description", description)
-        put("status", status?.value)
-        put("priority", priority?.value)
-        put("start_date", startDate?.toString())
-        put("end_date", endDate?.toString())
-        put("flat_id", flatId.toString())
-    }
 }
