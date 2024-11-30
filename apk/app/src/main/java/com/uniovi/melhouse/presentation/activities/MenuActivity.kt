@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.navigation.NavigationView
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.getInitials
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
@@ -48,7 +49,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
 
         viewModel.user.observe(this) {
             if (it == null) return@observe
-            headerView.findViewById<TextView>(R.id.tvProfile).text = it.name.substring(0,1).uppercase()
+            headerView.findViewById<TextView>(R.id.tvProfile).text = it.getInitials()
             headerView.findViewById<TextView>(R.id.tvUsername).text = it.email
         }
 

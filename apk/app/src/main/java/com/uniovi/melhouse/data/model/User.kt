@@ -13,4 +13,6 @@ data class User (
     @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID?
 )
 
+fun User.getInitials(): String {
+    return name.substring(0, 1).uppercase()
 }
