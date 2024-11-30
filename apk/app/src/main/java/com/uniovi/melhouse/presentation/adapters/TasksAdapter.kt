@@ -16,8 +16,6 @@ class TasksAdapter(list: List<Task>, private val taskHandler: (Task) -> Unit) : 
             .inflate(R.layout.calendar_task_layout, parent, false), taskHandler)
     }
 
-    override fun getItemCount(): Int = list.size
-
     override fun updateList(newList: List<Task>) {
         val taskDiff = TasksDiffUtil(list, newList)
         val result = DiffUtil.calculateDiff(taskDiff)

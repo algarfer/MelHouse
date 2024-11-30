@@ -11,4 +11,9 @@ abstract class AbstractAdapter<T, S : AbstractViewHolder<T>>(protected var list:
     override fun onBindViewHolder(holder: S, position: Int) {
         holder.render(list[position])
     }
+
+    override fun onViewRecycled(holder: S) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
 }
