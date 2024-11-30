@@ -22,6 +22,16 @@ class UserRepositorySupabase @Inject constructor(
             }.decodeSingleOrNull()
     }
 
+    override suspend fun findByFlatId(id: UUID): List<User> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .select {
+                filter {
+                    eq("flat_id", id)
+                }
+            }.decodeList()
+    }
+
     override suspend fun insert(entity: User) {
         supabaseClient
             .from(TABLE_NAME)
