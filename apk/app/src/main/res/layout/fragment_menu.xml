@@ -29,6 +29,7 @@
                 android:id="@+id/tvTodayTasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/title_today_tasks"
                 android:textAlignment="center"
                 style="@style/HeadlineSmall"
@@ -36,11 +37,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <View
+                android:id="@+id/dividerTodayTasks"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/outline_variant"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTodayTasks"
+                app:layout_constraintBottom_toTopOf="@id/recyclerTodayTasks" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerTodayTasks"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:padding="16dp"
+                android:layout_margin="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,6 +91,7 @@
                 android:id="@+id/tvTomorrowTasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/title_tomorrow_tasks"
                 android:textAlignment="center"
                 style="@style/HeadlineSmall"
@@ -87,11 +99,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <View
+                android:id="@+id/dividerTomorrowTasks"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/outline_variant"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTomorrowTasks"
+                app:layout_constraintBottom_toTopOf="@id/recyclerTomorrowTasks" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerTomorrowTasks"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:padding="16dp"
+                android:layout_margin="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

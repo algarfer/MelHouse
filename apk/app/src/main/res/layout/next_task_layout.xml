@@ -5,35 +5,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp">
+    android:padding="16dp" >
 
     <TextView
         android:id="@+id/taskTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="start"
         android:fontFamily="sans-serif-black"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textColor="@android:color/black"
+        tools:text="Title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/taskDate"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        tools:text="Title" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/taskDate"
-        android:layout_width="wrap_content"
+        android:id="@+id/taskDescription"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:lineSpacingExtra="2.5dp"
-        android:textAllCaps="true"
-        android:textSize="12sp"
-        android:textColor="@color/on_tertiary_container"
+        android:fontFamily="sans-serif-light"
+        android:textSize="14sp"
+        android:textColor="@color/on_secondary_container"
+        tools:text="Description"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="THU JUN 30 14:00" />
+        app:layout_constraintTop_toBottomOf="@id/taskTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

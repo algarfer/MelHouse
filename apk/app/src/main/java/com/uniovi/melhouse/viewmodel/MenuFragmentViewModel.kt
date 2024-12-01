@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +30,7 @@ class MenuFragmentViewModel @Inject constructor(
             _todayTasks.postValue(taskRepository.findAssignedByDate(LocalDate.now()))
         }
         viewModelScope.launch(Dispatchers.IO) {
-            _todayTasks.postValue(taskRepository.findAssignedByDate(LocalDate.now().plusDays(1)))
+            _tomorrowTasks.postValue(taskRepository.findAssignedByDate(LocalDate.now().plusDays(1)))
         }
     }
 

@@ -13,11 +13,10 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MenuViewModel @Inject constructor(
+class DrawerViewModel @Inject constructor(
     private val prefs:Prefs,
     private val userSessionFacade: SupabaseUserSessionFacade,
     private val supabase: SupabaseClient
