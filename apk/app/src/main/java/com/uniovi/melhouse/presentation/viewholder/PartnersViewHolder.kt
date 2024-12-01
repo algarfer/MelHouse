@@ -10,10 +10,12 @@ import com.uniovi.melhouse.databinding.FlatPartnerLayoutBinding
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.FlatFragmentViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class PartnersViewHolder(
-    private val view: View,
-    private val viewModel: FlatFragmentViewModel
+class PartnersViewHolder @AssistedInject constructor(
+    @Assisted private val view: View,
+    @Assisted private val viewModel: FlatFragmentViewModel
 ) : AbstractViewHolder<User>(view) {
 
     private val binding = FlatPartnerLayoutBinding.bind(view)

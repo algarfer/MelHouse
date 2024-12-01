@@ -16,6 +16,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.getFullAddress
 import com.uniovi.melhouse.databinding.FragmentFlatBinding
+import com.uniovi.melhouse.factories.presentation.adapter.PartnersAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.PartnersAdapter
 import com.uniovi.melhouse.presentation.layoutmanagers.CustomLinearLayoutManager
 import com.uniovi.melhouse.utils.makeGone
@@ -31,6 +32,7 @@ class FlatFragment @Inject constructor() : Fragment() {
     private lateinit var binding: FragmentFlatBinding
     private val viewModel: FlatFragmentViewModel by viewModels()
     private lateinit var partnersAdapter: PartnersAdapter
+    @Inject lateinit var partnersAdapterFactory: PartnersAdapterFactory
 
     companion object {
         const val TAG = "FlatFragment"
@@ -90,7 +92,7 @@ class FlatFragment @Inject constructor() : Fragment() {
             clipboard?.setPrimaryClip(clip)
         }
 
-        partnersAdapter = PartnersAdapter(listOf(), viewModel)
+        partnersAdapter = partnersAdapterFactory.create(listOf(), viewModel)
 
         binding.rvFlatMembers.apply {
             val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
