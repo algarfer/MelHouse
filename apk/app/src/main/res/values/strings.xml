@@ -66,8 +66,8 @@
     <string name="title_flat">Mi piso</string>
     <string name="title_account">Cuenta</string>
     <string name="title_settings">Ajustes</string>
-    <string name="title_today_tasks">Tareas para hoy</string>
-    <string name="title_tomorrow_tasks">Tareas para mañana</string>
+    <string name="title_today_tasks">Tareas que finalizan hoy</string>
+    <string name="title_tomorrow_tasks">Tareas que finalizan mañana</string>
 
     <string name="error_invalid_login_credentials">Credenciales de acceso no validas</string>
     <string name="error_unknown">Error desconocido</string>

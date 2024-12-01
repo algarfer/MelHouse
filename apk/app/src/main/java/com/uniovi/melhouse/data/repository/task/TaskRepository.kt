@@ -6,4 +6,5 @@ import java.time.LocalDate
 
 interface TaskRepository : Repository<Task> {
     suspend fun findByDate(date: LocalDate?): List<Task>
+    suspend fun findAssignedByDate(date: LocalDate?): List<Task>
 }
