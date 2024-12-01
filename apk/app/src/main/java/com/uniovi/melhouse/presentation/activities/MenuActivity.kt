@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationView
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.getInitials
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
+import com.uniovi.melhouse.presentation.fragments.FlatFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
@@ -94,7 +95,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
                 drawerLayout.closeDrawer(binding.navigationView)
                 return true
             }
-//            R.id.navigation_flat -> FlatFragment()
+            R.id.navigation_flat -> FlatFragment()
 //            R.id.navigation_account -> AccountFragment()
             R.id.navigation_settings -> SettingsFragment()
             R.id.navigation_logout -> {
