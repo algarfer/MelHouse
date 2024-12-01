@@ -1,25 +1,22 @@
 package com.uniovi.melhouse.presentation.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
-import com.uniovi.melhouse.databinding.FragmentCreateFlatBinding
 import androidx.fragment.app.viewModels
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.presentation.activities.MenuActivity
-import com.uniovi.melhouse.viewmodel.CreateFlatViewModel
+import com.uniovi.melhouse.databinding.FragmentUpsertFlatBinding
+import com.uniovi.melhouse.viewmodel.UpsertFlatViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CreateFlatFragment @Inject constructor() : Fragment() {
+class UpsertFlatFragment @Inject constructor() : Fragment() {
 
-    private lateinit var binding: FragmentCreateFlatBinding
-    private val viewModel: CreateFlatViewModel by viewModels()
+    private lateinit var binding: FragmentUpsertFlatBinding
+    private val viewModel: UpsertFlatViewModel by viewModels()
 
     companion object {
         const val TAG = "CreateFlatFragment"
@@ -62,7 +59,7 @@ class CreateFlatFragment @Inject constructor() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentCreateFlatBinding.bind(view)
+        binding = FragmentUpsertFlatBinding.bind(view)
 
         setupListeners()
         setupObservers()
@@ -72,7 +69,7 @@ class CreateFlatFragment @Inject constructor() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return layoutInflater.inflate(R.layout.fragment_create_flat, container, false)
+        return layoutInflater.inflate(R.layout.fragment_upsert_flat, container, false)
     }
 
 }

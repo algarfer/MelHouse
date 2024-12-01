@@ -49,7 +49,7 @@ class NoFlatFragment : Fragment() {
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.menuOptionsFragment, CreateFlatFragment(), CreateFlatFragment.TAG)
+                .replace(R.id.menuOptionsFragment, UpsertFlatFragment(), UpsertFlatFragment.TAG)
                 .addToBackStack(null)
                 .commit()
         }

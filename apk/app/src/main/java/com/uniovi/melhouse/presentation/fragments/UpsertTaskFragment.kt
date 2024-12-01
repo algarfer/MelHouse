@@ -16,7 +16,7 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
-import com.uniovi.melhouse.databinding.CalendarAddTaskFragmentBinding
+import com.uniovi.melhouse.databinding.CalendarUpsertTaskFragmentBinding
 import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
 import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
@@ -33,14 +33,14 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment() {
     private val viewModel: UpsertTaskViewModel by viewModels()
-    private lateinit var binding: CalendarAddTaskFragmentBinding
+    private lateinit var binding: CalendarUpsertTaskFragmentBinding
     private val MILLIS_PER_DAY = 86400000
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = CalendarAddTaskFragmentBinding.inflate(inflater, container, false)
+        binding = CalendarUpsertTaskFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
