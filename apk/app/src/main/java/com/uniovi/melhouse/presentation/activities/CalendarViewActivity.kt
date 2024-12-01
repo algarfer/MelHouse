@@ -11,9 +11,10 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityCalendarViewBinding
 import com.uniovi.melhouse.presentation.fragments.CalendarFragment
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class CalendarViewActivity : AbstractActivity() {
+class CalendarViewActivity @Inject constructor() : AbstractActivity() {
     private lateinit var binding: ActivityCalendarViewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

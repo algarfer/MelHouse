@@ -9,9 +9,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.ActivityNotRegisteredBinding
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class NotRegisteredActivity : AbstractActivity() {
+class NotRegisteredActivity @Inject constructor() : AbstractActivity() {
 
     private lateinit var binding: ActivityNotRegisteredBinding
 

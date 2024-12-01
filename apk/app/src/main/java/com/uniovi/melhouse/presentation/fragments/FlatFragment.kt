@@ -22,10 +22,11 @@ import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.FlatFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class FlatFragment : Fragment() {
+class FlatFragment @Inject constructor() : Fragment() {
 
     private lateinit var binding: FragmentFlatBinding
     private val viewModel: FlatFragmentViewModel by viewModels()

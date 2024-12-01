@@ -13,9 +13,10 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.network.InternetConnectionObserver
 import com.uniovi.melhouse.viewmodel.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class SplashScreenActivity : AbstractActivity() {
+class SplashScreenActivity @Inject constructor() : AbstractActivity() {
     private val viewModel: SplashScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
