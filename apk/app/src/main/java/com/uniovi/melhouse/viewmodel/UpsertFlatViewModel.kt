@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+// TODO - This currently only creates a flat, not upserts it
 class UpsertFlatViewModel @Inject constructor(
     private val flatRepository: FlatRepositorySupabase,
     private val userSessionFacade: SupabaseUserSessionFacade

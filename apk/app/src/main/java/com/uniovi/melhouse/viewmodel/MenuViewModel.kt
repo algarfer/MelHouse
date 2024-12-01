@@ -37,7 +37,9 @@ class MenuViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _user.postValue(userSessionFacade.getUserData())
         }
-        getFlat()
+        viewModelScope.launch(Dispatchers.IO) {
+            _flat.postValue(userSessionFacade.getFlat())
+        }
     }
 
     fun logout() {
@@ -49,11 +51,4 @@ class MenuViewModel @Inject constructor(
             _isLogged.postValue(false)
         }
     }
-
-    private fun getFlat() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _flat.postValue(userSessionFacade.getFlat())
-        }
-    }
-
 }

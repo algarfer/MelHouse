@@ -55,6 +55,7 @@ class UpsertTaskViewModel @Inject constructor(
 
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
+    // TODO - Simplify viewModel and move task to assisted injection
     fun onViewCreated(task: Task) {
         this.task = task
         setTitle(task.name)
