@@ -23,6 +23,7 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.CalendarDayLayoutBinding
 import com.uniovi.melhouse.databinding.CalendarFragmentBinding
 import com.uniovi.melhouse.databinding.CalendarHeaderLayoutBinding
+import com.uniovi.melhouse.factories.presentation.adapter.TasksAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.TasksAdapter
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
 import com.uniovi.melhouse.utils.displayText
@@ -39,11 +40,24 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
+class CalendarFragment @Inject constructor(
+) : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
-    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){viewModel.updateTasks()} }
+    private var _tasksAdapter: TasksAdapter? = null
+    @Inject lateinit var tasksAdapterFactory: TasksAdapterFactory
+    private val tasksAdapter: TasksAdapter
+        get() {
+            if (_tasksAdapter == null) {
+                _tasksAdapter = tasksAdapterFactory.create(listOf()) {
+                    taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){
+                        viewModel.updateTasks()
+                    }
+                }
+            }
+            return _tasksAdapter!!
+        }
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
