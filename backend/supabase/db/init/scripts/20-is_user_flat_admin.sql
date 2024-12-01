@@ -1,7 +1,7 @@
 create or replace function public.is_admin()
 returns bool
 language plpgsql
-security invoker set search_path = ''
+security definer set search_path = ''
 as $$
 declare
     f_id uuid;
@@ -22,11 +22,7 @@ begin
     from public.flats
     where id = f_id;
 
-    if a_id = u_id then
-        return true;
-    end if;
-
-    return false;
+    return a_id = u_id;
 end;
 $$;
 
