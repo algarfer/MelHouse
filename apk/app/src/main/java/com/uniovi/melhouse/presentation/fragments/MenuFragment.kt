@@ -53,10 +53,25 @@ class MenuFragment @Inject constructor() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.todayTasks.observe(viewLifecycleOwner) { tasks ->
-            todayTasksAdapter.updateList(tasks)
+            if (tasks.isNullOrEmpty()) {
+                binding.recyclerTodayTasks.visibility = View.GONE
+                binding.tvNoTodayTasks.visibility = View.VISIBLE
+            } else {
+                binding.recyclerTodayTasks.visibility = View.VISIBLE
+                binding.tvNoTodayTasks.visibility = View.GONE
+                todayTasksAdapter.updateList(tasks)
+            }
         }
+
         viewModel.tomorrowTasks.observe(viewLifecycleOwner) { tasks ->
-            tomorrowTasksAdapter.updateList(tasks)
+            if (tasks.isNullOrEmpty()) {
+                binding.recyclerTomorrowTasks.visibility = View.GONE
+                binding.tvNoTomorrowTasks.visibility = View.VISIBLE
+            } else {
+                binding.recyclerTomorrowTasks.visibility = View.VISIBLE
+                binding.tvNoTomorrowTasks.visibility = View.GONE
+                tomorrowTasksAdapter.updateList(tasks)
+            }
         }
 
         viewModel.loadTasks()

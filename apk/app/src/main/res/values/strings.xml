@@ -48,6 +48,9 @@
     <string name="partner_kick_dialog_title">Expulsar usuario</string>
     <string name="partner_kick_dialog_supporting_text">Estás a punto de expulsar a %1$s del piso. ¿Estás seguro de que quieres contunuar?</string>
 
+    <string name="tasks_not_found_today">No tienes tareas pendientes para hoy</string>
+    <string name="tasks_not_found_tomorrow">No tienes tareas pendientes para mañana</string>
+
     <string name="task_select_start_date">Selecciona la fecha de inicio</string>
     <string name="task_select_end_date">Selecciona la fecha de fin</string>
 
@@ -66,8 +69,8 @@
     <string name="title_flat">Mi piso</string>
     <string name="title_account">Cuenta</string>
     <string name="title_settings">Ajustes</string>
-    <string name="title_today_tasks">Tareas que finalizan hoy</string>
-    <string name="title_tomorrow_tasks">Tareas que finalizan mañana</string>
+    <string name="title_today_tasks">Tareas pendientes para hoy</string>
+    <string name="title_tomorrow_tasks">Tareas pendientes para mañana</string>
 
     <string name="error_invalid_login_credentials">Credenciales de acceso no validas</string>
     <string name="error_unknown">Error desconocido</string>
