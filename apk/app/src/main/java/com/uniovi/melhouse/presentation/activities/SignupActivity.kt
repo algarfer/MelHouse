@@ -10,10 +10,9 @@ import com.uniovi.melhouse.databinding.ActivitySignupBinding
 import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class SignupActivity @Inject constructor() : AbstractActivity() {
+class SignupActivity : AbstractActivity() {
 
     private lateinit var binding: ActivitySignupBinding
     private val viewModel: SignUpViewModel by viewModels()

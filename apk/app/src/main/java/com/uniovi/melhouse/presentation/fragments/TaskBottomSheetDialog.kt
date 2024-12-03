@@ -12,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
+import com.uniovi.melhouse.data.model.toJson
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.factories.viewmodel.TaskBottomSheetViewModelFactory
 import com.uniovi.melhouse.utils.getColor
@@ -23,7 +24,7 @@ import dagger.hilt.android.lifecycle.withCreationCallback
 
 @AndroidEntryPoint
 class TaskBottomSheetDialog(
-    val task: Task,
+    private val task: Task,
     private val updateCalendarViewModel: () -> Unit,
     private val updateTasksViewHolder: () -> Unit
 ) : BottomSheetDialogFragment() {
@@ -46,10 +47,10 @@ class TaskBottomSheetDialog(
         binding.btnEditTask.setOnClickListener {
             dismiss()
 
-            val fragment = UpsertTaskFragment(viewModel.task)
+            val fragment = UpsertTaskFragment.create(viewModel.task.toJson())
             parentFragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true) //
+                .setReorderingAllowed(true)
                 .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
                 .addToBackStack(null)
                 .commit()
@@ -122,5 +123,12 @@ class TaskBottomSheetDialog(
 
     companion object {
         const val TAG = "TaskBottomSheetDialog"
+
+        // TODO - Remove the class constructor and use the bundle to pass the data
+        fun create(task: Task,
+                   updateCalendarViewModel: () -> Unit,
+                   updateTasksViewHolder: () -> Unit): TaskBottomSheetDialog {
+            return TaskBottomSheetDialog(task, updateCalendarViewModel, updateTasksViewHolder)
+        }
     }
 }

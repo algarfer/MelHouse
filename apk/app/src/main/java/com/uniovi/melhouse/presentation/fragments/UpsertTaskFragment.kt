@@ -27,20 +27,26 @@ import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.json.Json
 import java.time.LocalDate
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment() {
+class UpsertTaskFragment : Fragment() {
+
+    private var task: Task? = null
     private val viewModel: UpsertTaskViewModel by viewModels()
     private lateinit var binding: CalendarUpsertTaskFragmentBinding
     private val MILLIS_PER_DAY = 86400000
+    private val TASK_PARAMETER = "task_json"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = CalendarUpsertTaskFragmentBinding.inflate(inflater, container, false)
+        task = arguments?.getString(TASK_PARAMETER)?.let {
+            Json.decodeFromString<Task>(it)
+        }
         return binding.root
     }
 
@@ -91,6 +97,7 @@ class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val task = task
         if(task != null) {
             viewModel.onViewCreated(task)
             binding.etTaskTitle.text = task.name.toEditable()
@@ -213,5 +220,13 @@ class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment
 
     companion object {
         const val TAG = "UpsertTaskFragment"
+
+        fun create(taskJson: String? = null) : UpsertTaskFragment {
+            return UpsertTaskFragment().apply {
+                arguments = Bundle().apply {
+                    putString(TASK_PARAMETER, taskJson)
+                }
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class FlatFragment @Inject constructor() : Fragment() {
+class FlatFragment : Fragment() {
 
     private lateinit var binding: FragmentFlatBinding
     private val viewModel: FlatFragmentViewModel by viewModels()
