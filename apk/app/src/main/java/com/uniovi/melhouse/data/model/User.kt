@@ -3,6 +3,8 @@ package com.uniovi.melhouse.data.model
 import com.uniovi.melhouse.data.serializers.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.UUID
 
 @Serializable
@@ -15,4 +17,12 @@ data class User (
 
 fun User.getInitials(): String {
     return name.substring(0, 1).uppercase()
+}
+
+fun User.toJson(): String {
+    return Json.encodeToString(this)
+}
+
+fun String.toUser(): User {
+    return Json.decodeFromString(this)
 }

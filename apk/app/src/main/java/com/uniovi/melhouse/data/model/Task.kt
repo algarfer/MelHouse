@@ -8,6 +8,8 @@ import com.uniovi.melhouse.data.serializers.TaskStatusSerializer
 import com.uniovi.melhouse.data.serializers.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.LocalDate
 import java.util.UUID
 
@@ -48,4 +50,12 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
     HIGH(2) {
         override fun getString(context: Context) = context.getString(R.string.task_priority_high)
     },
+}
+
+fun Task.toJson(): String {
+    return Json.encodeToString(this)
+}
+
+fun String.toTask(): Task {
+    return Json.decodeFromString(this)
 }
