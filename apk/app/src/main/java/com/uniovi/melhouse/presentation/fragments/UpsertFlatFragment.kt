@@ -10,10 +10,9 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.FragmentUpsertFlatBinding
 import com.uniovi.melhouse.viewmodel.UpsertFlatViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class UpsertFlatFragment @Inject constructor() : Fragment() {
+class UpsertFlatFragment : Fragment() {
 
     private lateinit var binding: FragmentUpsertFlatBinding
     private val viewModel: UpsertFlatViewModel by viewModels()

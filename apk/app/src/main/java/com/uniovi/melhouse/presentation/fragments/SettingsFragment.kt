@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.FragmentSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class SettingsFragment @Inject constructor() : Fragment() {
+class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
 

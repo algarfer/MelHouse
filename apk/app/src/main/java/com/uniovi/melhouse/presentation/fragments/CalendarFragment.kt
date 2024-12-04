@@ -40,8 +40,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CalendarFragment @Inject constructor(
-) : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
+class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
@@ -124,7 +123,7 @@ class CalendarFragment @Inject constructor(
         }
 
         binding.addTaskFab.setOnClickListener {
-            val fragment = UpsertTaskFragment(null)
+            val fragment = UpsertTaskFragment.create()
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true) //

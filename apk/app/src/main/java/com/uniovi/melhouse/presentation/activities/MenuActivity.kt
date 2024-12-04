@@ -22,10 +22,9 @@ import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 import com.uniovi.melhouse.viewmodel.DrawerViewModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class MenuActivity @Inject constructor() : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener  {
+class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener  {
 
     private lateinit var binding: ActivityMenuBinding
     private lateinit var drawerLayout: DrawerLayout
