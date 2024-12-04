@@ -1,19 +1,23 @@
 package com.uniovi.melhouse.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.databinding.CalendarAddTaskFragmentBinding
@@ -26,12 +30,13 @@ import com.uniovi.melhouse.utils.maxDate
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
+import com.uniovi.melhouse.viewmodel.state.TaskState
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment() {
+class UpsertTaskFragment @Inject constructor(private val taskState: TaskState?) : Fragment() {
     private val viewModel: UpsertTaskViewModel by viewModels()
     private lateinit var binding: CalendarAddTaskFragmentBinding
     private val MILLIS_PER_DAY = 86400000
@@ -86,15 +91,64 @@ class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment
                 binding.btnClearPriority.makeVisible()
             }
         }
+
+        viewModel.map.observe(this) {
+            makeButtons()
+        }
+
     }
+
+    private fun makeButtons() {
+        // Limpia las vistas existentes en el grupo de botones
+        binding.asigneesBtnGroup.removeAllViews()
+
+        Log.d("makeButtons", viewModel.map.value.toString())
+        // Itera sobre los elementos del mapa en el ViewModel
+        viewModel.map.value!!.forEachIndexed { index, mate ->
+            // Verifica que 'mate' no sea nulo antes de proceder
+            mate?.let {
+                val button = MaterialButton(requireContext()).apply {
+                    text = it.name
+                    strokeWidth = 2
+                    setStrokeColorResource(R.color.secondary)
+                }
+                applyColor(viewModel.asignees.value!![index], button)
+                button.setOnClickListener{
+                    Log.d("click", ""+index)
+
+                    applyColor(viewModel.changeAsignee(index), button)
+                }
+                // Agrega el botón al grupo de vistas
+                Log.d("makeButtons", "añade")
+                binding.asigneesBtnGroup.addView(button)
+            }
+        }
+    }
+
+    private fun applyColor(
+        condition: Boolean,
+        button: MaterialButton
+    ) {
+        if (condition)
+            button.apply {
+                setBackgroundColor(getColor(context, R.color.secondary_container))
+                setTextColor(getColor(context, R.color.on_secondary_container))
+            }
+        else
+            button.apply {
+                setBackgroundColor(getColor(context, R.color.background))
+                setTextColor(getColor(context, R.color.on_background))
+            }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(task != null) {
-            viewModel.onViewCreated(task)
-            binding.etTaskTitle.text = task.name.toEditable()
-            binding.etTaskDescription.text = task.description?.toEditable()
+        viewModel.onViewCreated(taskState)
+        if(taskState != null) {
+            binding.etTaskTitle.text = taskState.task.name.toEditable()
+            binding.etTaskDescription.text = taskState.task.description?.toEditable()
         }
 
         binding.dmStatus.dropdownLayout.hint = getString(R.string.task_status)
@@ -184,6 +238,8 @@ class UpsertTaskFragment @Inject constructor(private val task: Task?) : Fragment
         }
 
         addStatusBarColorUpdate(R.color.background)
+
+        makeButtons()
     }
 
     private fun showDatePickerDialog(title: String, startDate: LocalDate, endDate: LocalDate, listener: (LocalDate) -> Unit) {

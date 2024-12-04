@@ -24,23 +24,6 @@ class TaskRepositorySupabase @Inject constructor(
             }.decodeList()
     }
 
-    override suspend fun findAsigneesById(taskId: UUID): List<User> {
-        val ids = supabaseClient
-            .from("tasks_users")
-            .select {
-                filter {
-                    eq("task_id", taskId)
-                }
-            }.decodeList<UUID>()
-        return supabaseClient
-            .from("users")
-            .select {
-                filter {
-                    contains("id", ids)
-                }
-            }.decodeList()
-    }
-
     override suspend fun insert(entity: Task) {
         supabaseClient
             .from(TABLE_NAME)
