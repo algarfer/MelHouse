@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.model.getFullAddress
 import com.uniovi.melhouse.databinding.FragmentFlatBinding
 import com.uniovi.melhouse.factories.presentation.adapter.PartnersAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.PartnersAdapter
@@ -56,8 +55,7 @@ class FlatFragment : Fragment() {
             val bitmap = barcodeEncoder.encodeBitmap(flat.invitationCode, BarcodeFormat.QR_CODE, 512, 512)
 
             binding.apply {
-                tvFlatName.text = flat.name
-                tvFlatAddress.text = flat.getFullAddress()
+                tvNameFlat.text = flat.name
                 ivQRCode.setImageBitmap(bitmap)
                 tvQRCode.text = getString(R.string.flat_invitation_code, flat.invitationCode)
             }
