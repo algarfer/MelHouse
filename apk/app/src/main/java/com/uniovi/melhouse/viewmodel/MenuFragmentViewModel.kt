@@ -17,20 +17,29 @@ class MenuFragmentViewModel @Inject constructor(
     private val taskRepository: TaskRepository
 ) : ViewModel() {
 
-    val todayTasks: LiveData<List<Task>>
+    val todayTasks: MutableLiveData<List<Task>?>
         get() = _todayTasks
-    private val _todayTasks = MutableLiveData<List<Task>>()
+    private val _todayTasks = MutableLiveData<List<Task>?>()
 
-    val tomorrowTasks: LiveData<List<Task>>
+    val tomorrowTasks: MutableLiveData<List<Task>?>
         get() = _tomorrowTasks
-    private val _tomorrowTasks = MutableLiveData<List<Task>>()
+    private val _tomorrowTasks = MutableLiveData<List<Task>?>()
 
     fun loadTasks() {
         viewModelScope.launch(Dispatchers.IO) {
-            _todayTasks.postValue(taskRepository.findAssignedByDate(LocalDate.now()))
+            try {
+                _todayTasks.postValue(taskRepository.findAssignedByDate(LocalDate.now()))
+            } catch (e: Exception) {
+                _todayTasks.postValue(null)
+            }
+
         }
         viewModelScope.launch(Dispatchers.IO) {
-            _tomorrowTasks.postValue(taskRepository.findAssignedByDate(LocalDate.now().plusDays(1)))
+            try {
+                _tomorrowTasks.postValue(taskRepository.findAssignedByDate(LocalDate.now().plusDays(1)))
+            } catch (e: Exception) {
+                _tomorrowTasks.postValue(null)
+            }
         }
     }
 
