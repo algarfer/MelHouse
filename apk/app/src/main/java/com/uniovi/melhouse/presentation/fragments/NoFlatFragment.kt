@@ -11,11 +11,17 @@ import com.uniovi.melhouse.databinding.FragmentNoFlatBinding
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Activity
+import androidx.fragment.app.viewModels
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.viewmodel.NoFlatFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class NoFlatFragment : Fragment() {
+@AndroidEntryPoint
+class NoFlatFragment @Inject constructor() : Fragment() {
 
     private lateinit var binding: FragmentNoFlatBinding
+    private val viewModel: NoFlatFragmentViewModel by viewModels()
 
     companion object {
         const val TAG = "NoFlatFragment"
@@ -42,6 +48,10 @@ class NoFlatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentNoFlatBinding.inflate(inflater, container, false)
+        setupObservers()
+        binding.btnJoinFlat.setOnClickListener {
+            viewModel.joinFlat(binding.etFlatCode.text.toString(), requireContext())
+        }
         binding.btnJoinQRFlat.setOnClickListener {
             initFlatQRScan()
         }
@@ -54,6 +64,24 @@ class NoFlatFragment : Fragment() {
                 .commit()
         }
         return binding.root
+    }
+
+    private fun setupObservers() {
+        viewModel.flatCodeError.observe(viewLifecycleOwner) { errorMessage ->
+            binding.flatCodeLayout.error = errorMessage
+        }
+
+        viewModel.joinFlatSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), R.string.flat_welcome, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.snackBarMsg.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun initFlatQRScan() {

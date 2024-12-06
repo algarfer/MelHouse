@@ -31,6 +31,7 @@
     <string name="flat_invitation_code_large">Codigo de invitación</string>
     <string name="flat_kick_user">Expulsar usuario</string>
     <string name="flat_promote_user">Ascender usuario</string>
+    <string name="flat_welcome">¡Bienvenido a tu nuevo piso!</string>
 
     <string name="task_title">Título</string>
     <string name="task_description">Descripción</string>
@@ -81,8 +82,11 @@
     <string name="error_lost_connection_msg">Has perdido la conexión con el servidor. Comprueba tu conexión a internet y vuelve a intentarlo.</string>
     <string name="error_lost_connection_btn">Reintentar</string>
 
-    <string name="error_form_flat_name_empty">El nombre del piso no puede estar vacío</string>
     <string name="error_form_flat_address_empty">La dirección del piso no puede estar vacía</string>
+    <string name="error_form_flat_name_empty">El nombre del piso no puede estar vacío</string>
+    <string name="error_form_flat_code_empty">El código del piso no puede estar vacío</string>
+    <string name="error_join_flat_failed">Código inválido</string>
+
 
     <string name="error_form_login_user_not_found">No existe un usuario asociado a este email</string>
     <string name="error_form_login_email_empty">El email no puede estar vacío</string>
