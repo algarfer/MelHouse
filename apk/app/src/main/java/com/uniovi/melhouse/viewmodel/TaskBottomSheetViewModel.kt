@@ -32,7 +32,7 @@ class TaskBottomSheetViewModel  @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val asignees = userRepository.findAsigneesById(task.id)
 
-            this@TaskBottomSheetViewModel.taskState.postValue(TaskState(task, asignees))
+            this@TaskBottomSheetViewModel.taskState.postValue(TaskState(task, asignees, true))
         }
 
         this.closeTaskBottomSheetDialog = closeTaskBottomSheetDialog

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
@@ -27,8 +26,7 @@ class UpsertTaskViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
     private val prefs: Prefs,
     private val userRepository: UserRepository,
-    private val taskUserRepository: TaskUserRepository,
-    private val userSessionFacade: SupabaseUserSessionFacade
+    private val taskUserRepository: TaskUserRepository
 ) : ViewModel() {
     private var taskState: TaskState? = null
 
@@ -51,14 +49,18 @@ class UpsertTaskViewModel @Inject constructor(
         get() = _priority
     private val _priority = MutableLiveData<TaskPriority?>()
 
-    val asignees: LiveData<MutableList<Boolean>?>
-        get() = _asignees
-    private val _asignees = MutableLiveData<MutableList<Boolean>?>()
+    // Lista para controlar botones seleccionados(true -> en amarillo)
+    var asignees: MutableList<Boolean> = mutableListOf()
 
-    private val _map = MutableLiveData<MutableList<User?>>(mutableListOf(null))
+    // Para cerrar el viewmodel tras finalizar la corrutinas
+    val close: LiveData<Boolean>
+        get() = _close
+    private val _close = MutableLiveData(false)
 
-    val map: LiveData<MutableList<User?>> get() = _map
-
+    //mapea índice del botón -> compañero de piso
+    val map: LiveData<MutableList<User>>
+        get() = _map
+    private val _map = MutableLiveData<MutableList<User>>(mutableListOf())
 
     fun setTitle(title: String) {
         this.title = title
@@ -94,51 +96,38 @@ class UpsertTaskViewModel @Inject constructor(
     }
 
     fun upsertTask() {
-        if (taskState == null)
-            saveTaskState()
-        else
+        if (taskState?.isInBD == true)
             updateTaskState()
+        else
+            saveTaskState()
     }
 
     private fun saveTaskState(){
-        saveTask()
-        saveAsignees()
-    }
-
-    private fun updateTaskState(){
-        updateTask()
-        updateAsignees()
-    }
-
-    private fun saveTask() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             Executor.safeCall {
-                taskRepository.insert(generateTask())
+                val task = generateTask()
+                taskRepository.insert(task)
+                if(taskState != null)
+                    taskUserRepository.insertAsignees(task.id, taskState!!.asignees.map { user -> user.id })
+                _close.postValue(true)
             }
         }
     }
 
-    private fun saveAsignees(){
-        viewModelScope.launch(Dispatchers.IO) {
-            taskUserRepository.insertAsignees(taskState!!.task.id, taskState!!.asignees.map { user -> user.id })
-        }
-    }
-
-    private fun updateTask() {
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.update(generateTask())
-        }
-    }
-
-    private fun updateAsignees(){
-        viewModelScope.launch(Dispatchers.IO) {
-            taskUserRepository.deleteAllAsignees(taskState!!.task.id)
-            taskUserRepository.insertAsignees(taskState!!.task.id, taskState!!.asignees.map { user -> user.id })
+    private fun updateTaskState(){
+        viewModelScope.launch {
+            Executor.safeCall {
+                taskRepository.update(generateTask())
+                taskUserRepository.deleteAllAsignees(taskState!!.task.id)
+                taskUserRepository.insertAsignees(
+                    taskState!!.task.id,
+                    taskState!!.asignees.map { user -> user.id })
+                _close.postValue(true)
+            }
         }
     }
 
     private fun generateTask(): Task {
-        Log.d("generate", taskState.toString())
         return taskState?.task?.copy(
             name = title.orEmpty(),
             description = description,
@@ -161,38 +150,35 @@ class UpsertTaskViewModel @Inject constructor(
     private fun putAsignees() {
         viewModelScope.launch(Dispatchers.IO) {
             val roommates = userRepository.getRoommates()
-            Log.d("roomates", roommates.toString())
-            _asignees.postValue(MutableList(roommates.size) { false })
+
+            asignees = MutableList(roommates.size) { false }
             for ((index, roommate) in roommates.withIndex()) {
-                Log.d("putAsignees", "añadeMap")
                 _map.value!!.add(index, roommate)
                 _map.postValue(_map.value!!.toMutableList())
             }
-            Log.i("map", _map.value.toString())
+
             if(taskState != null) {
-                val newAsignees = taskState?.asignees?.toMutableList().orEmpty().toMutableList()
-                //changeAsignee(_map.value!!.indexOf(asignee))
-                _asignees.postValue(map.value!!.map { asignee -> taskState!!.asignees.contains(asignee) }.toMutableList())
+                asignees = map.value!!.map { asignee -> taskState!!.asignees.contains(asignee) }.toMutableList()
             }
         }
     }
 
     fun changeAsignee(index: Int): Boolean{
-        Log.d("changeAsignee", "1")
-        //_asignees.value!![index] = !_asignees.value!![index]
+        taskState = TaskState(generateTask(), asignees = getNewAsignees(index), taskState?.isInBD ?: false)
+
+        asignees[index] = !asignees[index]
+
+        return asignees[index]
+    }
+
+    private fun getNewAsignees(index: Int): MutableList<User> {
         val newAsignees = taskState?.asignees?.toMutableList().orEmpty().toMutableList()
-        Log.d("changeAsignee", "2")
-        if(newAsignees.contains(_map.value!![index]))
+
+        if (newAsignees.contains(_map.value!![index]))
             newAsignees.remove(_map.value!![index])
         else
-            newAsignees.add(_map.value!![index]!!)
+            newAsignees.add(_map.value!![index])
 
-        Log.d("changeAsignee", "3")
-        taskState = TaskState(generateTask(), asignees = newAsignees)
-        Log.d("changeAsignee", "4")
-        asignees.value?.set(index, !asignees.value!![index])
-        Log.d("changeAsignee", "5")
-
-        return asignees.value?.get(index) ?: false
+        return newAsignees
     }
 }

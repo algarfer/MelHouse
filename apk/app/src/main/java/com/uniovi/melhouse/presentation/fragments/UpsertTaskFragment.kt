@@ -1,7 +1,6 @@
 package com.uniovi.melhouse.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -96,30 +95,31 @@ class UpsertTaskFragment @Inject constructor(private val taskState: TaskState?) 
             makeButtons()
         }
 
+        viewModel.close.observe(this) {
+            if(it)
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
     }
 
     private fun makeButtons() {
         // Limpia las vistas existentes en el grupo de botones
         binding.asigneesBtnGroup.removeAllViews()
 
-        Log.d("makeButtons", viewModel.map.value.toString())
         // Itera sobre los elementos del mapa en el ViewModel
         viewModel.map.value!!.forEachIndexed { index, mate ->
             // Verifica que 'mate' no sea nulo antes de proceder
-            mate?.let {
+            mate.let {
                 val button = MaterialButton(requireContext()).apply {
                     text = it.name
                     strokeWidth = 2
                     setStrokeColorResource(R.color.secondary)
                 }
-                applyColor(viewModel.asignees.value!![index], button)
+                applyColor(viewModel.asignees[index], button)
                 button.setOnClickListener{
-                    Log.d("click", ""+index)
-
                     applyColor(viewModel.changeAsignee(index), button)
                 }
                 // Agrega el botón al grupo de vistas
-                Log.d("makeButtons", "añade")
                 binding.asigneesBtnGroup.addView(button)
             }
         }
@@ -218,7 +218,7 @@ class UpsertTaskFragment @Inject constructor(private val taskState: TaskState?) 
 
         binding.btnSave.setOnClickListener {
             viewModel.upsertTask()
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            //requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         binding.btnClearStartDate.setOnClickListener {

@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.data.repository.task
 
+import android.util.Log
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
@@ -31,6 +32,7 @@ class TaskRepositorySupabase @Inject constructor(
     }
 
     override suspend fun update(entity: Task) {
+        Log.d("updateTaskRepo", entity.toString())
         supabaseClient
             .from(TABLE_NAME)
             .update(entity) {
