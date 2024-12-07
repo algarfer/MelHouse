@@ -10,6 +10,13 @@ android {
     namespace = "com.uniovi.melhouse"
     compileSdk = 34
 
+    testOptions {
+        packaging {
+            jniLibs {
+                useLegacyPackaging = true
+            }
+        }
+    }
     defaultConfig {
         applicationId = "com.uniovi.melhouse"
         minSdk = 34
@@ -17,7 +24,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.uniovi.melhouse.MyTestRunner"
     }
 
     buildTypes {

@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.di.modules
 
+import android.util.Log
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskUser
@@ -36,13 +37,21 @@ object TestRepositoriesModule {
 
         coEvery { mockk.insert(any()) } answers {
             val user = arg<User>(0)
+            Log.d("hola", "hola")
+            //if(!user.email.startsWith("mel"))
             users.add(user)
             Unit
         }
 
         coEvery { mockk.findById(any()) } answers {
             val userId = arg<UUID>(0)
-            users.find { user -> user.id == userId }
+            Log.i("userId", userId.toString())
+            val ret: User?
+            if(userId.toString() == "11111111-1111-1111-1111-111111111111")
+                ret = User(id = UUID.fromString("11111111-1111-1111-1111-111111111111"), email = "mel@mel.mel", name = "Mel", flatId = UUID.randomUUID())
+            else
+                ret = users.find { user -> user.id == userId }
+            ret
         }
 
         coEvery { mockk.findByIds(any()) } answers {

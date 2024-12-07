@@ -1,12 +1,11 @@
 package com.uniovi.melhouse.di.modules
-import android.se.omapi.Session
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.AuthConfig
 import io.github.jan.supabase.auth.SessionManager
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
@@ -29,25 +28,55 @@ object TestDatabaseModule {
     fun provideSupabase() : SupabaseClient {
         val supabaseClient = mockk<SupabaseClient>()
         val auth = mockk<Auth>()
-        val sessionManager = mockk<SessionManager>()
+        val sessionM = mockk<SessionManager>()
         val userSession = mockk<UserSession>()
         val userInfo = mockk<UserInfo>()
         //val postgrestBuilder = mockk<PostgrestBuilder>()
         //val postgrestResult = PostgrestResult(body = null, headers = Headers.Empty)
 
-        every { supabaseClient.auth} returns auth
+        /*every { supabaseClient.pluginManager } returns mockk {
+            every { installedPlugins[Auth.key] } returns auth
+            every { getPlugin(Auth) } returns auth
+        }
 
-        coEvery { auth.loadFromStorage()} returns false
+        every { supabaseClient.pluginManager.getPlugin(Auth) } returns auth
 
-        coEvery { auth.signUpWith(Email) } returns null
+        every { supabaseClient.auth} returns auth*/
 
-        every { auth.sessionManager } returns sessionManager
+        every { supabaseClient.pluginManager } returns mockk {
+            every { installedPlugins[Auth.key] } returns mockk<Auth> {
+                every { config } returns mockk<AuthConfig> {
+                    every { defaultRedirectUrl } returns "<http://www.redirect.com|www.redirect.com>"
+                    every { alwaysAutoRefresh } returns false
+                }
 
-        coEvery { sessionManager.saveSession(any()) } returns Unit
+                coEvery { loadFromStorage(any())} returns false
 
-        every { auth.currentSessionOrNull() } returns userSession
+                coEvery { signUpWith<Email.Config, UserInfo, Email>(any(), any(), any()) } returns null
 
-        every {auth.currentUserOrNull()} returns userInfo
+                coEvery { signInWith<Email.Config, UserInfo, Email>(any(), any(), any()) } returns Unit
+
+                every { sessionManager } returns sessionM
+
+                every { currentSessionOrNull() } returns userSession
+
+                every { currentUserOrNull() } returns userInfo
+            }
+        }
+
+        /*coEvery { auth.loadFromStorage()} returns false
+
+        coEvery { auth.signUpWith<Email.Config, UserInfo, Email>(any(), any(), any()) } returns null
+
+        coEvery { auth.signInWith<Email.Config, UserInfo, Email>(any(), any(), any()) } returns Unit
+
+        every { auth.sessionManager } returns sessionManager*/
+
+        coEvery { sessionM.saveSession(any()) } returns Unit
+
+        /*every { auth.currentSessionOrNull() } returns userSession
+
+        every {auth.currentUserOrNull()} returns userInfo*/
 
         every {userInfo.id} returns "11111111-1111-1111-1111-111111111111"
 
