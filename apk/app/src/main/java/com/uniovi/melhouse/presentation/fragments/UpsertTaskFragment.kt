@@ -16,6 +16,8 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
+import com.uniovi.melhouse.data.model.toJson
+import com.uniovi.melhouse.data.model.toTask
 import com.uniovi.melhouse.databinding.CalendarUpsertTaskFragmentBinding
 import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
 import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
@@ -27,7 +29,6 @@ import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.serialization.json.Json
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -44,9 +45,7 @@ class UpsertTaskFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = CalendarUpsertTaskFragmentBinding.inflate(inflater, container, false)
-        task = arguments?.getString(TASK_PARAMETER)?.let {
-            Json.decodeFromString<Task>(it)
-        }
+        task = arguments?.getString(TASK_PARAMETER)?.toTask()
         return binding.root
     }
 
@@ -221,10 +220,10 @@ class UpsertTaskFragment : Fragment() {
     companion object {
         const val TAG = "UpsertTaskFragment"
 
-        fun create(taskJson: String? = null) : UpsertTaskFragment {
+        fun create(task: Task? = null) : UpsertTaskFragment {
             return UpsertTaskFragment().apply {
                 arguments = Bundle().apply {
-                    putString(TASK_PARAMETER, taskJson)
+                    putString(TASK_PARAMETER, task?.toJson())
                 }
             }
         }

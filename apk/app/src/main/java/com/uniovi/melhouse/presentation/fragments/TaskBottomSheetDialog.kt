@@ -47,7 +47,7 @@ class TaskBottomSheetDialog(
         binding.btnEditTask.setOnClickListener {
             dismiss()
 
-            val fragment = UpsertTaskFragment.create(viewModel.task.toJson())
+            val fragment = UpsertTaskFragment.create(viewModel.task)
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true)
