@@ -20,7 +20,7 @@ class FlatRepositorySupabase @Inject constructor(
             .postgrest
             .rpc("join_flat", buildJsonObject {
                 put("p_code", invitationCode)
-            }).decodeSingle()
+            }).decodeAs()
     }
 
     override suspend fun createFlat(flat: Flat): Flat {
@@ -32,7 +32,7 @@ class FlatRepositorySupabase @Inject constructor(
                 put("p_floor", flat.floor)
                 put("p_door", flat.door)
                 put("p_stair", flat.stair)
-            }).decodeSingle();
+            }).decodeAs()
     }
 
     override suspend fun insert(entity: Flat) {
