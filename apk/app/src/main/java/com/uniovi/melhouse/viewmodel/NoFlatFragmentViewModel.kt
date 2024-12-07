@@ -42,6 +42,7 @@ class NoFlatFragmentViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                flatRepository.joinFlat(flatCode)
                 _joinFlatSuccess.postValue(true)
             } catch (e: PersistenceLayerException) {
                 _snackBarMsg.postValue(e.getMessage(context))
