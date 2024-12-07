@@ -32,6 +32,10 @@
     <string name="flat_kick_user">Expulsar usuario</string>
     <string name="flat_promote_user">Ascender usuario</string>
     <string name="flat_welcome">¡Bienvenido a tu nuevo piso!</string>
+    <string name="flat_qr_join">Escanea el QR de un piso para entrar</string>
+    <string name="flat_qr_cancelled">"Escaneo cancelado"</string>
+    <string name="flat_qr_not_read">No se pudo leer el QR</string>
+
 
     <string name="task_title">Título</string>
     <string name="task_description">Descripción</string>

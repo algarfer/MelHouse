@@ -1,7 +1,6 @@
 package com.uniovi.melhouse.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -43,13 +42,11 @@ class NoFlatFragmentViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                if (flatRepository.joinFlat(flatCode)!=null) {
-                    _joinFlatSuccess.postValue(true)
-                } else {
-                    _snackBarMsg.postValue(context.getString(R.string.error_join_flat_failed))
-                }
+                _joinFlatSuccess.postValue(true)
             } catch (e: PersistenceLayerException) {
                 _snackBarMsg.postValue(e.getMessage(context))
+            } catch (e: Exception) {
+                _snackBarMsg.postValue(context.getString(R.string.error_join_flat_failed))
             }
         }
     }

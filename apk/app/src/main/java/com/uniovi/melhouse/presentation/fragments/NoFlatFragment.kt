@@ -35,10 +35,12 @@ class NoFlatFragment @Inject constructor() : Fragment() {
             val scanResult = IntentIntegrator.parseActivityResult(result.resultCode, intent)
             if (scanResult != null) {
                 if (scanResult.contents != null) {
-                    Toast.makeText(requireContext(), scanResult.contents, Toast.LENGTH_SHORT).show()
+                    viewModel.joinFlat(scanResult.contents, requireContext())
                 } else {
-                    Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.flat_qr_cancelled, Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(requireContext(), R.string.flat_qr_not_read, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -86,10 +88,9 @@ class NoFlatFragment @Inject constructor() : Fragment() {
 
     private fun initFlatQRScan() {
         val integrator = IntentIntegrator.forSupportFragment(this)
-        integrator.setPrompt("Scan a QR code")
+        integrator.setPrompt(getString(R.string.flat_qr_join))
         integrator.setCameraId(0)
         integrator.setBeepEnabled(true)
-        integrator.setBarcodeImageEnabled(true)
         qrScanLauncher.launch(integrator.createScanIntent())
     }
 }
