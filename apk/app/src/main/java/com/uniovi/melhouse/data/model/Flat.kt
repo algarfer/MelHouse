@@ -17,16 +17,3 @@ data class Flat(
     @SerialName("invitation_code") var invitationCode: String = "",
     @Serializable(with = UUIDSerializer::class) @SerialName("admin_id") var adminId: UUID
 )
-
-fun Flat.toContentValues(): ContentValues {
-    return ContentValues().apply {
-        put("id", id.toString())
-        put("name", name)
-        put("address", address)
-        put("floor", floor)
-        put("door", door)
-        put("stair", stair)
-        put("invitation_code", invitationCode)
-        put("admin_id", adminId.toString())
-    }
-}

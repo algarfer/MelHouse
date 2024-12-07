@@ -51,15 +51,3 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
     },
 }
 
-fun Task.toContentValues(): ContentValues {
-    return ContentValues().apply {
-        put("id", id.toString())
-        put("name", name)
-        put("description", description)
-        put("status", status?.value)
-        put("priority", priority?.value)
-        put("start_date", startDate?.toString())
-        put("end_date", endDate?.toString())
-        put("flat_id", flatId.toString())
-    }
-}

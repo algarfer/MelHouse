@@ -1,4 +1,4 @@
-create or replace function private.generate_flat_code()
+create or replace function public.generate_flat_code()
 returns text
 language plpgsql
 security invoker set search_path = ''

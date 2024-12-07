@@ -12,11 +12,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
+import com.uniovi.melhouse.databinding.TaskAsigneeDisplayLayoutBinding
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
 import com.uniovi.melhouse.utils.makeGone
-import com.uniovi.melhouse.utils.showWipToast
+import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,7 +31,7 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
 
         viewModel.onCreateView(task, updateCalendarViewModel, updateTasksViewHolder) { dismiss() }
 
-        viewModel.task.observe(this){
+        viewModel.taskState.observe(this){
             updateTask()
         }
 
@@ -41,7 +42,7 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
         binding.btnEditTask.setOnClickListener {
             dismiss()
 
-            val fragment = UpsertTaskFragment(viewModel.task.value!!)
+            val fragment = UpsertTaskFragment(viewModel.taskState.value!!)
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true) //
@@ -66,28 +67,28 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
 
     private fun updateTask() {
         // Update name
-        binding.tvTaskTitle.text = viewModel.task.value!!.name
+        binding.tvTaskTitle.text = viewModel.taskState.value!!.task.name
 
         updatePriority()
 
         updateStatus()
 
         // Update description
-        binding.tvTaskDescription.text = viewModel.task.value!!.description.orEmpty()
+        binding.tvTaskDescription.text = viewModel.taskState.value!!.task.description.orEmpty()
 
         updateTaskDays()
     }
 
     private fun updateTaskDays() {
-        if (viewModel.task.value!!.endDate == null) {
+        if (viewModel.taskState.value!!.task.endDate == null) {
             binding.taskDaysLayout.makeGone()
         } else {
-            binding.tvTaskDates.text = viewModel.task.value!!.getDatesString()
+            binding.tvTaskDates.text = viewModel.taskState.value!!.task.getDatesString()
         }
     }
 
     private fun updateStatus() {
-        val status = viewModel.task.value!!.status
+        val status = viewModel.taskState.value!!.task.status
 
         if (status == null) {
             binding.badgeTaskStatus.root.makeGone()
@@ -98,13 +99,34 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
     }
 
     private fun updatePriority() {
-        val priority = viewModel.task.value!!.priority
+        val priority = viewModel.taskState.value!!.task.priority
 
         if (priority == null) {
             binding.badgeTaskPriority.root.makeGone()
         } else {
             binding.badgeTaskPriority.tvStatus.text = priority.getString(requireContext())
             binding.badgeTaskPriority.ivStatus.setColorFilter(priority.getColor(requireContext()))
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.taskState.observe(this) { taskState ->
+            if(taskState.asignees.isEmpty()) {
+                binding.taskAsigneeLayout.makeGone()
+            }
+
+            binding.taskAsigneeLayout.makeVisible()
+            binding.taskAsigneeLayout.removeAllViews()
+
+            taskState.asignees.forEach {
+                val asigneeView = LayoutInflater.from(context).inflate(R.layout.task_asignee_display_layout, binding.taskAsigneeLayout, false)
+                val binding = TaskAsigneeDisplayLayoutBinding.bind(asigneeView)
+                binding.tvAsigneeName.text = it.name
+                binding.ivAsignee.tvProfile.text = it.name.first().toString()
+                this.binding.taskAsigneeLayout.addView(asigneeView)
+            }
         }
     }
 
