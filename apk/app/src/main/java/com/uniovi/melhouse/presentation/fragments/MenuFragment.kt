@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MenuFragment @Inject constructor() : Fragment() {
+class MenuFragment : Fragment() {
 
     private lateinit var binding: FragmentMenuBinding
     private val viewModel: MenuFragmentViewModel by viewModels()
