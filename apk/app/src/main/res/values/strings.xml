@@ -38,6 +38,7 @@
     <string name="task_end_date">Fecha de fin</string>
     <string name="task_priority">Prioridad</string>
     <string name="task_status">Estado</string>
+    <string name="task_asignee">Asignados</string>
 
     <string name="task_elimination_dialog_title">Eliminar tarea</string>
     <string name="task_elimination_dialog_supporting_text">Estás a punto de eliminar la tarea \"%1$s\". Esta acción es irreversible</string>
@@ -92,7 +93,7 @@
     <string name="error_form_signup_email_invalid">El email no es válido</string>
     <string name="error_form_signup_password_invalid">La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número</string>
     <string name="error_form_signup_name_length">El nombre debe de tener entre 3 y 50 caracteres.</string>
-    <string name="error_form_signup_email_length">El email no puede tener mas de 50 caracteres.</string>
+    <string name="error_form_signup_email_length">El email debe de tener en 3 y 50 caracteres.</string>
     <string name="error_form_signup_password_length">La contraseña no puede tener mas de 50 caracteres.</string>
 
     <string name="user_name">Nombre del usuario</string>

@@ -5,15 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.uniovi.melhouse.R
-import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.data.model.toJson
@@ -28,24 +31,25 @@ import com.uniovi.melhouse.utils.maxDate
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
+import com.uniovi.melhouse.viewmodel.state.TaskState
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 
 @AndroidEntryPoint
 class UpsertTaskFragment : Fragment() {
 
-    private var task: Task? = null
+    private var taskState: TaskState? = null
     private val viewModel: UpsertTaskViewModel by viewModels()
     private lateinit var binding: CalendarUpsertTaskFragmentBinding
     private val MILLIS_PER_DAY = 86400000
-    private val TASK_PARAMETER = "task_json"
+    private val TASK_STATE_PARAMETER = "task_state_json"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = CalendarUpsertTaskFragmentBinding.inflate(inflater, container, false)
-        task = arguments?.getString(TASK_PARAMETER)?.toTask()
+        taskState = arguments?.getString(TASK_STATE_PARAMETER)?.toTaskState()
         return binding.root
     }
 
@@ -91,16 +95,65 @@ class UpsertTaskFragment : Fragment() {
                 binding.btnClearPriority.makeVisible()
             }
         }
+
+        viewModel.map.observe(this) {
+            makeButtons()
+        }
+
+        viewModel.close.observe(this) {
+            if(it)
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
     }
+
+    private fun makeButtons() {
+        // Limpia las vistas existentes en el grupo de botones
+        binding.asigneesBtnGroup.removeAllViews()
+
+        // Itera sobre los elementos del mapa en el ViewModel
+        viewModel.map.value!!.forEachIndexed { index, mate ->
+            // Verifica que 'mate' no sea nulo antes de proceder
+            mate.let {
+                val button = MaterialButton(requireContext()).apply {
+                    text = it.name
+                    strokeWidth = 2
+                    setStrokeColorResource(R.color.secondary)
+                }
+                applyColor(viewModel.asignees[index], button)
+                button.setOnClickListener{
+                    applyColor(viewModel.changeAsignee(index), button)
+                }
+                // Agrega el botón al grupo de vistas
+                binding.asigneesBtnGroup.addView(button)
+            }
+        }
+    }
+
+    private fun applyColor(
+        condition: Boolean,
+        button: MaterialButton
+    ) {
+        if (condition)
+            button.apply {
+                setBackgroundColor(getColor(context, R.color.secondary_container))
+                setTextColor(getColor(context, R.color.on_secondary_container))
+            }
+        else
+            button.apply {
+                setBackgroundColor(getColor(context, R.color.background))
+                setTextColor(getColor(context, R.color.on_background))
+            }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val task = task
-        if(task != null) {
-            viewModel.onViewCreated(task)
-            binding.etTaskTitle.text = task.name.toEditable()
-            binding.etTaskDescription.text = task.description?.toEditable()
+        viewModel.onViewCreated(taskState)
+        if(taskState != null) {
+            binding.etTaskTitle.text = taskState.task.name.toEditable()
+            binding.etTaskDescription.text = taskState.task.description?.toEditable()
         }
 
         binding.dmStatus.dropdownLayout.hint = getString(R.string.task_status)
@@ -170,7 +223,7 @@ class UpsertTaskFragment : Fragment() {
 
         binding.btnSave.setOnClickListener {
             viewModel.upsertTask()
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            //requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         binding.btnClearStartDate.setOnClickListener {
@@ -190,6 +243,8 @@ class UpsertTaskFragment : Fragment() {
         }
 
         addStatusBarColorUpdate(R.color.background)
+
+        makeButtons()
     }
 
     private fun showDatePickerDialog(title: String, startDate: LocalDate, endDate: LocalDate, listener: (LocalDate) -> Unit) {
@@ -220,10 +275,10 @@ class UpsertTaskFragment : Fragment() {
     companion object {
         const val TAG = "UpsertTaskFragment"
 
-        fun create(task: Task? = null) : UpsertTaskFragment {
+        fun create(taskState: TaskState? = null) : UpsertTaskFragment {
             return UpsertTaskFragment().apply {
                 arguments = Bundle().apply {
-                    putString(TASK_PARAMETER, task?.toJson())
+                    putString(TASK_STATE_PARAMETER, taskState?.toJson())
                 }
             }
         }

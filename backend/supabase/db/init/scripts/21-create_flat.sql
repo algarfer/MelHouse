@@ -14,7 +14,7 @@ declare
     p_id uuid;
     new_flat public.flats%rowtype;
 begin
-    code := private.generate_flat_code();
+    code := public.generate_flat_code();
     p_id := (select extensions.uuid_generate_v4());
 
     insert into public.flats (id, name, address, floor, door, stair, invitation_code, admin_id)

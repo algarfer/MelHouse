@@ -4,6 +4,8 @@ import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.task.TaskRepositorySupabase
+import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepository
+import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepositorySupabase
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.data.repository.user.UserRepositorySupabase
 import dagger.Module
@@ -33,4 +35,11 @@ object RepositoriesModule {
     fun provideFlatRepository(repositorySupabase: FlatRepositorySupabase): FlatRepository {
         return repositorySupabase
     }
+
+    @Provides
+    @Singleton
+    fun provideTaskUserRepository(repositorySupabase: TaskUserRepositorySupabase): TaskUserRepository{
+        return repositorySupabase
+    }
+
 }
