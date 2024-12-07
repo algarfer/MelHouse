@@ -12,7 +12,7 @@ data class User (
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     var name: String,
     var email: String,
-    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID?
+    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID? = null
 )
 
 fun User.getInitials(): String {

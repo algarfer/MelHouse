@@ -12,9 +12,9 @@ data class Flat(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     var name: String,
     var address: String,
-    var floor: Int?,
-    var door: String?,
-    var stair: String?,
+    var floor: Int? = null,
+    var door: String? = null,
+    var stair: String? = null,
     @SerialName("invitation_code") var invitationCode: String = "",
     @Serializable(with = UUIDSerializer::class) @SerialName("admin_id") var adminId: UUID
 )
