@@ -62,6 +62,16 @@ class FlatFragment : Fragment() {
                 tvQRCode.text = getString(R.string.flat_invitation_code, flat.invitationCode)
             }
 
+            binding.btnEdit.setOnClickListener {
+                val fragment = UpsertFlatFragment.create(flat)
+                parentFragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.menuOptionsFragment, fragment, UpsertFlatFragment.TAG)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
             binding.btnClipboard.makeVisible()
         }
 
