@@ -11,7 +11,9 @@ class UserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ): UserRepository {
 
-    private val TABLE_NAME = "users"
+    companion object {
+        private const val TABLE_NAME = "users"
+    }
 
     override suspend fun findByEmail(email: String): User? {
         return supabaseClient
@@ -60,12 +62,12 @@ class UserRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: User) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }

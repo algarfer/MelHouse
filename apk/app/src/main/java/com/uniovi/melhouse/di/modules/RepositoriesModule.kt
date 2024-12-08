@@ -20,26 +20,21 @@ object RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(repositorySupabase: UserRepositorySupabase): UserRepository {
-        return repositorySupabase
-    }
+    fun provideUserRepository(repositorySupabase: UserRepositorySupabase): UserRepository
+        = repositorySupabase
 
     @Provides
     @Singleton
-    fun provideTaskRepository(repositorySupabase: TaskRepositorySupabase): TaskRepository {
-        return repositorySupabase
-    }
+    fun provideTaskRepository(repositorySupabase: TaskRepositorySupabase): TaskRepository
+        = repositorySupabase
 
     @Provides
     @Singleton
-    fun provideFlatRepository(repositorySupabase: FlatRepositorySupabase): FlatRepository {
-        return repositorySupabase
-    }
+    fun provideFlatRepository(repositorySupabase: FlatRepositorySupabase): FlatRepository
+        = repositorySupabase
 
     @Provides
     @Singleton
-    fun provideTaskUserRepository(repositorySupabase: TaskUserRepositorySupabase): TaskUserRepository{
-        return repositorySupabase
-    }
-
+    fun provideTaskUserRepository(repositorySupabase: TaskUserRepositorySupabase): TaskUserRepository
+        = repositorySupabase
 }

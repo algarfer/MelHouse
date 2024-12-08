@@ -13,7 +13,9 @@ class FlatRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : FlatRepository {
 
-    private val TABLE_NAME = "flats"
+    companion object {
+        private val TABLE_NAME = "flats"
+    }
 
     override suspend fun joinFlat(invitationCode: String): Flat {
         return supabaseClient
@@ -51,12 +53,12 @@ class FlatRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: Flat) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }

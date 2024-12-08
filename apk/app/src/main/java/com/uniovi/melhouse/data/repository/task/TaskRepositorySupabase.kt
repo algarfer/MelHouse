@@ -11,7 +11,9 @@ class TaskRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : TaskRepository {
 
-    private val TABLE_NAME = "tasks"
+    companion object {
+        private const val TABLE_NAME = "tasks"
+    }
 
     override suspend fun findByDate(date: LocalDate?): List<Task> {
         return supabaseClient
@@ -39,12 +41,12 @@ class TaskRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: Task) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }

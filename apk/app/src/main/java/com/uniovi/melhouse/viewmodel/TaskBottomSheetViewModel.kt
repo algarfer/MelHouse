@@ -43,7 +43,7 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
     fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
             Executor.safeCall {
-                tasksRepository.delete(taskState.value!!.task.id)
+                tasksRepository.delete(taskState.value!!.task)
             }
         }
 

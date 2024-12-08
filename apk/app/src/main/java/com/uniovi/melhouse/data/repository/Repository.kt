@@ -6,7 +6,7 @@ interface Repository<T> {
 
     suspend fun insert(entity: T)
     suspend fun update(entity: T)
-    suspend fun delete(id: UUID)
+    suspend fun delete(entity: T)
     suspend fun findById(id: UUID): T?
     suspend fun findAll(): List<T>
 }

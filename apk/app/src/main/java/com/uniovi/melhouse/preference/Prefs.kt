@@ -9,8 +9,10 @@ import javax.inject.Singleton
 @Singleton
 class Prefs @Inject constructor() {
 
-    private val SHARED_NAME = "MelhousePrefs"
-    private val SHARED_FLAT_ID = "flatId"
+    companion object {
+        private const val SHARED_NAME = "MelhousePrefs"
+        private const val SHARED_FLAT_ID = "flatId"
+    }
 
     @Volatile
     private var storage: SharedPreferences? = null
