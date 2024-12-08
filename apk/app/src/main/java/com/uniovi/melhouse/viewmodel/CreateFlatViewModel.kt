@@ -9,7 +9,6 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
-import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

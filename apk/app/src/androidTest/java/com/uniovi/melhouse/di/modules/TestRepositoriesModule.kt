@@ -1,6 +1,5 @@
 package com.uniovi.melhouse.di.modules
 
-import android.util.Log
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskUser
@@ -29,6 +28,7 @@ object TestRepositoriesModule {
     private val tasks: MutableList<Task> = mutableListOf()
     private val flats: MutableList<Flat> = mutableListOf()
     private val taskUsers: MutableList<TaskUser> = mutableListOf()
+    private val identifiedUserId = UUID.fromString("11111111-1111-1111-1111-111111111111")
 
     @Provides
     @Singleton
@@ -37,18 +37,15 @@ object TestRepositoriesModule {
 
         coEvery { mockk.insert(any()) } answers {
             val user = arg<User>(0)
-            Log.d("hola", "hola")
-            //if(!user.email.startsWith("mel"))
             users.add(user)
             Unit
         }
 
         coEvery { mockk.findById(any()) } answers {
             val userId = arg<UUID>(0)
-            Log.i("userId", userId.toString())
             val ret: User?
-            if(userId.toString() == "11111111-1111-1111-1111-111111111111")
-                ret = User(id = UUID.fromString("11111111-1111-1111-1111-111111111111"), email = "mel@mel.mel", name = "Mel", flatId = UUID.randomUUID())
+            if(userId == identifiedUserId)// ID del usuario identificado
+                ret = User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = UUID.randomUUID())
             else
                 ret = users.find { user -> user.id == userId }
             ret
@@ -178,8 +175,12 @@ object TestRepositoriesModule {
             Unit
         }
 
-        //TODO
-        //coEvery { mockk.joinFlat(any()) } answers {
+        coEvery { mockk.joinFlat(any()) } answers {
+            val invitationCode = arg<String>(0)
+            val flat = flats.find { flat -> flat.invitationCode == invitationCode }!!
+            users.find { user -> user.id == identifiedUserId }?.flatId = flat.id
+            flat
+        }
 
         return mockk
     }
