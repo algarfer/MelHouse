@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
+import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
@@ -26,7 +27,8 @@ class UpsertTaskViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
     private val prefs: Prefs,
     private val userRepository: UserRepository,
-    private val taskUserRepository: TaskUserRepository
+    private val taskUserRepository: TaskUserRepository,
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
     private var taskState: TaskState? = null
 
@@ -147,10 +149,14 @@ class UpsertTaskViewModel @Inject constructor(
 
     private fun putAsignees() {
         viewModelScope.launch(Dispatchers.IO) {
-            val roommates = userRepository.getRoommates()
+            var roomates: List<User> = emptyList()
+            val flat = supabaseUserSessionFacade.getFlat()
+            if(flat != null) {
+                roomates= userRepository.getRoommates(flat.id)
+            }
 
-            asignees = MutableList(roommates.size) { false }
-            for ((index, roommate) in roommates.withIndex()) {
+            asignees = MutableList(roomates.size) { false }
+            for ((index, roommate) in roomates.withIndex()) {
                 _map.value!!.add(index, roommate)
                 _map.postValue(_map.value!!.toMutableList())
             }

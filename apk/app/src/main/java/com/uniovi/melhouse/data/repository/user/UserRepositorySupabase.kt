@@ -4,7 +4,6 @@ import com.uniovi.melhouse.data.model.TaskUser
 import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
 import java.util.UUID
 import javax.inject.Inject
 
@@ -24,16 +23,6 @@ class UserRepositorySupabase @Inject constructor(
             }.decodeSingleOrNull()
     }
 
-    override suspend fun findByFlatId(id: UUID): List<User> {
-        return supabaseClient
-            .from(TABLE_NAME)
-            .select {
-                filter {
-                    eq("flat_id", id)
-                }
-            }.decodeList()
-    }
-
     override suspend fun findByIds(ids: List<UUID>): List<User> {
         return supabaseClient
             .from(TABLE_NAME)
@@ -44,10 +33,14 @@ class UserRepositorySupabase @Inject constructor(
             }.decodeList()
     }
 
-    override suspend fun getRoommates(): List<User> {
+    override suspend fun getRoommates(flatId: UUID): List<User> {
         return supabaseClient
             .from(TABLE_NAME)
-            .select {}
+            .select {
+                filter {
+                    eq("flat_id", flatId)
+                }
+            }
             .decodeList()
     }
 

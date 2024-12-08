@@ -7,7 +7,6 @@ import java.util.UUID
 interface UserRepository : Repository<User> {
     suspend fun findAsigneesById(taskId: UUID) : List<User>
     suspend fun findByEmail(email: String): User?
-    suspend fun findByFlatId(id: UUID): List<User>
     suspend fun findByIds(ids: List<UUID>): List<User>
-    suspend fun getRoommates(): List<User>
+    suspend fun getRoommates(flatId: UUID): List<User>
 }

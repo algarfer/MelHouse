@@ -57,7 +57,7 @@ class FlatFragmentViewModel @Inject constructor(
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            usersRepository.findByFlatId(userSessionFacade.getFlat()!!.id).let {
+            usersRepository.getRoommates(userSessionFacade.getFlat()!!.id).let {
                 _partners.postValue(it)
             }
 
