@@ -157,8 +157,8 @@ class UserTest {
 
 
     @Test
-    fun singInTest() {
-        singIn()
+    fun signInTest() {
+        signIn()
     }
 
 
