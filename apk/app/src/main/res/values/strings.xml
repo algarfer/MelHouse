@@ -13,6 +13,7 @@
     <string name="profile_image">Imagen de perfil</string>
     <string name="save">Guardar</string>
     <string name="signup">Registrarse</string>
+    <string name="copy_to_clipboard">Copiar al portapapeles</string>
 
     <string name="flat_no_flat">Entrar a un piso</string>
     <string name="flat_code">Código del piso</string>
@@ -25,6 +26,11 @@
     <string name="flat_door">Puerta</string>
     <string name="flat_stair">Escalera</string>
     <string name="flat_bedrooms">Habitaciones</string>
+    <string name="flat_invitation_code">Código: %1$s</string>
+    <string name="flat_edit">Editar el piso</string>
+    <string name="flat_invitation_code_large">Codigo de invitación</string>
+    <string name="flat_kick_user">Expulsar usuario</string>
+    <string name="flat_promote_user">Ascender usuario</string>
 
     <string name="task_title">Título</string>
     <string name="task_description">Descripción</string>
@@ -36,6 +42,12 @@
 
     <string name="task_elimination_dialog_title">Eliminar tarea</string>
     <string name="task_elimination_dialog_supporting_text">Estás a punto de eliminar la tarea \"%1$s\". Esta acción es irreversible</string>
+
+    <string name="partner_promote_dialog_title">Ascender usuario</string>
+    <string name="partner_promote_dialog_supporting_text">Estás a punto de ascender a %1$s a administrador. Si aceptas, dejarás de ser administrador.</string>
+
+    <string name="partner_kick_dialog_title">Expulsar usuario</string>
+    <string name="partner_kick_dialog_supporting_text">Estás a punto de expulsar a %1$s del piso. ¿Estás seguro de que quieres contunuar?</string>
 
     <string name="task_select_start_date">Selecciona la fecha de inicio</string>
     <string name="task_select_end_date">Selecciona la fecha de fin</string>

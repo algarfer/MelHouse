@@ -9,11 +9,10 @@
 
     <Button
         android:id="@+id/btnBack"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="42dp"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        app:icon="@drawable/baseline_arrow_back_ios_24"
+        app:icon="@drawable/baseline_chevron_left_24"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/guidelineLogo"
         app:layout_constraintStart_toStartOf="parent" />

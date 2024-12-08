@@ -1,8 +1,6 @@
 package com.uniovi.melhouse.data.repository.task
 
-import android.util.Log
 import com.uniovi.melhouse.data.model.Task
-import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import java.time.LocalDate
@@ -13,7 +11,9 @@ class TaskRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : TaskRepository {
 
-    private val TABLE_NAME = "tasks"
+    companion object {
+        private const val TABLE_NAME = "tasks"
+    }
 
     override suspend fun findByDate(date: LocalDate?): List<Task> {
         return supabaseClient
@@ -32,7 +32,6 @@ class TaskRepositorySupabase @Inject constructor(
     }
 
     override suspend fun update(entity: Task) {
-        Log.d("updateTaskRepo", entity.toString())
         supabaseClient
             .from(TABLE_NAME)
             .update(entity) {
@@ -42,12 +41,12 @@ class TaskRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: Task) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }

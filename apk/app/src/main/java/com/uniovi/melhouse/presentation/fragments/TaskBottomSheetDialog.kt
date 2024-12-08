@@ -14,24 +14,36 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.databinding.TaskAsigneeDisplayLayoutBinding
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
+import com.uniovi.melhouse.factories.viewmodel.TaskBottomSheetViewModelFactory
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.withCreationCallback
 
 @AndroidEntryPoint
-class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel: () -> Unit, private val updateTasksViewHolder: () -> Unit) : BottomSheetDialogFragment() {
+class TaskBottomSheetDialog(
+    private val task: Task,
+    private val updateCalendarViewModel: () -> Unit,
+    private val updateTasksViewHolder: () -> Unit
+) : BottomSheetDialogFragment() {
     private lateinit var binding : TaskDetailsBottomSheetLayoutBinding
-    private val viewModel: TaskBottomSheetViewModel by viewModels()
+    private val viewModel: TaskBottomSheetViewModel by viewModels(extrasProducer = {
+        defaultViewModelCreationExtras
+            .withCreationCallback<TaskBottomSheetViewModelFactory> { factory ->
+            factory.create(task, { dismiss() }, updateTasksViewHolder, updateCalendarViewModel)
+        }
+    })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = TaskDetailsBottomSheetLayoutBinding.inflate(inflater, container, false)
 
-        viewModel.onCreateView(task, updateCalendarViewModel, updateTasksViewHolder) { dismiss() }
+        viewModel.onCreateView()
 
         viewModel.taskState.observe(this){
+            if(it == null) return@observe
             updateTask()
         }
 
@@ -42,10 +54,10 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
         binding.btnEditTask.setOnClickListener {
             dismiss()
 
-            val fragment = UpsertTaskFragment(viewModel.taskState.value!!)
+            val fragment = UpsertTaskFragment.create(viewModel.taskState.value!!)
             parentFragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true) //
+                .setReorderingAllowed(true)
                 .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
                 .addToBackStack(null)
                 .commit()
@@ -70,7 +82,6 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
         binding.tvTaskTitle.text = viewModel.taskState.value!!.task.name
 
         updatePriority()
-
         updateStatus()
 
         // Update description
@@ -115,9 +126,12 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
         viewModel.taskState.observe(this) { taskState ->
             if(taskState.asignees.isEmpty()) {
                 binding.taskAsigneeLayout.makeGone()
+                binding.tvTaskAsignee.makeGone()
+                return@observe
             }
 
             binding.taskAsigneeLayout.makeVisible()
+            binding.tvTaskAsignee.makeVisible()
             binding.taskAsigneeLayout.removeAllViews()
 
             taskState.asignees.forEach {
@@ -145,5 +159,12 @@ class TaskBottomSheetDialog(val task: Task, private val updateCalendarViewModel:
 
     companion object {
         const val TAG = "TaskBottomSheetDialog"
+
+        // TODO - Remove the class constructor and use the bundle to pass the data
+        fun create(task: Task,
+                   updateCalendarViewModel: () -> Unit,
+                   updateTasksViewHolder: () -> Unit): TaskBottomSheetDialog {
+            return TaskBottomSheetDialog(task, updateCalendarViewModel, updateTasksViewHolder)
+        }
     }
 }

@@ -10,7 +10,9 @@ class TaskUserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : TaskUserRepository {
 
-    private val TABLE_NAME = "tasks_users"
+    companion object {
+        private const val TABLE_NAME = "tasks_users"
+    }
 
     override suspend fun insertAsignees(taskId: UUID, userIds: List<UUID>) {
         supabaseClient
@@ -36,7 +38,7 @@ class TaskUserRepositorySupabase @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: TaskUser) {
         TODO("Not yet implemented")
     }
 

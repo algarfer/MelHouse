@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.navigation.NavigationView
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.getInitials
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
+import com.uniovi.melhouse.presentation.fragments.FlatFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
@@ -48,7 +50,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
 
         viewModel.user.observe(this) {
             if (it == null) return@observe
-            headerView.findViewById<TextView>(R.id.tvProfile).text = it.name.substring(0,1).uppercase()
+            headerView.findViewById<TextView>(R.id.tvProfile).text = it.getInitials()
             headerView.findViewById<TextView>(R.id.tvUsername).text = it.email
         }
 
@@ -93,7 +95,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
                 drawerLayout.closeDrawer(binding.navigationView)
                 return true
             }
-//            R.id.navigation_flat -> FlatFragment()
+            R.id.navigation_flat -> FlatFragment()
 //            R.id.navigation_account -> AccountFragment()
             R.id.navigation_settings -> SettingsFragment()
             R.id.navigation_logout -> {
@@ -122,9 +124,13 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
     private fun observeFlat() {
         viewModel.flat.observe(this) {
             if (it == null) {
+                binding.navigationView.menu.findItem(R.id.navigation_calendar).isVisible = false
+                binding.navigationView.menu.findItem(R.id.navigation_flat).isVisible = false
                 loadFragment(NoFlatFragment())
                 return@observe
             }
+            binding.navigationView.menu.findItem(R.id.navigation_calendar).isVisible = true
+            binding.navigationView.menu.findItem(R.id.navigation_flat).isVisible = true
             loadFragment(MenuFragment())
         }
     }

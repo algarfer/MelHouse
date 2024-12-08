@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
+import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
@@ -26,7 +27,8 @@ class UpsertTaskViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
     private val prefs: Prefs,
     private val userRepository: UserRepository,
-    private val taskUserRepository: TaskUserRepository
+    private val taskUserRepository: TaskUserRepository,
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
     private var taskState: TaskState? = null
 
@@ -36,15 +38,12 @@ class UpsertTaskViewModel @Inject constructor(
     val startDate: LiveData<LocalDate?>
         get() = _startDate
     private val _startDate = MutableLiveData<LocalDate?>()
-
     val endDate: LiveData<LocalDate?>
         get() = _endDate
     private val _endDate = MutableLiveData<LocalDate?>()
-
     val status: LiveData<TaskStatus?>
         get() = _status
     private val _status = MutableLiveData<TaskStatus?>()
-
     val priority: LiveData<TaskPriority?>
         get() = _priority
     private val _priority = MutableLiveData<TaskPriority?>()
@@ -78,6 +77,7 @@ class UpsertTaskViewModel @Inject constructor(
 
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
+    // TODO - Simplify viewModel and move task to assisted injection
     fun onViewCreated(taskState: TaskState?) {
         this.taskState = taskState
         putAsignees()
@@ -102,8 +102,8 @@ class UpsertTaskViewModel @Inject constructor(
             saveTaskState()
     }
 
-    private fun saveTaskState(){
-        viewModelScope.launch {
+    private fun saveTaskState() {
+        viewModelScope.launch(Dispatchers.IO) {
             Executor.safeCall {
                 val task = generateTask()
                 taskRepository.insert(task)
@@ -114,8 +114,8 @@ class UpsertTaskViewModel @Inject constructor(
         }
     }
 
-    private fun updateTaskState(){
-        viewModelScope.launch {
+    private fun updateTaskState() {
+        viewModelScope.launch(Dispatchers.IO) {
             Executor.safeCall {
                 taskRepository.update(generateTask())
                 taskUserRepository.deleteAllAsignees(taskState!!.task.id)
@@ -129,7 +129,7 @@ class UpsertTaskViewModel @Inject constructor(
 
     private fun generateTask(): Task {
         return taskState?.task?.copy(
-            name = title.orEmpty(),
+            name = title.orEmpty(), // TODO - Change to assert !!
             description = description,
             status = _status.value,
             priority = _priority.value,
@@ -137,7 +137,7 @@ class UpsertTaskViewModel @Inject constructor(
             endDate = _endDate.value,
         ) ?:
         Task(
-            name = title.orEmpty(),
+            name = title.orEmpty(), // TODO - Change to assert !!
             description = description,
             status = _status.value,
             priority = _priority.value,
@@ -149,10 +149,14 @@ class UpsertTaskViewModel @Inject constructor(
 
     private fun putAsignees() {
         viewModelScope.launch(Dispatchers.IO) {
-            val roommates = userRepository.getRoommates()
+            var roomates: List<User> = emptyList()
+            val flat = supabaseUserSessionFacade.getFlat()
+            if(flat != null) {
+                roomates= userRepository.getRoommates(flat.id)
+            }
 
-            asignees = MutableList(roommates.size) { false }
-            for ((index, roommate) in roommates.withIndex()) {
+            asignees = MutableList(roomates.size) { false }
+            for ((index, roommate) in roomates.withIndex()) {
                 _map.value!!.add(index, roommate)
                 _map.postValue(_map.value!!.toMutableList())
             }

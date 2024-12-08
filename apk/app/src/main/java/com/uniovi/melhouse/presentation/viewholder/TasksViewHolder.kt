@@ -8,8 +8,13 @@ import com.uniovi.melhouse.presentation.fragments.TaskBottomSheetDialog
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.utils.taskDateFormatter
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class TasksViewHolder(view: View, private val taskpressedHandler: (Task) -> Unit) : AbstractViewHolder<Task>(view) {
+class TasksViewHolder @AssistedInject constructor(
+    @Assisted view: View,
+    @Assisted private val taskpressedHandler: (Task) -> Unit
+) : AbstractViewHolder<Task>(view) {
 
     private val binding = CalendarTaskLayoutBinding.bind(view)
 
@@ -31,7 +36,8 @@ class TasksViewHolder(view: View, private val taskpressedHandler: (Task) -> Unit
     }
 }
 
+// TODO - Refactor this
 fun taskPressedHandler(fragmentManager: FragmentManager, task: Task, updateCalendarViewModel: () -> Unit, updateTasksViewHolder: () -> Unit) {
-    val modal = TaskBottomSheetDialog(task, updateCalendarViewModel, updateTasksViewHolder)
+    val modal = TaskBottomSheetDialog.create(task, updateCalendarViewModel, updateTasksViewHolder)
     fragmentManager.let { modal.show(it, TaskBottomSheetDialog.TAG) }
 }

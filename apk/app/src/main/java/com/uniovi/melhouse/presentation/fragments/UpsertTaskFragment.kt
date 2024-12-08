@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.core.content.ContextCompat.getColor
-import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
@@ -19,7 +17,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
-import com.uniovi.melhouse.databinding.CalendarAddTaskFragmentBinding
+import com.uniovi.melhouse.databinding.CalendarUpsertTaskFragmentBinding
 import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
 import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
@@ -30,21 +28,26 @@ import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
 import com.uniovi.melhouse.viewmodel.state.TaskState
+import com.uniovi.melhouse.viewmodel.state.toJson
+import com.uniovi.melhouse.viewmodel.state.toTaskState
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class UpsertTaskFragment @Inject constructor(private val taskState: TaskState?) : Fragment() {
+class UpsertTaskFragment : Fragment() {
+
+    private var taskState: TaskState? = null
     private val viewModel: UpsertTaskViewModel by viewModels()
-    private lateinit var binding: CalendarAddTaskFragmentBinding
+    private lateinit var binding: CalendarUpsertTaskFragmentBinding
     private val MILLIS_PER_DAY = 86400000
+    private val TASK_STATE_PARAMETER = "task_state_json"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = CalendarAddTaskFragmentBinding.inflate(inflater, container, false)
+        binding = CalendarUpsertTaskFragmentBinding.inflate(inflater, container, false)
+        taskState = arguments?.getString(TASK_STATE_PARAMETER)?.toTaskState()
         return binding.root
     }
 
@@ -146,6 +149,7 @@ class UpsertTaskFragment @Inject constructor(private val taskState: TaskState?) 
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.onViewCreated(taskState)
+        val taskState = taskState
         if(taskState != null) {
             binding.etTaskTitle.text = taskState.task.name.toEditable()
             binding.etTaskDescription.text = taskState.task.description?.toEditable()
@@ -269,5 +273,13 @@ class UpsertTaskFragment @Inject constructor(private val taskState: TaskState?) 
 
     companion object {
         const val TAG = "UpsertTaskFragment"
+
+        fun create(taskState: TaskState? = null) : UpsertTaskFragment {
+            return UpsertTaskFragment().apply {
+                arguments = Bundle().apply {
+                    putString(TASK_STATE_PARAMETER, taskState?.toJson())
+                }
+            }
+        }
     }
 }

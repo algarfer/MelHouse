@@ -13,14 +13,16 @@ class FlatRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : FlatRepository {
 
-    private val TABLE_NAME = "flats"
+    companion object {
+        private val TABLE_NAME = "flats"
+    }
 
     override suspend fun joinFlat(invitationCode: String): Flat {
         return supabaseClient
             .postgrest
             .rpc("join_flat", buildJsonObject {
                 put("p_code", invitationCode)
-            }).decodeSingle()
+            }).decodeAs()
     }
 
     override suspend fun createFlat(flat: Flat): Flat {
@@ -32,7 +34,7 @@ class FlatRepositorySupabase @Inject constructor(
                 put("p_floor", flat.floor)
                 put("p_door", flat.door)
                 put("p_stair", flat.stair)
-            }).decodeSingle();
+            }).decodeAs()
     }
 
     override suspend fun insert(entity: Flat) {
@@ -51,12 +53,12 @@ class FlatRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: Flat) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }

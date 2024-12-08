@@ -4,16 +4,16 @@ import com.uniovi.melhouse.data.model.TaskUser
 import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
 import java.util.UUID
 import javax.inject.Inject
 
 class UserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
-
 ): UserRepository {
 
-    private val TABLE_NAME = "users"
+    companion object {
+        private const val TABLE_NAME = "users"
+    }
 
     override suspend fun findByEmail(email: String): User? {
         return supabaseClient
@@ -35,10 +35,14 @@ class UserRepositorySupabase @Inject constructor(
             }.decodeList()
     }
 
-    override suspend fun getRoommates(): List<User> {
+    override suspend fun getRoommates(flatId: UUID): List<User> {
         return supabaseClient
             .from(TABLE_NAME)
-            .select {}
+            .select {
+                filter {
+                    eq("flat_id", flatId)
+                }
+            }
             .decodeList()
     }
 
@@ -58,12 +62,12 @@ class UserRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: User) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }

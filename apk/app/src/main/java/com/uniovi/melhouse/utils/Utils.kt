@@ -51,3 +51,5 @@ fun String.toEditable(): Editable {
 }
 
 fun getWarningSnackbar(view: View, text: String) = Snackbar.make(view, text, Snackbar.LENGTH_SHORT)
+
+fun String.ifEmptyNull() = ifEmpty { null }
