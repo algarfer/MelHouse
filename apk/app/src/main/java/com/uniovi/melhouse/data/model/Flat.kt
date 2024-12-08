@@ -20,7 +20,7 @@ data class Flat(
 )
 
 fun Flat.getFullAddress(): String {
-    val details = listOfNotNull(floor?.toString(), stair, door).joinToString("")
+    val details = listOfNotNull(floor?.toString(), stair, door).joinToString(" ")
     return if (details.isNotEmpty()) "$address, $details" else address
 }
 

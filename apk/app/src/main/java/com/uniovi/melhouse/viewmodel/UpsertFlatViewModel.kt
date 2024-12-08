@@ -11,6 +11,7 @@ import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
 import com.uniovi.melhouse.factories.viewmodel.UpsertFlatViewModelFactory
+import com.uniovi.melhouse.utils.ifEmptyNull
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,11 +45,11 @@ class UpsertFlatViewModel @AssistedInject constructor(
 
     fun upsertFlat(context: Context) {
         var areErrors = false
-        if(name == null || name!!.isEmpty()) {
+        if(name.isNullOrEmpty()) {
             _nameError.postValue(context.getString(R.string.error_form_flat_name_empty))
             areErrors = true
         }
-        if(address == null || address!!.isEmpty()) {
+        if(address.isNullOrEmpty()) {
             _addressError.postValue(context.getString(R.string.error_form_flat_address_empty))
             areErrors = true
         }
@@ -75,14 +76,14 @@ class UpsertFlatViewModel @AssistedInject constructor(
             name = name!!,
             address = address!!,
             floor = floor,
-            door = door,
-            stair = stair
+            door = door?.ifEmptyNull(),
+            stair = stair?.ifEmptyNull()
         ) ?: Flat(
             name = name!!,
             address = address!!,
             floor = floor,
-            door = door,
-            stair = stair,
+            door = door?.ifEmptyNull(),
+            stair = stair?.ifEmptyNull(),
             adminId = userSessionFacade.getUserId()!!
         )
     }

@@ -40,9 +40,10 @@ class TaskBottomSheetDialog(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = TaskDetailsBottomSheetLayoutBinding.inflate(inflater, container, false)
 
-        displayTask()
+        viewModel.onCreateView()
 
         viewModel.taskState.observe(this){
+            if(it == null) return@observe
             updateTask()
         }
 
@@ -125,9 +126,12 @@ class TaskBottomSheetDialog(
         viewModel.taskState.observe(this) { taskState ->
             if(taskState.asignees.isEmpty()) {
                 binding.taskAsigneeLayout.makeGone()
+                binding.tvTaskAsignee.makeGone()
+                return@observe
             }
 
             binding.taskAsigneeLayout.makeVisible()
+            binding.tvTaskAsignee.makeVisible()
             binding.taskAsigneeLayout.removeAllViews()
 
             taskState.asignees.forEach {
