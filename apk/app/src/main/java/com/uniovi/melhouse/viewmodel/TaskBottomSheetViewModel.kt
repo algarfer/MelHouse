@@ -1,11 +1,12 @@
 package com.uniovi.melhouse.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
-import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.viewmodel.state.TaskState
 import com.uniovi.melhouse.factories.viewmodel.TaskBottomSheetViewModelFactory
@@ -27,11 +28,15 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
     @Assisted("updateCalendar") private var updateCalendarViewModel: (() -> Unit)? = null
 ) : ViewModel() {
 
+    val taskState: LiveData<TaskState>
+        get() = _taskState
+    private val _taskState = MutableLiveData<TaskState>()
+
     fun onCreateView() {
         viewModelScope.launch(Dispatchers.IO) {
             val asignees = userRepository.findAsigneesById(task.id)
 
-            this@TaskBottomSheetViewModel.taskState.postValue(TaskState(task, asignees, true))
+            this@TaskBottomSheetViewModel._taskState.postValue(TaskState(task, asignees, true))
         }
     }
 

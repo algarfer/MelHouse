@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.core.content.ContextCompat.getColor
-import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
@@ -19,8 +17,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
-import com.uniovi.melhouse.data.model.toJson
-import com.uniovi.melhouse.data.model.toTask
 import com.uniovi.melhouse.databinding.CalendarUpsertTaskFragmentBinding
 import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
 import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
@@ -32,6 +28,8 @@ import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
 import com.uniovi.melhouse.viewmodel.state.TaskState
+import com.uniovi.melhouse.viewmodel.state.toJson
+import com.uniovi.melhouse.viewmodel.state.toTaskState
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 
@@ -151,6 +149,7 @@ class UpsertTaskFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.onViewCreated(taskState)
+        val taskState = taskState
         if(taskState != null) {
             binding.etTaskTitle.text = taskState.task.name.toEditable()
             binding.etTaskDescription.text = taskState.task.description?.toEditable()
