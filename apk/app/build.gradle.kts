@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.realtime.kt)
     implementation(libs.ktor.client.android)
 
+    implementation(libs.mpandroidchart)
 }
 
 kapt {
