@@ -15,6 +15,7 @@ import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.databinding.TaskAsigneeDisplayLayoutBinding
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.factories.viewmodel.TaskBottomSheetViewModelFactory
+import com.uniovi.melhouse.utils.adaptTextToSize
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
 import com.uniovi.melhouse.utils.makeGone
@@ -85,7 +86,7 @@ class TaskBottomSheetDialog(
         updateStatus()
 
         // Update description
-        binding.tvTaskDescription.text = viewModel.taskState.value!!.task.description.orEmpty()
+        binding.tvTaskDescription.text = viewModel.taskState.value!!.task.description?.adaptTextToSize()
 
         updateTaskDays()
     }
