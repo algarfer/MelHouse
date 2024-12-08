@@ -24,10 +24,6 @@ fun Flat.getFullAddress(): String {
     return if (details.isNotEmpty()) "$address, $details" else address
 }
 
-fun Flat.toJson(): String {
-    return Json.encodeToString(this)
-}
+fun Flat.toJson() = Json.encodeToString(this)
 
-fun String.toFlat(): Flat {
-    return Json.decodeFromString(this)
-}
+fun String.toFlat() = Json.decodeFromString<Flat>(this)

@@ -19,10 +19,6 @@ fun User.getInitials(): String {
     return name.substring(0, 1).uppercase()
 }
 
-fun User.toJson(): String {
-    return Json.encodeToString(this)
-}
+fun User.toJson() = Json.encodeToString(this)
 
-fun String.toUser(): User {
-    return Json.decodeFromString(this)
-}
+fun String.toUser() = Json.decodeFromString<User>(this)

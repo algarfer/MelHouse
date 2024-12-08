@@ -52,10 +52,6 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
     },
 }
 
-fun Task.toJson(): String {
-    return Json.encodeToString(this)
-}
+fun Task.toJson() = Json.encodeToString(this)
 
-fun String.toTask(): Task {
-    return Json.decodeFromString(this)
-}
+fun String.toTask() = Json.decodeFromString<Task>(this)
