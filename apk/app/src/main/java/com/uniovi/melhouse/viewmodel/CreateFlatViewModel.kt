@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
+import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateFlatViewModel @Inject constructor(
-    private val flatRepository: FlatRepositorySupabase,
+    private val flatRepository: FlatRepository,
     private val userSessionFacade: SupabaseUserSessionFacade
 ) : ViewModel() {
 
