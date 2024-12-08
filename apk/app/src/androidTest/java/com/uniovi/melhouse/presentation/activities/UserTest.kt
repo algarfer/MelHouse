@@ -33,7 +33,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class RegisterUserTest {
+class UserTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -100,7 +100,7 @@ class RegisterUserTest {
                 isDisplayed()
             )
         )
-        textInputEditText2.perform(replaceText("mel3@mel.mel"), closeSoftKeyboard())
+        textInputEditText2.perform(replaceText("mel@mel.mel"), closeSoftKeyboard())
 
         val textInputEditText3 = onView(
             allOf(
@@ -176,5 +176,83 @@ class RegisterUserTest {
                         && view == parent.getChildAt(position)
             }
         }
+    }
+
+    @Test
+    fun singInTest() {
+        val materialButton = onView(
+            allOf(
+                withId(R.id.loginButton), withText("Iniciar Sesión"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.main),
+                        childAtPosition(
+                            withId(android.R.id.content),
+                            0
+                        )
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton.perform(click())
+
+        val textInputEditText = onView(
+            allOf(
+                withId(R.id.etEmail),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.emailLayout),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        textInputEditText.perform(replaceText("mel@mel.mel"), closeSoftKeyboard())
+
+        val textInputEditText2 = onView(
+            allOf(
+                withId(R.id.etPassword),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.passwordLayout),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        textInputEditText2.perform(replaceText("Melmel666"), closeSoftKeyboard())
+
+        val materialButton2 = onView(
+            allOf(
+                withId(R.id.btnLogin), withText("Continuar"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.formLayout),
+                        childAtPosition(
+                            withClassName(`is`("com.google.android.material.card.MaterialCardView")),
+                            0
+                        )
+                    ),
+                    4
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton2.perform(click())
+
+        val textView = onView(
+            allOf(
+                withId(R.id.tvNoFlat), withText("Entrar a un piso"),
+                withParent(withParent(withId(R.id.menuOptionsFragment))),
+                isDisplayed()
+            )
+        )
+        textView.check(matches(withText("Entrar a un piso")))
     }
 }
