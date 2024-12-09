@@ -61,7 +61,7 @@ object TestRepositoriesModule {
             users.find { user -> user.email == email }
         }
 
-        coEvery { mockk.getRoommates() } returns listOf(
+        coEvery { mockk.getRoommates(any()) } returns listOf(
             User(
                 name = "Roommate1",
                 email = "roommate1@email.com",

@@ -51,7 +51,7 @@ fun signIn() {
             isDisplayed()
         )
     )
-    textInputEditText.perform(replaceText("measdadsl@mel.mel"), closeSoftKeyboard())
+    textInputEditText.perform(replaceText("mel@mel.mel"), closeSoftKeyboard())
 
     val textInputEditText2 = onView(
         allOf(
