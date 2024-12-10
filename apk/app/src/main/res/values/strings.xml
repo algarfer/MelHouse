@@ -25,8 +25,8 @@
     <string name="flat_create_qr">Tengo un código QR</string>
     <string name="flat_join">Unirse</string>
     <string name="flat_create">Crear</string>
-    <string name="flat_name">Nombre</string>
-    <string name="flat_address">Dirección</string>
+    <string name="flat_name">Nombre*</string>
+    <string name="flat_address">Dirección*</string>
     <string name="flat_floor">Piso</string>
     <string name="flat_door">Puerta</string>
     <string name="flat_stair">Escalera</string>
@@ -45,16 +45,20 @@
     <string name="flat_leave_dialog_supporting_text">Estas a punto de salir del piso \"%1$s\". ¿Estás seguro?</string>
 
 
-    <string name="task_title">Título</string>
+    <string name="task_title">Título*</string>
     <string name="task_description">Descripción</string>
     <string name="task_start_date">Fecha de inicio</string>
-    <string name="task_end_date">Fecha de fin</string>
+    <string name="task_end_date">Fecha de fin*</string>
     <string name="task_priority">Prioridad</string>
     <string name="task_status">Estado</string>
     <string name="task_asignee">Asignados</string>
 
     <string name="task_elimination_dialog_title">Eliminar tarea</string>
     <string name="task_elimination_dialog_supporting_text">Estás a punto de eliminar la tarea \"%1$s\". Esta acción es irreversible</string>
+
+    <string name="error_task_title_missing">La tarea debe de tener un título.</string>
+    <string name="error_task_title_length">El título debe tener entre 3 y 50 caracateres.</string>
+    <string name="error_task_end_date_missing">La fecha de fin es obligatoria.</string>
 
     <string name="partner_promote_dialog_title">Ascender usuario</string>
     <string name="partner_promote_dialog_supporting_text">Estás a punto de ascender a %1$s a administrador. Si aceptas, dejarás de ser administrador.</string>
@@ -98,6 +102,7 @@
     <string name="error_form_flat_address_empty">La dirección del piso no puede estar vacía</string>
     <string name="error_form_flat_name_empty">El nombre del piso no puede estar vacío</string>
     <string name="error_form_flat_code_empty">El código del piso no puede estar vacío</string>
+    <string name="error_form_flat_name_length">El nombre del piso debe tener entre 3 y 50 caracteres.</string>
     <string name="error_join_flat_failed">Código inválido</string>
 
 

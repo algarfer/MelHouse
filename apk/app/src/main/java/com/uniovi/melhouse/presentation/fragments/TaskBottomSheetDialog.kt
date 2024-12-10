@@ -87,7 +87,7 @@ class TaskBottomSheetDialog(
 
     private fun updateTask() {
         // Update name
-        binding.tvTaskTitle.text = viewModel.taskState.value!!.task.name
+        binding.tvTaskTitle.text = viewModel.taskState.value!!.task.name.adaptTextToSize()
 
         updatePriority()
         updateStatus()

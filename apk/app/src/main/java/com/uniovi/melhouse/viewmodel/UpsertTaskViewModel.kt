@@ -1,12 +1,12 @@
 package com.uniovi.melhouse.viewmodel
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
-import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
@@ -17,6 +17,7 @@ import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.viewmodel.state.TaskState
 import com.uniovi.melhouse.preference.Prefs
+import com.uniovi.melhouse.utils.validateLength
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,8 +29,7 @@ class UpsertTaskViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
     private val prefs: Prefs,
     private val userRepository: UserRepository,
-    private val taskUserRepository: TaskUserRepository,
-    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
+    private val taskUserRepository: TaskUserRepository
 ) : ViewModel() {
     private var taskState: TaskState? = null
 
@@ -66,6 +66,13 @@ class UpsertTaskViewModel @Inject constructor(
         get() = _genericError
     private val _genericError = MutableLiveData<String?>(null)
 
+    val titleError: LiveData<String?>
+        get() = _titleError
+    private val _titleError = MutableLiveData<String?>(null)
+    val endDateError: LiveData<String?>
+        get() = _endDateError
+    private val _endDateError = MutableLiveData<String?>(null)
+
     fun setTitle(title: String) {
         this.title = title
     }
@@ -100,7 +107,24 @@ class UpsertTaskViewModel @Inject constructor(
         }
     }
 
-    fun upsertTask() {
+    fun upsertTask(context: Context) {
+        var areErrors = false
+        val title = title
+        if(title.isNullOrEmpty()) {
+            _titleError.value = context.getString(R.string.error_task_title_missing)
+            areErrors = true
+        }
+        else if(!title.validateLength()) {
+            _titleError.value = context.getString(R.string.error_task_title_length)
+            areErrors = true
+        }
+        if(_endDate.value == null) {
+            _endDateError.value = context.getString(R.string.error_task_end_date_missing)
+            areErrors = true
+        }
+
+        if(areErrors) return
+
         if (taskState?.isInBD == true)
             updateTaskState()
         else

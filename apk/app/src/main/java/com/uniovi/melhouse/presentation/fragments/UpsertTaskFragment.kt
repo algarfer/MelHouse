@@ -108,6 +108,14 @@ class UpsertTaskFragment : Fragment() {
             if(it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
         }
+
+        viewModel.titleError.observe(this) {
+            binding.etTaskTitle.error = it
+        }
+
+        viewModel.endDateError.observe(this) {
+            binding.etEndDate.error = it
+        }
     }
 
     private fun makeButtons() {
@@ -226,8 +234,7 @@ class UpsertTaskFragment : Fragment() {
         }
 
         binding.btnSave.setOnClickListener {
-            viewModel.upsertTask()
-            //requireActivity().onBackPressedDispatcher.onBackPressed()
+            viewModel.upsertTask(requireContext())
         }
 
         binding.btnClearStartDate.setOnClickListener {

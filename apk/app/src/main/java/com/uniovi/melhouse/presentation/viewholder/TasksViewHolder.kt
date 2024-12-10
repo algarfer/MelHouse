@@ -21,7 +21,7 @@ class TasksViewHolder @AssistedInject constructor(
 
     override fun render(item: Task) {
         binding.taskDate.text = taskDateFormatter.format(item.endDate)
-        binding.taskTitle.text = item.name
+        binding.taskTitle.text = item.name.adaptTextToSize()
 
         binding.taskDescription.text = item.description?.adaptTextToSize()
 

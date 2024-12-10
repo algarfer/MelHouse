@@ -13,6 +13,7 @@ import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.factories.viewmodel.UpsertFlatViewModelFactory
 import com.uniovi.melhouse.utils.ifEmptyNull
+import com.uniovi.melhouse.utils.validateLength
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,9 +50,12 @@ class UpsertFlatViewModel @AssistedInject constructor(
 
     fun upsertFlat(context: Context) {
         var areErrors = false
+        val name = name
         if(name.isNullOrEmpty()) {
             _nameError.postValue(context.getString(R.string.error_form_flat_name_empty))
             areErrors = true
+        } else if(!name.validateLength()) {
+            _nameError.postValue(context.getString(R.string.error_form_flat_name_length))
         }
         if(address.isNullOrEmpty()) {
             _addressError.postValue(context.getString(R.string.error_form_flat_address_empty))

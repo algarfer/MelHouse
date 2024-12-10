@@ -139,6 +139,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="64dp"
+                android:clickable="false"
+                android:enabled="false"
                 app:layout_constraintBottom_toTopOf="@+id/guidelineCardHorizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/guidelineCardVertical" >
@@ -148,6 +150,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
+                    android:clickable="false"
+                    android:enabled="false"
                     android:hint="@string/flat_bedrooms" />
             </com.google.android.material.textfield.TextInputLayout>
 
