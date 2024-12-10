@@ -17,6 +17,7 @@ activity = "1.9.2"
 constraintlayout = "2.1.4"
 calendar = "2.6.0"
 mpandroidchart = "v3.1.0"
+mockk = "1.13.13"
 navigationFragment = "2.8.0"
 navigationFragmentKtx = "2.6.0"
 navigationUiKtx = "2.6.0"
@@ -35,6 +36,7 @@ androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version
 auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
 bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "ktorClientAndroid" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-test = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -48,6 +50,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 calendar = { module = "com.kizitonwose.calendar:view", version.ref = "calendar" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+mockk = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }

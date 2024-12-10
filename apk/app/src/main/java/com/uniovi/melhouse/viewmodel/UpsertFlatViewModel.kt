@@ -9,7 +9,7 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
-import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
+import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.factories.viewmodel.UpsertFlatViewModelFactory
 import com.uniovi.melhouse.utils.ifEmptyNull
 import dagger.assisted.Assisted
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
     assistedFactory = UpsertFlatViewModelFactory::class
 )
 class UpsertFlatViewModel @AssistedInject constructor(
-    private val flatRepository: FlatRepositorySupabase,
+    private val flatRepository: FlatRepository,
     private val userSessionFacade: SupabaseUserSessionFacade,
     @Assisted private val flat: Flat?
 ) : ViewModel() {

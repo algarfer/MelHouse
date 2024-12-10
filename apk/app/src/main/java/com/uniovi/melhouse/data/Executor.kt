@@ -22,7 +22,7 @@ object Executor {
         } else if (exception.statusCode == 500 && exception.error == "flat_not_found") {
             R.string.error_flat_not_found
         } else {
-            R.string.error_unknown
+            null
         }
 
         throw PersistenceLayerException(exception.description ?: exception.error, code)
