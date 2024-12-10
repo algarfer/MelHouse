@@ -7,13 +7,18 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.network.InternetConnectionObserver
+import com.uniovi.melhouse.preference.Config
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlin.system.exitProcess
 
 abstract class AbstractActivity : AppCompatActivity() {
 
+    private var isDialogShowed = false
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,6 +30,7 @@ abstract class AbstractActivity : AppCompatActivity() {
             .register()
 
         onCreateCallback()
+        startPingServer()
     }
 
     // Template method: onCreate can be overriden without calling super
@@ -49,11 +55,50 @@ abstract class AbstractActivity : AppCompatActivity() {
         }
     }
 
+    private fun startPingServer() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            while (true) {
+                delay(10000) // 10 segundos
+                pingServer()
+            }
+        }
+    }
+
+    private fun pingServer() {
+        val url = URL(Config.SUPABASE_URL + "/rest/v1/")
+        try {
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
+            connection.setRequestProperty("apikey", Config.SUPABASE_ANON_KEY)
+            connection.connectTimeout = 5000
+            connection.readTimeout = 5000
+            val responseCode = connection.responseCode
+            if (responseCode != 200) {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    showConnectionLostDialog()
+                }
+            }
+            connection.disconnect()
+        } catch (e: Exception) {
+            lifecycleScope.launch(Dispatchers.Main) {
+                showConnectionLostDialog()
+            }
+        }
+        if (!InternetConnectionObserver.hasConnection()) {
+            lifecycleScope.launch(Dispatchers.Main) {
+                showConnectionLostDialog()
+            }
+        }
+    }
+
     protected fun showConnectionLostDialog() {
+        if(isDialogShowed) return
+        isDialogShowed = true
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.error_lost_connection_title))
             .setMessage(getString(R.string.error_lost_connection_msg))
             .setPositiveButton(getString(R.string.error_lost_connection_btn)) { _, _ ->
+                isDialogShowed = false
                 restartApp()
             }
             .setCancelable(false)
