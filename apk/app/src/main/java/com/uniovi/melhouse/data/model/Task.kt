@@ -8,6 +8,7 @@ import com.uniovi.melhouse.data.serializers.TaskStatusSerializer
 import com.uniovi.melhouse.data.serializers.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
@@ -23,6 +24,7 @@ data class Task(
     @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") var startDate: LocalDate? = null,
     @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") var endDate: LocalDate? = null,
     @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID,
+    @Transient var assignees: List<User> = emptyList()
 )
 
 enum class TaskStatus(val value: Int) : LocaleEnum {

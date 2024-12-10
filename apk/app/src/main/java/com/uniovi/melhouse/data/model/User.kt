@@ -3,6 +3,7 @@ package com.uniovi.melhouse.data.model
 import com.uniovi.melhouse.data.serializers.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.UUID
@@ -12,7 +13,8 @@ data class User (
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     var name: String,
     var email: String,
-    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID? = null
+    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID? = null,
+    @Transient var tasks: List<Task> = emptyList()
 )
 
 fun User.getInitials(): String {

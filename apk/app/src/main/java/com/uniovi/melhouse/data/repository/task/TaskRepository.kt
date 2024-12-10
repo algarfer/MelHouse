@@ -2,6 +2,13 @@ package com.uniovi.melhouse.data.repository.task
 
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.Repository
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
 import java.util.UUID
 
@@ -26,3 +33,12 @@ suspend fun Task.loadAssignees(supabaseClient: SupabaseClient) {
         .mapNotNull {
             (it as? JsonObject)?.get("user_id")?.jsonPrimitive?.content
         }
+
+    assignees = supabaseClient
+        .from("users")
+        .select {
+            filter {
+                isIn("id", usersIds)
+            }
+        }.decodeList()
+}
