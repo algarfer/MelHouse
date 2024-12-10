@@ -5,13 +5,18 @@ security definer set search_path = ''
 as $$
 declare
   a_id uuid;
+  qty int4;
 begin
   select admin_id into a_id
   from public.flats
   where id = old.flat_id;
 
-  if a_id = old.id and new.flat_id is null then
-    raise exception 'Cannot leave flat: user is the admin';
+  select count(id) into qty
+  from public.users
+  where flat_id = old.flat_id;
+
+  if a_id = old.id and new.flat_id is null and qty > 1 then
+    raise exception'cannot_leave_empty_flat_admin';
   end if;
 
   return new;
