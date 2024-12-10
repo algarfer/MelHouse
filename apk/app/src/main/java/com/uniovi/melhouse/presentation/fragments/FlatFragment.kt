@@ -3,6 +3,7 @@ package com.uniovi.melhouse.presentation.fragments
 import android.R.attr.label
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +14,13 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.FragmentFlatBinding
 import com.uniovi.melhouse.factories.presentation.adapter.PartnersAdapterFactory
+import com.uniovi.melhouse.presentation.activities.MenuActivity
 import com.uniovi.melhouse.presentation.adapters.PartnersAdapter
 import com.uniovi.melhouse.presentation.layoutmanagers.CustomLinearLayoutManager
 import com.uniovi.melhouse.utils.getColorCompat
@@ -75,15 +78,37 @@ class FlatFragment : Fragment() {
                     .commit()
             }
 
+            binding.btnLeave.setOnClickListener {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(resources.getString(R.string.flat_leave_dialog_title))
+                    .setMessage(resources.getString(R.string.flat_leave_dialog_supporting_text, flat.name))
+                    .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+                    .setPositiveButton(resources.getString(R.string.continuar)) { _, _ ->
+                        viewModel.leave()
+                    }
+                    .show()
+            }
+
             binding.btnClipboard.makeVisible()
+        }
+
+        viewModel.hasLeaved.observe(this) {
+            if(!it) return@observe
+            val intent = Intent(requireContext(), MenuActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
         }
 
         viewModel.isAdmin.observe(this) {
             it?.let {
-                if(it)
+                if(it) {
                     binding.btnEdit.makeVisible()
-                else
+                    binding.btnLeave.makeGone()
+                }
+                else {
                     binding.btnEdit.makeGone()
+                    binding.btnLeave.makeVisible()
+                }
             }
         }
 

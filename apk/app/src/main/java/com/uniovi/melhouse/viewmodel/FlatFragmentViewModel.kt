@@ -51,6 +51,10 @@ class FlatFragmentViewModel @Inject constructor(
         get() = _done
     private val _done = MutableLiveData(false)
 
+    val hasLeaved: LiveData<Boolean>
+        get() = _hasLeaved
+    private val _hasLeaved = MutableLiveData(false)
+
     fun onCreate() {
         viewModelScope.launch(Dispatchers.IO) {
             userSessionFacade.getFlat().let {
@@ -100,6 +104,14 @@ class FlatFragmentViewModel @Inject constructor(
             usersRepository.update(newUser)
 
             checkAdmin() // Update View
+        }
+    }
+
+    fun leave() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = userSessionFacade.getUserData().copy(flatId = null)
+            usersRepository.update(user)
+            _hasLeaved.postValue(true)
         }
     }
 }

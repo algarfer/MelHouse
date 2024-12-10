@@ -26,9 +26,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnLeave"
             android:contentDescription="@string/flat_edit"
             app:icon="@drawable/baseline_edit_24"
+            style="?attr/materialIconButtonStyle" />
+
+        <Button
+            android:id="@+id/btnLeave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/flat_leave"
+            app:icon="@drawable/baseline_logout_24"
             style="?attr/materialIconButtonStyle" />
 
         <androidx.constraintlayout.widget.Guideline

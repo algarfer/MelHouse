@@ -40,6 +40,9 @@
     <string name="flat_qr_join">Escanea el QR de un piso para entrar</string>
     <string name="flat_qr_cancelled">"Escaneo cancelado"</string>
     <string name="flat_qr_not_read">No se pudo leer el QR</string>
+    <string name="flat_leave">Abandonar el piso</string>
+    <string name="flat_leave_dialog_title">Abandonar el piso</string>
+    <string name="flat_leave_dialog_supporting_text">Estas a punto de salir del piso \"%1$s\". ¿Estás seguro?</string>
 
 
     <string name="task_title">Título</string>
