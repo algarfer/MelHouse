@@ -10,6 +10,7 @@ import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.factories.viewmodel.UpsertFlatViewModelFactory
 import com.uniovi.melhouse.utils.ifEmptyNull
 import dagger.assisted.Assisted
@@ -42,6 +43,9 @@ class UpsertFlatViewModel @AssistedInject constructor(
     val creationSuccessful: LiveData<Boolean>
         get() = _creationSuccessful
     private val _creationSuccessful = MutableLiveData(false)
+    val genericError: LiveData<String?>
+        get() = _genericError
+    private val _genericError = MutableLiveData<String?>(null)
 
     fun upsertFlat(context: Context) {
         var areErrors = false
@@ -64,9 +68,13 @@ class UpsertFlatViewModel @AssistedInject constructor(
 
     private fun upsert(action: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            Executor.safeCall {
-                action()
-                _creationSuccessful.postValue(true)
+            try {
+                Executor.safeCall {
+                    action()
+                    _creationSuccessful.postValue(true)
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
             }
         }
     }

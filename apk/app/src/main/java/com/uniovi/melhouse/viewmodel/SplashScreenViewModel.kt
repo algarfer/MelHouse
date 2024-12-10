@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,13 +27,18 @@ class SplashScreenViewModel @Inject constructor(
 
     fun initApp() {
         viewModelScope.launch(Dispatchers.IO) {
-            isLogged = supabaseUserSessionFacade.loadFromStorage()
+            try {
+                isLogged = supabaseUserSessionFacade.loadFromStorage()
 
-            if(!isLogged) {
+                if(!isLogged) {
+                    prefs.clearAll()
+                }
+            } catch (e: PersistenceLayerException) {
                 prefs.clearAll()
+                supabaseUserSessionFacade.clearSession()
+            } finally {
+                _isReady.postValue(true)
             }
-
-            _isReady.postValue(true)
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.uniovi.melhouse.databinding.FragmentMenuBinding
 import com.uniovi.melhouse.factories.presentation.adapter.NextTasksAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.NextTasksAdapter
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.MenuFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -72,6 +73,12 @@ class MenuFragment : Fragment() {
                 binding.tvNoTomorrowTasks.visibility = View.GONE
                 tomorrowTasksAdapter.updateList(tasks)
             }
+        }
+
+        viewModel.genericError.observe(this) {
+            if(it == null) return@observe
+
+            getWarningSnackbar(requireView(), it).show()
         }
 
         viewModel.loadTasks()

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.User
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
@@ -31,13 +32,24 @@ class DrawerViewModel @Inject constructor(
     val isLogged: LiveData<Boolean>
         get() = _isLogged
     private val _isLogged = MutableLiveData(true)
+    val genericError: LiveData<String?>
+        get() = _genericError
+    private val _genericError = MutableLiveData<String?>(null)
 
     fun onCreate() {
         viewModelScope.launch(Dispatchers.IO) {
-            _user.postValue(userSessionFacade.getUserData())
+            try {
+                _user.postValue(userSessionFacade.getUserData())
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
+            }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            _flat.postValue(userSessionFacade.getFlat())
+            try {
+                _flat.postValue(userSessionFacade.getFlat())
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
+            }
         }
     }
 

@@ -31,6 +31,7 @@ import com.uniovi.melhouse.utils.getColorCompat
 import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.setTextColorRes
 import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
@@ -71,6 +72,12 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
 
         viewModel.tasks.observe(this) {
             binding.calendarView.notifyCalendarChanged()
+        }
+
+        viewModel.genericError.observe(this) {
+            if(it == null) return@observe
+
+            getWarningSnackbar(requireView(), it).show()
         }
     }
 

@@ -48,6 +48,8 @@ class SupabaseUserSessionFacade @Inject constructor(
         return getUserData()
     }
 
+    suspend fun clearSession() = supabase.auth.clearSession()
+
     suspend fun logIn(email: String, password: String) : User {
         Executor.safeCall {
             supabase.auth.signInWith(Email) {

@@ -24,6 +24,7 @@ import com.uniovi.melhouse.presentation.activities.MenuActivity
 import com.uniovi.melhouse.presentation.adapters.PartnersAdapter
 import com.uniovi.melhouse.presentation.layoutmanagers.CustomLinearLayoutManager
 import com.uniovi.melhouse.utils.getColorCompat
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.utils.toAsigneesPieChart
@@ -165,6 +166,12 @@ class FlatFragment : Fragment() {
                 legend.isWordWrapEnabled = true
             }
             binding.bcTaskStatus.invalidate() // refresh
+        }
+
+        viewModel.genericError.observe(this) {
+            if(it == null) return@observe
+
+            getWarningSnackbar(requireView(), it).show()
         }
     }
 

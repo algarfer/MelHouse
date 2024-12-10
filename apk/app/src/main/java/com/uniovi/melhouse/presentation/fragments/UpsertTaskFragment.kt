@@ -21,6 +21,7 @@ import com.uniovi.melhouse.databinding.CalendarUpsertTaskFragmentBinding
 import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
 import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.utils.maxDate
@@ -103,6 +104,10 @@ class UpsertTaskFragment : Fragment() {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
+        viewModel.genericError.observe(this) {
+            if(it == null) return@observe
+            getWarningSnackbar(requireView(), it).show()
+        }
     }
 
     private fun makeButtons() {

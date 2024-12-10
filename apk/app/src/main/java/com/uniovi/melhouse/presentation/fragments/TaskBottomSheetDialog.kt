@@ -18,6 +18,7 @@ import com.uniovi.melhouse.factories.viewmodel.TaskBottomSheetViewModelFactory
 import com.uniovi.melhouse.utils.adaptTextToSize
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
@@ -46,6 +47,12 @@ class TaskBottomSheetDialog(
         viewModel.taskState.observe(this){
             if(it == null) return@observe
             updateTask()
+        }
+
+        viewModel.genericError.observe(this) {
+            if (it == null) return@observe
+
+            getWarningSnackbar(requireView(), it).show()
         }
 
         binding.btnDeleteTask.setOnClickListener {

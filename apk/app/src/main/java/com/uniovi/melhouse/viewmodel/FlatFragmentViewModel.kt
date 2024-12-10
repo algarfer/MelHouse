@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.Task
@@ -12,6 +13,8 @@ import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.data.repository.user.loadTasks
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
+import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +27,8 @@ class FlatFragmentViewModel @Inject constructor(
     private val usersRepository: UserRepository,
     private val flatRepository: FlatRepository,
     private val taskRepository: TaskRepository,
-    private val supabaseClient: SupabaseClient
+    private val supabaseClient: SupabaseClient,
+    private val prefs: Prefs
 ) : ViewModel() {
 
     val flat: LiveData<Flat>
@@ -55,15 +59,29 @@ class FlatFragmentViewModel @Inject constructor(
         get() = _hasLeaved
     private val _hasLeaved = MutableLiveData(false)
 
+    val genericError: LiveData<String?>
+        get() = _genericError
+    private val _genericError = MutableLiveData<String?>(null)
+
     fun onCreate() {
         viewModelScope.launch(Dispatchers.IO) {
-            userSessionFacade.getFlat().let {
-                _flat.postValue(it)
+            try {
+                userSessionFacade.getFlat().let {
+                    _flat.postValue(it)
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.findByFlatId(userSessionFacade.getFlat()!!.id).let {
-                _tasks.postValue(it)
+            try {
+                Executor.safeCall {
+                    taskRepository.findByFlatId(prefs.getFlatId()!!).let {
+                        _tasks.postValue(it)
+                    }
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
             }
         }
         checkAdmin()
@@ -76,42 +94,66 @@ class FlatFragmentViewModel @Inject constructor(
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            usersRepository.getRoommates(userSessionFacade.getFlat()!!.id).let {
-                it.forEach { it.loadTasks(supabaseClient) }
-                _partners.postValue(it)
-            }
+            try {
+                Executor.safeCall {
+                    usersRepository.getRoommates(prefs.getFlatId()!!).let {
+                        it.forEach { it.loadTasks(supabaseClient) }
+                        _partners.postValue(it)
+                    }
 
-            userSessionFacade.getUserData().let {
-                _currentUser.postValue(it)
+                    userSessionFacade.getUserData().let {
+                        _currentUser.postValue(it)
+                    }
+                    _done.postValue(true)
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
             }
-
-            _done.postValue(true)
         }
     }
 
     fun promoteToAdmin(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
-            val newFlat = userSessionFacade.getFlat()!!.copy(adminId = user.id)
-            flatRepository.update(newFlat)
+            try {
+                Executor.safeCall {
+                    val newFlat = userSessionFacade.getFlat()!!.copy(adminId = user.id)
+                    flatRepository.update(newFlat)
 
-            checkAdmin() // Update View
+                    checkAdmin() // Update View
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
+            }
         }
     }
 
     fun kickUser(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
-            val newUser = user.copy(flatId = null)
-            usersRepository.update(newUser)
+            try {
+                Executor.safeCall {
+                    val newUser = user.copy(flatId = null)
+                    usersRepository.update(newUser)
 
-            checkAdmin() // Update View
+                    checkAdmin() // Update View
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
+            }
         }
     }
 
     fun leave() {
         viewModelScope.launch(Dispatchers.IO) {
-            val user = userSessionFacade.getUserData().copy(flatId = null)
-            usersRepository.update(user)
-            _hasLeaved.postValue(true)
+            try {
+                Executor.safeCall {
+                    val user = userSessionFacade.getUserData().copy(flatId = null)
+                    usersRepository.update(user)
+                    _hasLeaved.postValue(true)
+                    prefs.setFlatId(null)
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
+            }
         }
     }
 }

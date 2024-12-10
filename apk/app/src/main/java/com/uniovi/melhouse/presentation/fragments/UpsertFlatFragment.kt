@@ -12,6 +12,7 @@ import com.uniovi.melhouse.data.model.toFlat
 import com.uniovi.melhouse.data.model.toJson
 import com.uniovi.melhouse.databinding.FragmentUpsertFlatBinding
 import com.uniovi.melhouse.factories.viewmodel.UpsertFlatViewModelFactory
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.viewmodel.UpsertFlatViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,6 +76,10 @@ class UpsertFlatFragment : Fragment() {
         viewModel.creationSuccessful.observe(viewLifecycleOwner) {
             if(!it) return@observe
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        viewModel.genericError.observe(viewLifecycleOwner) {
+            if(it == null) return@observe
+            getWarningSnackbar(requireView(), it).show()
         }
     }
 

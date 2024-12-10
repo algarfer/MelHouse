@@ -14,6 +14,7 @@ import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.viewmodel.state.TaskState
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,6 +62,10 @@ class UpsertTaskViewModel @Inject constructor(
         get() = _map
     private val _map = MutableLiveData<MutableList<User>>(mutableListOf())
 
+    val genericError: LiveData<String?>
+        get() = _genericError
+    private val _genericError = MutableLiveData<String?>(null)
+
     fun setTitle(title: String) {
         this.title = title
     }
@@ -104,25 +109,33 @@ class UpsertTaskViewModel @Inject constructor(
 
     private fun saveTaskState() {
         viewModelScope.launch(Dispatchers.IO) {
-            Executor.safeCall {
-                val task = generateTask()
-                taskRepository.insert(task)
-                if(taskState != null)
-                    taskUserRepository.insertAsignees(task.id, taskState!!.asignees.map { user -> user.id })
-                _close.postValue(true)
+            try {
+                Executor.safeCall {
+                    val task = generateTask()
+                    taskRepository.insert(task)
+                    if(taskState != null)
+                        taskUserRepository.insertAsignees(task.id, taskState!!.asignees.map { user -> user.id })
+                    _close.postValue(true)
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
             }
         }
     }
 
     private fun updateTaskState() {
         viewModelScope.launch(Dispatchers.IO) {
-            Executor.safeCall {
-                taskRepository.update(generateTask())
-                taskUserRepository.deleteAllAsignees(taskState!!.task.id)
-                taskUserRepository.insertAsignees(
-                    taskState!!.task.id,
-                    taskState!!.asignees.map { user -> user.id })
-                _close.postValue(true)
+            try {
+                Executor.safeCall {
+                    taskRepository.update(generateTask())
+                    taskUserRepository.deleteAllAsignees(taskState!!.task.id)
+                    taskUserRepository.insertAsignees(
+                        taskState!!.task.id,
+                        taskState!!.asignees.map { user -> user.id })
+                    _close.postValue(true)
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
             }
         }
     }
@@ -149,20 +162,26 @@ class UpsertTaskViewModel @Inject constructor(
 
     private fun putAsignees() {
         viewModelScope.launch(Dispatchers.IO) {
-            var roomates: List<User> = emptyList()
-            val flat = supabaseUserSessionFacade.getFlat()
-            if(flat != null) {
-                roomates= userRepository.getRoommates(flat.id)
-            }
+            try {
+                Executor.safeCall {
+                    val flatId = prefs.getFlatId()
 
-            asignees = MutableList(roomates.size) { false }
-            for ((index, roommate) in roomates.withIndex()) {
-                _map.value!!.add(index, roommate)
-                _map.postValue(_map.value!!.toMutableList())
-            }
+                    var roomates = emptyList<User>()
+                    if(flatId != null)
+                        roomates = userRepository.getRoommates(flatId)
 
-            if(taskState != null) {
-                asignees = map.value!!.map { asignee -> taskState!!.asignees.contains(asignee) }.toMutableList()
+                    asignees = MutableList(roomates.size) { false }
+                    for ((index, roommate) in roomates.withIndex()) {
+                        _map.value!!.add(index, roommate)
+                        _map.postValue(_map.value!!.toMutableList())
+                    }
+
+                    if(taskState != null) {
+                        asignees = map.value!!.map { asignee -> taskState!!.asignees.contains(asignee) }.toMutableList()
+                    }
+                }
+            } catch (e: PersistenceLayerException) {
+                _genericError.postValue(e.message)
             }
         }
     }

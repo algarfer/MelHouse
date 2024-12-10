@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.DrawerViewModel
 
 @AndroidEntryPoint
@@ -59,6 +60,11 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
 
             startActivity(Intent(this, NotRegisteredActivity::class.java))
             finish()
+        }
+
+        viewModel.genericError.observe(this) {
+            if (it == null) return@observe
+            getWarningSnackbar(headerView, it).show()
         }
 
         observeFlat()
