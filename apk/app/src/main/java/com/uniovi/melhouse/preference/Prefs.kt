@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class Prefs @Inject constructor() {
+open class Prefs @Inject constructor() {
 
     companion object {
         private const val SHARED_NAME = "MelhousePrefs"
@@ -17,24 +17,24 @@ class Prefs @Inject constructor() {
     @Volatile
     private var storage: SharedPreferences? = null
 
-    fun setContext(context: Context) {
+    open fun setContext(context: Context) {
         storage = context.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE)
     }
 
-    fun setFlatId(flatId: UUID?) {
+    open fun setFlatId(flatId: UUID?) {
         storage!!
             .edit()
             .putString(SHARED_FLAT_ID, flatId?.toString())
             .apply()
     }
 
-    fun getFlatId(): UUID? {
+    open fun getFlatId(): UUID? {
         return storage!!
             .getString(SHARED_FLAT_ID, null)
             ?.let { UUID.fromString(it) }
     }
 
-    fun clearAll() {
+    open fun clearAll() {
         storage!!
             .edit()
             .clear()

@@ -10,6 +10,13 @@ android {
     namespace = "com.uniovi.melhouse"
     compileSdk = 34
 
+    testOptions {
+        packaging {
+            jniLibs {
+                useLegacyPackaging = true
+            }
+        }
+    }
     defaultConfig {
         applicationId = "com.uniovi.melhouse"
         minSdk = 34
@@ -17,7 +24,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.uniovi.melhouse.MyTestRunner"
     }
 
     buildTypes {
@@ -57,6 +64,13 @@ android {
         viewBinding = true
         buildConfig = true
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
+    }
 }
 
 dependencies {
@@ -69,8 +83,11 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.agent)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.hilt.android.test)
 
     implementation(libs.calendar)
     implementation(libs.androidx.fragment.ktx)
@@ -96,3 +113,4 @@ dependencies {
 kapt {
     correctErrorTypes = true
 }
+
