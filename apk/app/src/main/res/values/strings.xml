@@ -15,6 +15,11 @@
     <string name="signup">Registrarse</string>
     <string name="copy_to_clipboard">Copiar al portapapeles</string>
 
+
+    <string name="chart_not_available_short">N/A</string>
+    <string name="chart_bar_tasks_status">Estado de las tareas</string>
+    <string name="chart_pie_asignees">Tareas asignadas</string>
+
     <string name="flat_no_flat">Entrar a un piso</string>
     <string name="flat_code">Código del piso</string>
     <string name="flat_create_qr">Tengo un código QR</string>
