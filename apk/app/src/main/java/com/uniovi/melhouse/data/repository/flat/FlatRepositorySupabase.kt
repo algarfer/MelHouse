@@ -14,7 +14,7 @@ class FlatRepositorySupabase @Inject constructor(
 ) : FlatRepository {
 
     companion object {
-        private val TABLE_NAME = "flats"
+        private const val TABLE_NAME = "flats"
     }
 
     override suspend fun joinFlat(invitationCode: String): Flat {

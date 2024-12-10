@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,12 +43,12 @@ class NoFlatFragmentViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                flatRepository.joinFlat(flatCode.uppercase())
-                _joinFlatSuccess.postValue(true)
+                Executor.safeCall {
+                    flatRepository.joinFlat(flatCode.uppercase())
+                    _joinFlatSuccess.postValue(true)
+                }
             } catch (e: PersistenceLayerException) {
                 _snackBarMsg.postValue(e.getMessage(context))
-            } catch (e: Exception) {
-                _snackBarMsg.postValue(context.getString(R.string.error_join_flat_failed))
             }
         }
     }
