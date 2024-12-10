@@ -53,10 +53,29 @@
     <color name="task_priority_high">#FF0000</color>
     <color name="task_priority_medium">#FFA500</color>
     <color name="task_priority_low">#008000</color>
+    <color name="task_priority_no_status">#706D71</color>
 
     <!-- Status colors -->
     <color name="task_status_done">#008000</color>
     <color name="task_status_in_progress">#0000FF</color>
     <color name="task_status_pending">#FFA500</color>
     <color name="task_status_cancelled">#FF0000</color>
+    <color name="task_status_no_status">#706D71</color>
+
+    <!-- Chart colors -->
+
+    <color name="chart_text_black">#000000</color>
+
+    <array name="chart_colors">
+        <item>@color/chart_color_blue</item>
+        <item>@color/chart_color_red</item>
+        <item>@color/chart_color_yellow</item>
+        <item>@color/chart_color_green</item>
+    </array>
+
+    <color name="chart_color_blue">#3498DB</color>
+    <color name="chart_color_red">#E74C3C</color>
+    <color name="chart_color_yellow">#F0C40F</color>
+    <color name="chart_color_green">#2ECC71</color>
+
 </resources>

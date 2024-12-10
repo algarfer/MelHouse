@@ -8,6 +8,7 @@ import com.uniovi.melhouse.data.serializers.TaskStatusSerializer
 import com.uniovi.melhouse.data.serializers.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
@@ -17,12 +18,13 @@ import java.util.UUID
 data class Task(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     var name: String,
-    var description: String?,
-    @Serializable(with = TaskStatusSerializer::class) var status: TaskStatus?,
-    @Serializable(with = TaskPrioritySerializer::class) var priority: TaskPriority?,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") var startDate: LocalDate?,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") var endDate: LocalDate?,
+    var description: String? = null,
+    @Serializable(with = TaskStatusSerializer::class) var status: TaskStatus? = null,
+    @Serializable(with = TaskPrioritySerializer::class) var priority: TaskPriority? = null,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") var startDate: LocalDate? = null,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") var endDate: LocalDate? = null,
     @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID,
+    @Transient var assignees: List<User> = emptyList()
 )
 
 enum class TaskStatus(val value: Int) : LocaleEnum {
@@ -52,10 +54,6 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
     },
 }
 
-fun Task.toJson(): String {
-    return Json.encodeToString(this)
-}
+fun Task.toJson() = Json.encodeToString(this)
 
-fun String.toTask(): Task {
-    return Json.decodeFromString(this)
-}
+fun String.toTask() = Json.decodeFromString<Task>(this)

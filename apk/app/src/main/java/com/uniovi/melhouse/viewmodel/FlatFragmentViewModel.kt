@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
+import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
+import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
+import com.uniovi.melhouse.data.repository.user.loadTasks
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +22,9 @@ import javax.inject.Inject
 class FlatFragmentViewModel @Inject constructor(
     private val userSessionFacade: SupabaseUserSessionFacade,
     private val usersRepository: UserRepository,
-    private val flatRepository: FlatRepository
+    private val flatRepository: FlatRepository,
+    private val taskRepository: TaskRepository,
+    private val supabaseClient: SupabaseClient
 ) : ViewModel() {
 
     val flat: LiveData<Flat>
@@ -37,6 +43,10 @@ class FlatFragmentViewModel @Inject constructor(
         get() = _currentUser
     private val _currentUser = MutableLiveData<User?>(null)
 
+    val tasks: LiveData<List<Task>>
+        get() = _tasks
+    private val _tasks = MutableLiveData<List<Task>>(emptyList())
+
     val done: LiveData<Boolean>
         get() = _done
     private val _done = MutableLiveData(false)
@@ -45,6 +55,11 @@ class FlatFragmentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             userSessionFacade.getFlat().let {
                 _flat.postValue(it)
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepository.findByFlatId(userSessionFacade.getFlat()!!.id).let {
+                _tasks.postValue(it)
             }
         }
         checkAdmin()
@@ -57,7 +72,8 @@ class FlatFragmentViewModel @Inject constructor(
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            usersRepository.findByFlatId(userSessionFacade.getFlat()!!.id).let {
+            usersRepository.getRoommates(userSessionFacade.getFlat()!!.id).let {
+                it.forEach { it.loadTasks(supabaseClient) }
                 _partners.postValue(it)
             }
 

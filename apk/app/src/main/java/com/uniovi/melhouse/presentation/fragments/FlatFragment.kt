@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.uniovi.melhouse.R
@@ -18,8 +20,11 @@ import com.uniovi.melhouse.databinding.FragmentFlatBinding
 import com.uniovi.melhouse.factories.presentation.adapter.PartnersAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.PartnersAdapter
 import com.uniovi.melhouse.presentation.layoutmanagers.CustomLinearLayoutManager
+import com.uniovi.melhouse.utils.getColorCompat
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
+import com.uniovi.melhouse.utils.toAsigneesPieChart
+import com.uniovi.melhouse.utils.toStatusBarChartData
 import com.uniovi.melhouse.viewmodel.FlatFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -60,6 +65,16 @@ class FlatFragment : Fragment() {
                 tvQRCode.text = getString(R.string.flat_invitation_code, flat.invitationCode)
             }
 
+            binding.btnEdit.setOnClickListener {
+                val fragment = UpsertFlatFragment.create(flat)
+                parentFragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.menuOptionsFragment, fragment, UpsertFlatFragment.TAG)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
             binding.btnClipboard.makeVisible()
         }
 
@@ -75,7 +90,56 @@ class FlatFragment : Fragment() {
         viewModel.partners.observe(this) {
             it?.let {
                 partnersAdapter.updateList(it)
+
+                val data = it.toAsigneesPieChart(requireContext())
+
+                binding.pcTaskAssignee.apply {
+                    this.data = data
+                    description.isEnabled = false
+                    legend.isEnabled = false
+                    setHoleColor(requireContext().getColorCompat(R.color.background))
+                    setCenterTextColor(requireContext().getColorCompat(R.color.on_background))
+                    setCenterTextSize(24f)
+                    centerText = getString(R.string.chart_pie_asignees)
+                    setUsePercentValues(true)
+                    data.setValueFormatter(PercentFormatter(this))
+                    data.setValueTextSize(16f)
+                    data.setValueTextColor(requireContext().getColorCompat(R.color.chart_text_black))
+                    setEntryLabelTextSize(16f)
+                    setEntryLabelColor(requireContext().getColorCompat(R.color.chart_text_black))
+                    isHighlightPerTapEnabled = false
+                    animateY(800)
+                }
+                binding.pcTaskAssignee.invalidate() //refresh
             }
+        }
+
+        viewModel.tasks.observe(this) {
+            if(it.isEmpty()) return@observe
+
+            val (data, customLegend) = it.toStatusBarChartData(requireContext())
+
+            binding.bcTaskStatus.apply {
+                this.data = data
+                description.isEnabled = false
+                axisLeft.setDrawLabels(false)
+                axisLeft.setDrawGridLines(false)
+                axisLeft.setDrawAxisLine(false)
+                axisRight.granularity = (it.size / 10).toFloat()
+                xAxis.setDrawLabels(false)
+                xAxis.setDrawGridLines(false)
+                isHighlightPerTapEnabled = false
+                setFitBars(true)
+                animateY(800)
+                setTouchEnabled(false)
+                legend.setCustom(customLegend)
+                legend.orientation = Legend.LegendOrientation.VERTICAL
+                legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+                legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+                legend.setDrawInside(true)
+                legend.isWordWrapEnabled = true
+            }
+            binding.bcTaskStatus.invalidate() // refresh
         }
     }
 

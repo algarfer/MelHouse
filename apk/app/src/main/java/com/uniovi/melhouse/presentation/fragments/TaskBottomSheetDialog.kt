@@ -12,12 +12,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Task
-import com.uniovi.melhouse.data.model.toJson
+import com.uniovi.melhouse.databinding.TaskAsigneeDisplayLayoutBinding
 import com.uniovi.melhouse.databinding.TaskDetailsBottomSheetLayoutBinding
 import com.uniovi.melhouse.factories.viewmodel.TaskBottomSheetViewModelFactory
+import com.uniovi.melhouse.utils.adaptTextToSize
 import com.uniovi.melhouse.utils.getColor
 import com.uniovi.melhouse.utils.getDatesString
 import com.uniovi.melhouse.utils.makeGone
+import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
@@ -38,7 +40,13 @@ class TaskBottomSheetDialog(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = TaskDetailsBottomSheetLayoutBinding.inflate(inflater, container, false)
-        displayTask()
+
+        viewModel.onCreateView()
+
+        viewModel.taskState.observe(this){
+            if(it == null) return@observe
+            updateTask()
+        }
 
         binding.btnDeleteTask.setOnClickListener {
             showConfirmDialog()
@@ -47,7 +55,7 @@ class TaskBottomSheetDialog(
         binding.btnEditTask.setOnClickListener {
             dismiss()
 
-            val fragment = UpsertTaskFragment.create(viewModel.task.toJson())
+            val fragment = UpsertTaskFragment.create(viewModel.taskState.value!!)
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true)
@@ -70,24 +78,29 @@ class TaskBottomSheetDialog(
             .show()
     }
 
-    private fun displayTask() {
-        binding.tvTaskTitle.text = viewModel.task.name
+    private fun updateTask() {
+        // Update name
+        binding.tvTaskTitle.text = viewModel.taskState.value!!.task.name
+
         updatePriority()
         updateStatus()
-        binding.tvTaskDescription.text = viewModel.task.description.orEmpty()
+
+        // Update description
+        binding.tvTaskDescription.text = viewModel.taskState.value!!.task.description?.adaptTextToSize()
+
         updateTaskDays()
     }
 
     private fun updateTaskDays() {
-        if (viewModel.task.endDate == null) {
+        if (viewModel.taskState.value!!.task.endDate == null) {
             binding.taskDaysLayout.makeGone()
         } else {
-            binding.tvTaskDates.text = viewModel.task.getDatesString()
+            binding.tvTaskDates.text = viewModel.taskState.value!!.task.getDatesString()
         }
     }
 
     private fun updateStatus() {
-        val status = viewModel.task.status
+        val status = viewModel.taskState.value!!.task.status
 
         if (status == null) {
             binding.badgeTaskStatus.root.makeGone()
@@ -98,13 +111,37 @@ class TaskBottomSheetDialog(
     }
 
     private fun updatePriority() {
-        val priority = viewModel.task.priority
+        val priority = viewModel.taskState.value!!.task.priority
 
         if (priority == null) {
             binding.badgeTaskPriority.root.makeGone()
         } else {
             binding.badgeTaskPriority.tvStatus.text = priority.getString(requireContext())
             binding.badgeTaskPriority.ivStatus.setColorFilter(priority.getColor(requireContext()))
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.taskState.observe(this) { taskState ->
+            if(taskState.asignees.isEmpty()) {
+                binding.taskAsigneeLayout.makeGone()
+                binding.tvTaskAsignee.makeGone()
+                return@observe
+            }
+
+            binding.taskAsigneeLayout.makeVisible()
+            binding.tvTaskAsignee.makeVisible()
+            binding.taskAsigneeLayout.removeAllViews()
+
+            taskState.asignees.forEach {
+                val asigneeView = LayoutInflater.from(context).inflate(R.layout.task_asignee_display_layout, binding.taskAsigneeLayout, false)
+                val binding = TaskAsigneeDisplayLayoutBinding.bind(asigneeView)
+                binding.tvAsigneeName.text = it.name
+                binding.ivAsignee.tvProfile.text = it.name.first().toString()
+                this.binding.taskAsigneeLayout.addView(asigneeView)
+            }
         }
     }
 

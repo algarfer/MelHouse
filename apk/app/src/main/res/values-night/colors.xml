@@ -50,13 +50,32 @@
     <color name="inverse_on_surface">#313033</color>
 
     <!-- Priority colors -->
-    <color name="task_priority_high">#FF0000</color>
-    <color name="task_priority_medium">#FFA500</color>
-    <color name="task_priority_low">#008000</color>
+    <color name="task_priority_high">#FF6666</color>
+    <color name="task_priority_medium">#FFB84D</color>
+    <color name="task_priority_low">#00A000</color>
+    <color name="task_priority_no_status">#A9A9B0</color>
 
     <!-- Status colors -->
-    <color name="task_status_done">#008000</color>
-    <color name="task_status_in_progress">#0000FF</color>
-    <color name="task_status_pending">#FFA500</color>
-    <color name="task_status_cancelled">#FF0000</color>
+    <color name="task_status_done">#00B050</color>
+    <color name="task_status_in_progress">#4D88FF</color>
+    <color name="task_status_pending">#FFB84D</color>
+    <color name="task_status_cancelled">#FF6666</color>
+    <color name="task_status_no_status">#A9A9B0</color>
+
+    <!-- Chart colors -->
+
+    <color name="chart_text_black">#000000</color>
+
+    <array name="chart_colors">
+        <item>@color/chart_color_blue</item>
+        <item>@color/chart_color_red</item>
+        <item>@color/chart_color_yellow</item>
+        <item>@color/chart_color_green</item>
+    </array>
+
+    <color name="chart_color_blue">#5DADE2</color>
+    <color name="chart_color_red">#F1948A</color>
+    <color name="chart_color_yellow">#F7DC6F</color>
+    <color name="chart_color_green">#58D68D</color>
+
 </resources>

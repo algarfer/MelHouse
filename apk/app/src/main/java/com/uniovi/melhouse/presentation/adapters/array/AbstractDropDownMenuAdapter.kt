@@ -10,8 +10,11 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.uniovi.melhouse.data.model.LocaleEnum
 
-abstract class AbstractDropDownMenuAdapter<T : LocaleEnum>(context: Context, @LayoutRes private val layout: Int, list: List<T>)
-    : ArrayAdapter<T>(context, layout, list) {
+abstract class AbstractDropDownMenuAdapter<T : LocaleEnum>(
+    context: Context,
+    @LayoutRes private val layout: Int,
+    list: List<T>
+) : ArrayAdapter<T>(context, layout, list) {
 
     var onItemClickListener: AdapterView.OnItemClickListener? = null
 
