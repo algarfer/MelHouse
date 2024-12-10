@@ -25,6 +25,16 @@ class TaskRepositorySupabase @Inject constructor(
             }.decodeList()
     }
 
+    override suspend fun findByFlatId(flatId: UUID): List<Task> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .select {
+                filter {
+                    eq("flat_id", flatId)
+                }
+            }.decodeList()
+    }
+
     override suspend fun insert(entity: Task) {
         supabaseClient
             .from(TABLE_NAME)
