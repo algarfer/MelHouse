@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
+import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val supabaseUserSessionFacade: SupabaseUserSessionFacade
+    private val supabaseUserSessionFacade: SupabaseUserSessionFacade,
+    private val prefs: Prefs
 ) : ViewModel() {
 
     val passwordError: LiveData<String?>
@@ -48,6 +50,9 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 supabaseUserSessionFacade.logIn(email.trim(), password)
+                supabaseUserSessionFacade.getUserData().let {
+                    prefs.setFlatId(it.flatId)
+                }
                 _loginSuccessfull.postValue(true)
             } catch (e: PersistenceLayerException) {
                 _snackBarMsg.postValue(e.getMessage(context))

@@ -4,7 +4,6 @@ import com.uniovi.melhouse.data.model.Flat
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.rpc
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.util.UUID
@@ -14,27 +13,28 @@ class FlatRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : FlatRepository {
 
-    private val TABLE_NAME = "flats"
+    companion object {
+        private const val TABLE_NAME = "flats"
+    }
 
-    override suspend fun joinFlat(invitationCode: String) {
-        supabaseClient
+    override suspend fun joinFlat(invitationCode: String): Flat {
+        return supabaseClient
             .postgrest
             .rpc("join_flat", buildJsonObject {
                 put("p_code", invitationCode)
-            })
+            }).decodeAs()
     }
 
-    override suspend fun createFlat(flat: Flat) {
-        supabaseClient
+    override suspend fun createFlat(flat: Flat): Flat {
+        return supabaseClient
             .postgrest
             .rpc("create_flat", buildJsonObject {
-                put("p_id", flat.id.toString())
                 put("p_name", flat.name)
                 put("p_address", flat.address)
                 put("p_floor", flat.floor)
                 put("p_door", flat.door)
                 put("p_stair", flat.stair)
-            })
+            }).decodeAs()
     }
 
     override suspend fun insert(entity: Flat) {
@@ -53,12 +53,12 @@ class FlatRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: Flat) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }
@@ -78,15 +78,5 @@ class FlatRepositorySupabase @Inject constructor(
             .from(TABLE_NAME)
             .select()
             .decodeList()
-    }
-
-    suspend fun findByAdminId(id: UUID): Flat? {
-        return supabaseClient
-            .from(TABLE_NAME)
-            .select {
-                filter {
-                    eq("admin_id", id)
-                }
-            }.decodeSingleOrNull()
     }
 }

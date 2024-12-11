@@ -18,6 +18,7 @@ interface HasToolbar {
 
 interface HasBackButton
 
+// TODO - Try to simplify this or remove (copied from the calendar library and only used by the calendar fragment)
 abstract class BaseFragment(@LayoutRes layoutRes: Int) : Fragment(layoutRes) {
 
 

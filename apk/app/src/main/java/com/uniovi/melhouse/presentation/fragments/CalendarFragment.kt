@@ -23,6 +23,7 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.databinding.CalendarDayLayoutBinding
 import com.uniovi.melhouse.databinding.CalendarFragmentBinding
 import com.uniovi.melhouse.databinding.CalendarHeaderLayoutBinding
+import com.uniovi.melhouse.factories.presentation.adapter.TasksAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.TasksAdapter
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
 import com.uniovi.melhouse.utils.displayText
@@ -30,6 +31,7 @@ import com.uniovi.melhouse.utils.getColorCompat
 import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.setTextColorRes
 import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
+import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
@@ -39,11 +41,23 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
+class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
     private var selectedDate: LocalDate? = null
-    private val tasksAdapter = TasksAdapter(listOf()) { taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){viewModel.updateTasks()} }
+    private var _tasksAdapter: TasksAdapter? = null
+    @Inject lateinit var tasksAdapterFactory: TasksAdapterFactory
+    private val tasksAdapter: TasksAdapter
+        get() {
+            if (_tasksAdapter == null) {
+                _tasksAdapter = tasksAdapterFactory.create(listOf()) {
+                    taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){
+                        viewModel.updateTasks()
+                    }
+                }
+            }
+            return _tasksAdapter!!
+        }
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
@@ -58,6 +72,12 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
 
         viewModel.tasks.observe(this) {
             binding.calendarView.notifyCalendarChanged()
+        }
+
+        viewModel.genericError.observe(this) {
+            if(it == null) return@observe
+
+            getWarningSnackbar(requireView(), it).show()
         }
     }
 
@@ -110,7 +130,7 @@ class CalendarFragment @Inject constructor() : BaseFragment(R.layout.calendar_fr
         }
 
         binding.addTaskFab.setOnClickListener {
-            val fragment = UpsertTaskFragment(null)
+            val fragment = UpsertTaskFragment.create()
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true) //

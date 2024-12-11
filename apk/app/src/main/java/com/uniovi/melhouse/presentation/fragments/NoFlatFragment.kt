@@ -11,11 +11,20 @@ import com.uniovi.melhouse.databinding.FragmentNoFlatBinding
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Activity
+import android.content.Intent
+import androidx.fragment.app.viewModels
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.presentation.activities.MenuActivity
+import com.uniovi.melhouse.viewmodel.DrawerViewModel
+import com.uniovi.melhouse.viewmodel.NoFlatFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NoFlatFragment : Fragment() {
 
     private lateinit var binding: FragmentNoFlatBinding
+    private val viewModel: NoFlatFragmentViewModel by viewModels()
 
     companion object {
         const val TAG = "NoFlatFragment"
@@ -29,10 +38,12 @@ class NoFlatFragment : Fragment() {
             val scanResult = IntentIntegrator.parseActivityResult(result.resultCode, intent)
             if (scanResult != null) {
                 if (scanResult.contents != null) {
-                    Toast.makeText(requireContext(), scanResult.contents, Toast.LENGTH_SHORT).show()
+                    viewModel.joinFlat(scanResult.contents, requireContext())
                 } else {
-                    Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.flat_qr_cancelled, Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(requireContext(), R.string.flat_qr_not_read, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -42,6 +53,10 @@ class NoFlatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentNoFlatBinding.inflate(inflater, container, false)
+        setupObservers()
+        binding.btnJoinFlat.setOnClickListener {
+            viewModel.joinFlat(binding.etFlatCode.text.toString(), requireContext())
+        }
         binding.btnJoinQRFlat.setOnClickListener {
             initFlatQRScan()
         }
@@ -49,19 +64,41 @@ class NoFlatFragment : Fragment() {
             parentFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.menuOptionsFragment, CreateFlatFragment(), CreateFlatFragment.TAG)
+                .replace(R.id.menuOptionsFragment, UpsertFlatFragment(), UpsertFlatFragment.TAG)
                 .addToBackStack(null)
                 .commit()
         }
         return binding.root
     }
 
+    private fun setupObservers() {
+        viewModel.flatCodeError.observe(viewLifecycleOwner) { errorMessage ->
+            binding.flatCodeLayout.error = errorMessage
+        }
+
+        viewModel.joinFlatSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), R.string.flat_welcome, Toast.LENGTH_SHORT).show()
+                Intent(context, MenuActivity::class.java).also {
+                    startActivity(it)
+                    requireActivity().finish()
+                }
+            }
+        }
+
+        viewModel.snackBarMsg.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun initFlatQRScan() {
         val integrator = IntentIntegrator.forSupportFragment(this)
-        integrator.setPrompt("Scan a QR code")
+        integrator.setPrompt(getString(R.string.flat_qr_join))
         integrator.setCameraId(0)
         integrator.setBeepEnabled(true)
-        integrator.setBarcodeImageEnabled(true)
         qrScanLauncher.launch(integrator.createScanIntent())
     }
+
 }

@@ -20,7 +20,6 @@ def create_flat(n: int) -> None:
 
     try:
         supabase.rpc("create_flat", {
-            "p_id": str(uuid4()),
             "p_name": f"Test Flat {n}",
             "p_address": f"C/Testing {n}"
         }).execute()

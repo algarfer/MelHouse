@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
+import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +26,9 @@ class CalendarViewModel @Inject constructor(
         get() = _dailyTasks
     private val _dailyTasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
     var date: LocalDate? = null
+    val genericError: LiveData<String?>
+        get() = _genericError
+    private val _genericError = MutableLiveData<String?>(null)
 
     fun onCreate() {
         updateTasks()
@@ -33,11 +37,16 @@ class CalendarViewModel @Inject constructor(
     fun updateTasks() {
         viewModelScope.launch(Dispatchers.IO) {
             _tasks.postValue(
-                Executor.safeCall {
-                    tasksRepository
-                        .findAll()
-                        .filter { it.endDate != null }
-                        .groupBy { it.endDate }
+                try {
+                    Executor.safeCall {
+                        tasksRepository
+                            .findAll()
+                            .filter { it.endDate != null }
+                            .groupBy { it.endDate }
+                    }
+                } catch (e: PersistenceLayerException) {
+                    _genericError.postValue(e.message)
+                    mapOf()
                 }
             )
         }
@@ -47,11 +56,16 @@ class CalendarViewModel @Inject constructor(
         if (date == null) return
         viewModelScope.launch(Dispatchers.IO) {
             _dailyTasks.postValue(
-                Executor.safeCall {
-                    tasksRepository
-                        .findByDate(date)
-                        .filter { it.endDate != null }
-                        .groupBy { it.endDate }
+                try {
+                    Executor.safeCall {
+                        tasksRepository
+                            .findByDate(date)
+                            .filter { it.endDate != null }
+                            .groupBy { it.endDate }
+                    }
+                } catch (e: PersistenceLayerException) {
+                    _genericError.postValue(e.message)
+                    mapOf()
                 }
             )
         }

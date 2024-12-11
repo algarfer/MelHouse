@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.data.repository.user
 
+import com.uniovi.melhouse.data.model.TaskUser
 import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -10,7 +11,9 @@ class UserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ): UserRepository {
 
-    private val TABLE_NAME = "users"
+    companion object {
+        private const val TABLE_NAME = "users"
+    }
 
     override suspend fun findByEmail(email: String): User? {
         return supabaseClient
@@ -20,6 +23,27 @@ class UserRepositorySupabase @Inject constructor(
                     eq("email", email)
                 }
             }.decodeSingleOrNull()
+    }
+
+    override suspend fun findByIds(ids: List<UUID>): List<User> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .select {
+                filter {
+                    contains("id", ids)
+                }
+            }.decodeList()
+    }
+
+    override suspend fun getRoommates(flatId: UUID): List<User> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .select {
+                filter {
+                    eq("flat_id", flatId)
+                }
+            }
+            .decodeList()
     }
 
     override suspend fun insert(entity: User) {
@@ -38,12 +62,12 @@ class UserRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(entity: User) {
         supabaseClient
             .from(TABLE_NAME)
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", entity.id)
                 }
             }
     }
@@ -63,5 +87,23 @@ class UserRepositorySupabase @Inject constructor(
             .from(TABLE_NAME)
             .select()
             .decodeList()
+    }
+
+    override suspend fun findAsigneesById(taskId: UUID): List<User> {
+        val tasksUsers = supabaseClient
+            .from("tasks_users")
+            .select() {
+                filter {
+                    eq("task_id", taskId)
+                }
+            }.decodeList<TaskUser>()
+        val ids = tasksUsers.map { tu -> tu.userId }
+        return supabaseClient
+            .from(TABLE_NAME)
+            .select {
+                filter {
+                    isIn("id", ids)
+                }
+            }.decodeList()
     }
 }

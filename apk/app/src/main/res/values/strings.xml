@@ -13,28 +13,61 @@
     <string name="profile_image">Imagen de perfil</string>
     <string name="save">Guardar</string>
     <string name="signup">Registrarse</string>
+    <string name="copy_to_clipboard">Copiar al portapapeles</string>
+
+
+    <string name="chart_not_available_short">N/A</string>
+    <string name="chart_bar_tasks_status">Estado de las tareas</string>
+    <string name="chart_pie_asignees">Tareas asignadas</string>
 
     <string name="flat_no_flat">Entrar a un piso</string>
     <string name="flat_code">Código del piso</string>
     <string name="flat_create_qr">Tengo un código QR</string>
     <string name="flat_join">Unirse</string>
     <string name="flat_create">Crear</string>
-    <string name="flat_name">Nombre</string>
-    <string name="flat_address">Dirección</string>
+    <string name="flat_name">Nombre*</string>
+    <string name="flat_address">Dirección*</string>
     <string name="flat_floor">Piso</string>
     <string name="flat_door">Puerta</string>
     <string name="flat_stair">Escalera</string>
     <string name="flat_bedrooms">Habitaciones</string>
+    <string name="flat_invitation_code">Código: %1$s</string>
+    <string name="flat_edit">Editar el piso</string>
+    <string name="flat_invitation_code_large">Codigo de invitación</string>
+    <string name="flat_kick_user">Expulsar usuario</string>
+    <string name="flat_promote_user">Ascender usuario</string>
+    <string name="flat_welcome">¡Bienvenido a tu nuevo piso!</string>
+    <string name="flat_qr_join">Escanea el QR de un piso para entrar</string>
+    <string name="flat_qr_cancelled">"Escaneo cancelado"</string>
+    <string name="flat_qr_not_read">No se pudo leer el QR</string>
+    <string name="flat_leave">Abandonar el piso</string>
+    <string name="flat_leave_dialog_title">Abandonar el piso</string>
+    <string name="flat_leave_dialog_supporting_text">Estas a punto de salir del piso \"%1$s\". ¿Estás seguro?</string>
 
-    <string name="task_title">Título</string>
+
+    <string name="task_title">Título*</string>
     <string name="task_description">Descripción</string>
     <string name="task_start_date">Fecha de inicio</string>
-    <string name="task_end_date">Fecha de fin</string>
+    <string name="task_end_date">Fecha de fin*</string>
     <string name="task_priority">Prioridad</string>
     <string name="task_status">Estado</string>
+    <string name="task_asignee">Asignados</string>
 
     <string name="task_elimination_dialog_title">Eliminar tarea</string>
     <string name="task_elimination_dialog_supporting_text">Estás a punto de eliminar la tarea \"%1$s\". Esta acción es irreversible</string>
+
+    <string name="error_task_title_missing">La tarea debe de tener un título.</string>
+    <string name="error_task_title_length">El título debe tener entre 3 y 50 caracateres.</string>
+    <string name="error_task_end_date_missing">La fecha de fin es obligatoria.</string>
+
+    <string name="partner_promote_dialog_title">Ascender usuario</string>
+    <string name="partner_promote_dialog_supporting_text">Estás a punto de ascender a %1$s a administrador. Si aceptas, dejarás de ser administrador.</string>
+
+    <string name="partner_kick_dialog_title">Expulsar usuario</string>
+    <string name="partner_kick_dialog_supporting_text">Estás a punto de expulsar a %1$s del piso. ¿Estás seguro de que quieres contunuar?</string>
+
+    <string name="tasks_not_found_today">No tienes tareas pendientes para hoy</string>
+    <string name="tasks_not_found_tomorrow">No tienes tareas pendientes para mañana</string>
 
     <string name="task_select_start_date">Selecciona la fecha de inicio</string>
     <string name="task_select_end_date">Selecciona la fecha de fin</string>
@@ -54,7 +87,8 @@
     <string name="title_flat">Mi piso</string>
     <string name="title_account">Cuenta</string>
     <string name="title_settings">Ajustes</string>
-    <string name="title_today_tasks">Tareas de hoy</string>
+    <string name="title_today_tasks">Tareas pendientes para hoy</string>
+    <string name="title_tomorrow_tasks">Tareas pendientes para mañana</string>
 
     <string name="error_invalid_login_credentials">Credenciales de acceso no validas</string>
     <string name="error_unknown">Error desconocido</string>
@@ -65,8 +99,12 @@
     <string name="error_lost_connection_msg">Has perdido la conexión con el servidor. Comprueba tu conexión a internet y vuelve a intentarlo.</string>
     <string name="error_lost_connection_btn">Reintentar</string>
 
-    <string name="error_form_flat_name_empty">El nombre del piso no puede estar vacío</string>
     <string name="error_form_flat_address_empty">La dirección del piso no puede estar vacía</string>
+    <string name="error_form_flat_name_empty">El nombre del piso no puede estar vacío</string>
+    <string name="error_form_flat_code_empty">El código del piso no puede estar vacío</string>
+    <string name="error_form_flat_name_length">El nombre del piso debe tener entre 3 y 50 caracteres.</string>
+    <string name="error_join_flat_failed">Código inválido</string>
+
 
     <string name="error_form_login_user_not_found">No existe un usuario asociado a este email</string>
     <string name="error_form_login_email_empty">El email no puede estar vacío</string>
@@ -80,7 +118,7 @@
     <string name="error_form_signup_email_invalid">El email no es válido</string>
     <string name="error_form_signup_password_invalid">La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número</string>
     <string name="error_form_signup_name_length">El nombre debe de tener entre 3 y 50 caracteres.</string>
-    <string name="error_form_signup_email_length">El email no puede tener mas de 50 caracteres.</string>
+    <string name="error_form_signup_email_length">El email debe de tener en 3 y 50 caracteres.</string>
     <string name="error_form_signup_password_length">La contraseña no puede tener mas de 50 caracteres.</string>
 
     <string name="user_name">Nombre del usuario</string>

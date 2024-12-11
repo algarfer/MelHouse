@@ -1,61 +1,45 @@
 package com.uniovi.melhouse.data.repository.task
 
-import android.database.Cursor
-import androidx.core.database.getStringOrNull
 import com.uniovi.melhouse.data.model.Task
-import com.uniovi.melhouse.data.model.TaskPriority
-import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.data.repository.Repository
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
 import java.util.UUID
 
 interface TaskRepository : Repository<Task> {
     suspend fun findByDate(date: LocalDate?): List<Task>
+    suspend fun findAssignedByDate(date: LocalDate?): List<Task>
+    suspend fun findByFlatId(flatId: UUID): List<Task>
 }
 
-class TaskAssembler {
-    companion object {
-        fun toTask(cursor : Cursor) : Task? {
-            val list = toList(cursor)
-            if(list.isEmpty()) return null
-            return list.first()
-        }
-
-        fun toList(cursor : Cursor) : List<Task> {
-            val tasks = mutableListOf<Task>()
-            while (cursor.moveToNext()) {
-                val idIndex = cursor.getColumnIndex("id")
-                val nameIndex = cursor.getColumnIndex("name")
-                val descriptionIndex = cursor.getColumnIndex("description")
-                val statusIndex = cursor.getColumnIndex("status")
-                val priorityIndex = cursor.getColumnIndex("priority")
-                val startDateIndex = cursor.getColumnIndex("start_date")
-                val endDateIndex = cursor.getColumnIndex("end_date")
-                val flatIdIndex = cursor.getColumnIndex("flat_id")
-
-                val id = cursor.getString(idIndex)
-                val name = cursor.getString(nameIndex)
-                val description = cursor.getStringOrNull(descriptionIndex)
-                val status = cursor.getStringOrNull(statusIndex)
-                val priority = cursor.getStringOrNull(priorityIndex)
-                val startDate = cursor.getStringOrNull(startDateIndex)
-                val endDate = cursor.getStringOrNull(endDateIndex)
-                val flatId = cursor.getString(flatIdIndex)
-
-                tasks.add(
-                    Task(
-                        UUID.fromString(id),
-                        name,
-                        description,
-                        status?.let { TaskStatus.entries[it.toInt()] },
-                        priority?.let { TaskPriority.entries[it.toInt()] },
-                        startDate?.let { LocalDate.parse(it) },
-                        endDate?.let { LocalDate.parse(it) },
-                        UUID.fromString(flatId)
-                    )
-                )
+// TODO - Move this to the backend in some way
+suspend fun Task.loadAssignees(supabaseClient: SupabaseClient) {
+    val data = supabaseClient
+        .from("tasks_users")
+        .select(columns = Columns.list("task_id")) {
+            filter {
+                eq("task_id", id)
             }
-            return tasks.toList()
+        }.data
+
+    val usersIds = Json
+        .parseToJsonElement(data)
+        .jsonArray
+        .mapNotNull {
+            (it as? JsonObject)?.get("user_id")?.jsonPrimitive?.content
         }
-    }
+
+    assignees = supabaseClient
+        .from("users")
+        .select {
+            filter {
+                isIn("id", usersIds)
+            }
+        }.decodeList()
 }
