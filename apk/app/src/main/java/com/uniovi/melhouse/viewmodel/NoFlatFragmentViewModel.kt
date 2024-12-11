@@ -9,6 +9,7 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
+import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoFlatFragmentViewModel @Inject constructor(
-    private val flatRepository: FlatRepository
+    private val flatRepository: FlatRepository,
+    private val prefs: Prefs
 ) : ViewModel() {
 
     val flatCodeError: LiveData<String?>
@@ -44,8 +46,9 @@ class NoFlatFragmentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Executor.safeCall {
-                    flatRepository.joinFlat(flatCode.uppercase())
+                    val flat = flatRepository.joinFlat(flatCode.uppercase())
                     _joinFlatSuccess.postValue(true)
+                    prefs.setFlatId(flat.id)
                 }
             } catch (e: PersistenceLayerException) {
                 _snackBarMsg.postValue(e.getMessage(context))

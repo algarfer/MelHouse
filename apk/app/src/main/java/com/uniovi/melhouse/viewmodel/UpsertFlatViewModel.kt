@@ -12,6 +12,7 @@ import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.factories.viewmodel.UpsertFlatViewModelFactory
+import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.ifEmptyNull
 import com.uniovi.melhouse.utils.validateLength
 import dagger.assisted.Assisted
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 class UpsertFlatViewModel @AssistedInject constructor(
     private val flatRepository: FlatRepository,
     private val userSessionFacade: SupabaseUserSessionFacade,
+    private val prefs: Prefs,
     @Assisted private val flat: Flat?
 ) : ViewModel() {
 
@@ -65,7 +67,10 @@ class UpsertFlatViewModel @AssistedInject constructor(
         if(areErrors) return
 
         if(flat == null)
-            upsert { flatRepository.createFlat(generateFlat()) }
+            upsert {
+                val flat = flatRepository.createFlat(generateFlat())
+                prefs.setFlatId(flat.id)
+            }
         else
             upsert { flatRepository.update(generateFlat()) }
     }

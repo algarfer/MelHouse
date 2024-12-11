@@ -102,14 +102,10 @@ class FlatFragment : Fragment() {
 
         viewModel.isAdmin.observe(this) {
             it?.let {
-                if(it) {
+                if(it)
                     binding.btnEdit.makeVisible()
-                    binding.btnLeave.makeGone()
-                }
-                else {
+                else
                     binding.btnEdit.makeGone()
-                    binding.btnLeave.makeVisible()
-                }
             }
         }
 

@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.presentation.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.uniovi.melhouse.data.model.toFlat
 import com.uniovi.melhouse.data.model.toJson
 import com.uniovi.melhouse.databinding.FragmentUpsertFlatBinding
 import com.uniovi.melhouse.factories.viewmodel.UpsertFlatViewModelFactory
+import com.uniovi.melhouse.presentation.activities.MenuActivity
 import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.viewmodel.UpsertFlatViewModel
@@ -75,7 +77,13 @@ class UpsertFlatFragment : Fragment() {
         }
         viewModel.creationSuccessful.observe(viewLifecycleOwner) {
             if(!it) return@observe
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            if(flat == null) {
+                val intent = Intent(requireContext(), MenuActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            } else {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
         viewModel.genericError.observe(viewLifecycleOwner) {
             if(it == null) return@observe
