@@ -30,7 +30,7 @@
     <string name="flat_floor">Piso</string>
     <string name="flat_door">Puerta</string>
     <string name="flat_stair">Escalera</string>
-    <string name="flat_bedrooms">Habitaciones</string>
+    <string name="flat_n_mates">Compañeros</string>
     <string name="flat_invitation_code">Código: %1$s</string>
     <string name="flat_edit">Editar el piso</string>
     <string name="flat_invitation_code_large">Codigo de invitación</string>
@@ -127,5 +127,6 @@
 
     <string name="settings_general">General</string>
     <string name="settings_dark_mode">Modo oscuro</string>
+    <string name="settings_delete_data">Eliminar todos mis datos</string>
 
 </resources>
