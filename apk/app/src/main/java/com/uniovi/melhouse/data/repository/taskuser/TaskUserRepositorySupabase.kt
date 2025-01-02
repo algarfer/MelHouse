@@ -2,10 +2,14 @@ package com.uniovi.melhouse.data.repository.taskuser
 
 import com.uniovi.melhouse.data.model.TaskUser
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.realtime.selectAsFlow
+import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import javax.inject.Inject
 
+@OptIn(SupabaseExperimental::class)
 class TaskUserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : TaskUserRepository {
@@ -47,6 +51,16 @@ class TaskUserRepositorySupabase @Inject constructor(
     }
 
     override suspend fun findAll(): List<TaskUser> {
+        TODO("Not yet implemented")
+    }
+
+    override fun findAllAsFlow(): Flow<List<TaskUser>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(listOf(TaskUser::taskId, TaskUser::userId))
+    }
+
+    override fun findByIdAsFlow(id: UUID): Flow<TaskUser> {
         TODO("Not yet implemented")
     }
 }

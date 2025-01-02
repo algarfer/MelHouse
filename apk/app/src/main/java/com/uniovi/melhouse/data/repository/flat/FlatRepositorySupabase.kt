@@ -2,13 +2,19 @@ package com.uniovi.melhouse.data.repository.flat
 
 import com.uniovi.melhouse.data.model.Flat
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.realtime.realtime
+import io.github.jan.supabase.realtime.selectAsFlow
+import io.github.jan.supabase.realtime.selectSingleValueAsFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.util.UUID
 import javax.inject.Inject
 
+@OptIn(SupabaseExperimental::class)
 class FlatRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : FlatRepository {
@@ -78,5 +84,20 @@ class FlatRepositorySupabase @Inject constructor(
             .from(TABLE_NAME)
             .select()
             .decodeList()
+    }
+
+    override fun findAllAsFlow(): Flow<List<Flat>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(Flat::id)
+    }
+
+    override fun findByIdAsFlow(id: UUID): Flow<Flat> {
+        supabaseClient.realtime
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectSingleValueAsFlow(Flat::id) {
+                Flat::id eq id
+            }
     }
 }
