@@ -73,3 +73,8 @@ alter default privileges for role postgres in schema private grant select on tab
 alter default privileges for role postgres in schema private grant execute on routines to anon, authenticated;
 alter default privileges for role postgres in schema private grant select on sequences to anon, authenticated;
 alter default privileges for role postgres in schema private grant execute on functions to anon, authenticated;
+
+alter publication supabase_realtime add table flats;
+alter publication supabase_realtime add table users;
+alter publication supabase_realtime add table tasks;
+alter publication supabase_realtime add table tasks_users;

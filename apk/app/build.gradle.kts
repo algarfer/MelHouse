@@ -106,7 +106,7 @@ dependencies {
     implementation(libs.postgrest.kt)
     implementation(libs.auth.kt)
     implementation(libs.realtime.kt)
-    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.cio)
 
     implementation(libs.mpandroidchart)
 }
