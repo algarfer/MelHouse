@@ -35,7 +35,6 @@ class NoFlatFragmentViewModel @Inject constructor(
 
 
     fun joinFlat(flatCode: String, context: Context) {
-
         if (flatCode.isBlank()) {
             _flatCodeError.postValue(context.getString(R.string.error_form_flat_code_empty))
             return

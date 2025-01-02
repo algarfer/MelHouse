@@ -75,13 +75,9 @@ class MenuFragment : Fragment() {
             }
         }
 
-        viewModel.genericError.observe(this) {
+        viewModel.genericError.observe(viewLifecycleOwner) {
             if(it == null) return@observe
-
             getWarningSnackbar(requireView(), it).show()
         }
-
-        viewModel.loadTasks()
     }
-
 }

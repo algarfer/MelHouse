@@ -30,9 +30,7 @@ class SplashScreenViewModel @Inject constructor(
             try {
                 isLogged = supabaseUserSessionFacade.loadFromStorage()
 
-                if(!isLogged) {
-                    prefs.clearAll()
-                }
+                if(!isLogged) prefs.clearAll()
             } catch (e: PersistenceLayerException) {
                 prefs.clearAll()
                 supabaseUserSessionFacade.clearSession()
