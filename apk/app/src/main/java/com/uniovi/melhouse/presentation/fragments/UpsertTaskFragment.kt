@@ -119,12 +119,9 @@ class UpsertTaskFragment : Fragment() {
     }
 
     private fun makeButtons() {
-        // Limpia las vistas existentes en el grupo de botones
         binding.asigneesBtnGroup.removeAllViews()
 
-        // Itera sobre los elementos del mapa en el ViewModel
         viewModel.map.value!!.forEachIndexed { index, mate ->
-            // Verifica que 'mate' no sea nulo antes de proceder
             mate.let {
                 val button = MaterialButton(requireContext()).apply {
                     text = it.name
@@ -135,7 +132,6 @@ class UpsertTaskFragment : Fragment() {
                 button.setOnClickListener{
                     applyColor(viewModel.changeAsignee(index), button)
                 }
-                // Agrega el botón al grupo de vistas
                 binding.asigneesBtnGroup.addView(button)
             }
         }
@@ -200,6 +196,11 @@ class UpsertTaskFragment : Fragment() {
         binding.dmStatus.tvDropdownField.apply {
             isFocusable = false
             isClickable = true
+
+            val defaultStatus = TaskStatus.PENDING
+            setText(defaultStatus.getString(requireContext()), false)
+            viewModel.setStatus(defaultStatus)
+
             setAdapter(
                 TaskStatusDropDownMenuAdapter(
                 requireContext(),
@@ -218,6 +219,11 @@ class UpsertTaskFragment : Fragment() {
         binding.dmPriority.tvDropdownField.apply {
             isFocusable = false
             isClickable = true
+
+            val defaultPriority = TaskPriority.MEDIUM
+            setText(defaultPriority.getString(requireContext()), false)
+            viewModel.setPriority(defaultPriority)
+
             setAdapter(
                 TaskPriorityDropDownMenuAdapter(
                 requireContext(),

@@ -133,7 +133,7 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
             val fragment = UpsertTaskFragment.create()
             parentFragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true) //
+                .setReorderingAllowed(true)
                 .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
                 .addToBackStack(null)
                 .commit()

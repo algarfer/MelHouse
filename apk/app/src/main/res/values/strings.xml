@@ -43,7 +43,10 @@
     <string name="flat_leave">Abandonar el piso</string>
     <string name="flat_leave_dialog_title">Abandonar el piso</string>
     <string name="flat_leave_dialog_supporting_text">Estas a punto de salir del piso \"%1$s\". ¿Estás seguro?</string>
-
+    <string name="flat_assignee_1">Asignado 1</string>
+    <string name="flat_assignee_2">Asignado 2</string>
+    <string name="flat_assignee_3">Asignado 3</string>
+    <string name="flat_assign">¿Quién debe realizar la tarea?</string>
 
     <string name="task_title">Título*</string>
     <string name="task_description">Descripción</string>
