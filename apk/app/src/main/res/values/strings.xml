@@ -18,7 +18,7 @@
 
     <string name="chart_not_available_short">N/A</string>
     <string name="chart_bar_tasks_status">Estado de las tareas</string>
-    <string name="chart_pie_asignees">Tareas asignadas</string>
+    <string name="chart_pie_asignees">Tareas</string>
 
     <string name="flat_no_flat">Entrar a un piso</string>
     <string name="flat_code">Código del piso</string>
@@ -47,6 +47,7 @@
     <string name="flat_assignee_2">Asignado 2</string>
     <string name="flat_assignee_3">Asignado 3</string>
     <string name="flat_assign">¿Quién debe realizar la tarea?</string>
+    <string name="flat_statistics">Estadísticas</string>
 
     <string name="task_title">Título*</string>
     <string name="task_description">Descripción</string>
