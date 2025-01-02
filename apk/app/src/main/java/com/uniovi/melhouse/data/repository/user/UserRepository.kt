@@ -5,6 +5,7 @@ import com.uniovi.melhouse.data.repository.Repository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
@@ -16,6 +17,7 @@ interface UserRepository : Repository<User> {
     suspend fun findByEmail(email: String): User?
     suspend fun findByIds(ids: List<UUID>): List<User>
     suspend fun getRoommates(flatId: UUID): List<User>
+    fun getRoommatesAsFlow(flatId: UUID): Flow<List<User>>
 }
 
 // TODO - Move this to the backend in some way

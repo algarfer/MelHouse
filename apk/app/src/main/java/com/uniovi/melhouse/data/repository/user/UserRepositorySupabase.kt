@@ -8,6 +8,7 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.realtime.selectSingleValueAsFlow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
 
@@ -49,6 +50,14 @@ class UserRepositorySupabase @Inject constructor(
                 }
             }
             .decodeList()
+    }
+
+    // FIXME - This only updates the user list only when the logged user is an admin
+    override fun getRoommatesAsFlow(flatId: UUID): Flow<List<User>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(User::id)
+            .map { it.filter { user -> user.flatId == flatId } }
     }
 
     override suspend fun insert(entity: User) {

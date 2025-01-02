@@ -13,13 +13,12 @@ import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
-import com.uniovi.melhouse.data.repository.user.loadTasks
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +28,6 @@ class FlatFragmentViewModel @Inject constructor(
     private val usersRepository: UserRepository,
     private val flatRepository: FlatRepository,
     private val taskRepository: TaskRepository,
-    private val supabaseClient: SupabaseClient,
     private val prefs: Prefs
 ) : ViewModel() {
 
@@ -37,9 +35,10 @@ class FlatFragmentViewModel @Inject constructor(
         .catch { _genericError.postValue(it.message) }
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
-    val partners: LiveData<List<User>>
-        get() = _partners
-    private val _partners = MutableLiveData<List<User>>(emptyList())
+    val partners: LiveData<List<User>> = usersRepository.getRoommatesAsFlow(prefs.getFlatId()!!)
+        .map { users -> users.sortedBy { if (it.id == userSessionFacade.getUserId()!!) Int.MIN_VALUE else it.id.hashCode() } }
+        .catch { _genericError.postValue(it.message) }
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
     val isAdmin: LiveData<Boolean>
         get() = _isAdmin
@@ -89,11 +88,6 @@ class FlatFragmentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Executor.safeCall {
-                    usersRepository.getRoommates(prefs.getFlatId()!!).let {
-                        it.forEach { it.loadTasks(supabaseClient) }
-                        _partners.postValue(it)
-                    }
-
                     userSessionFacade.getUserData().let {
                         _currentUser.postValue(it)
                     }
