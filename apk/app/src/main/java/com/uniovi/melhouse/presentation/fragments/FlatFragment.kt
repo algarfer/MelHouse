@@ -90,6 +90,12 @@ class FlatFragment : Fragment() {
                     .show()
             }
 
+            binding.btnClipboard.setOnClickListener {
+                val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
+                val clip = ClipData.newPlainText(label.toString(), flat.invitationCode)
+                clipboard?.setPrimaryClip(clip)
+            }
+
             binding.btnClipboard.makeVisible()
         }
 
@@ -176,11 +182,6 @@ class FlatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFlatBinding.inflate(inflater, container, false)
-        binding.btnClipboard.setOnClickListener {
-            val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
-            val clip = ClipData.newPlainText(label.toString(), viewModel.flat.value?.invitationCode)
-            clipboard?.setPrimaryClip(clip)
-        }
 
         partnersAdapter = partnersAdapterFactory.create(listOf(), viewModel)
 

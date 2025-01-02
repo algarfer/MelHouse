@@ -3,6 +3,7 @@ package com.uniovi.melhouse.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
@@ -18,6 +19,7 @@ import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,9 +33,9 @@ class FlatFragmentViewModel @Inject constructor(
     private val prefs: Prefs
 ) : ViewModel() {
 
-    val flat: LiveData<Flat>
-        get() = _flat
-    private val _flat = MutableLiveData<Flat>(null)
+    val flat: LiveData<Flat> = flatRepository.findByIdAsFlow(prefs.getFlatId()!!)
+        .catch { _genericError.postValue(it.message) }
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
     val partners: LiveData<List<User>>
         get() = _partners
@@ -64,15 +66,6 @@ class FlatFragmentViewModel @Inject constructor(
     private val _genericError = MutableLiveData<String?>(null)
 
     fun onCreate() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                userSessionFacade.getFlat().let {
-                    _flat.postValue(it)
-                }
-            } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
-            }
-        }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Executor.safeCall {
