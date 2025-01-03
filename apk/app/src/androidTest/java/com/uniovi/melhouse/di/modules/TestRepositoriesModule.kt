@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.di.modules
 
+import android.util.Log
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskUser
@@ -24,11 +25,14 @@ import javax.inject.Singleton
     replaces = [RepositoriesModule::class]
 )
 object TestRepositoriesModule {
-    private val users: MutableList<User> = mutableListOf()
-    private val tasks: MutableList<Task> = mutableListOf()
-    private val flats: MutableList<Flat> = mutableListOf()
-    private val taskUsers: MutableList<TaskUser> = mutableListOf()
     private val identifiedUserId = UUID.fromString("11111111-1111-1111-1111-111111111111")
+    private val identifiedFlatId = UUID.fromString("22222222-2222-2222-2222-222222222222")
+    private val users: MutableList<User> = mutableListOf(User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId))
+    private val tasks: MutableList<Task> = mutableListOf()
+    private val flats: MutableList<Flat> = mutableListOf(
+        Flat(UUID.randomUUID(), "Flat1", "Flat1", 1, "Flat1", "Flat1", "JAVIMONT", identifiedUserId)
+    )
+    private val taskUsers: MutableList<TaskUser> = mutableListOf()
 
     @Provides
     @Singleton
@@ -43,10 +47,11 @@ object TestRepositoriesModule {
 
         coEvery { mockk.findById(any()) } answers {
             val userId = arg<UUID>(0)
+            Log.i("userId", userId.toString())
             val ret: User?
-            if(userId == identifiedUserId)// ID del usuario identificado
-                ret = User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = UUID.randomUUID())
-            else
+            //if(userId == identifiedUserId)// ID del usuario identificado
+                //ret = User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId)
+            //else
                 ret = users.find { user -> user.id == userId }
             ret
         }
@@ -135,6 +140,11 @@ object TestRepositoriesModule {
             Unit
         }
 
+        coEvery { mockk.findByFlatId(any()) } answers {
+            val flatId = arg<UUID>(0)
+            tasks.filter { task -> task.flatId == flatId }
+        }
+
         return mockk
     }
 
@@ -151,12 +161,15 @@ object TestRepositoriesModule {
 
         coEvery { mockk.createFlat(any()) } answers {
             val flat = arg<Flat>(0)
-            flats.add(flat)
+            Log.i("createFlat", flat.toString())
+            //flat.adminId = identifiedUserId
+            flats.add(flat.copy(id= identifiedFlatId))
             flat
         }
 
         coEvery { mockk.findById(any()) } answers {
             val flatId = arg<UUID>(0)
+            Log.i("flatId", flatId.toString())
             flats.find { flat -> flat.id == flatId }
         }
 
@@ -179,6 +192,8 @@ object TestRepositoriesModule {
             val invitationCode = arg<String>(0)
             val flat = flats.find { flat -> flat.invitationCode == invitationCode }!!
             users.find { user -> user.id == identifiedUserId }?.flatId = flat.id
+            Log.i("joinFlat", flat.toString())
+            Log.i("joinFlat", users.toString())
             flat
         }
 
