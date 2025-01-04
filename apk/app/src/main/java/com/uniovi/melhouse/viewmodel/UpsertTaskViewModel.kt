@@ -15,7 +15,6 @@ import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
-import com.uniovi.melhouse.viewmodel.state.TaskState
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateLength
 import dagger.hilt.android.lifecycle.HiltViewModel
