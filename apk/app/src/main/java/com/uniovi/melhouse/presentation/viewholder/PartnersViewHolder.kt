@@ -63,7 +63,7 @@ class PartnersViewHolder @AssistedInject constructor(
 
     override fun onViewRecycled() {
         super.onViewRecycled()
-        viewModel.done.removeObserver(observer)
+        viewModel.isAdmin.removeObserver(observer)
     }
 
     private fun canShowButtons(displayedUser: User, currentUser: User, isAdmin: Boolean): Boolean {
