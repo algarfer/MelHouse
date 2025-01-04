@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -94,6 +95,7 @@ class FlatFragment : Fragment() {
                 val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
                 val clip = ClipData.newPlainText(label.toString(), flat.invitationCode)
                 clipboard?.setPrimaryClip(clip)
+                Toast.makeText(requireContext(), R.string.flat_invitation_code_copied, Toast.LENGTH_SHORT).show()
             }
 
             binding.btnClipboard.makeVisible()
