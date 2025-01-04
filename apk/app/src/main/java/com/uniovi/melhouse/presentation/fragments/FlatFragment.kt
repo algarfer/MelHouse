@@ -47,11 +47,6 @@ class FlatFragment : Fragment() {
         const val TAG = "FlatFragment"
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onCreate()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -185,13 +180,15 @@ class FlatFragment : Fragment() {
     ): View {
         binding = FragmentFlatBinding.inflate(inflater, container, false)
 
-        partnersAdapter = partnersAdapterFactory.create(listOf(), viewModel)
+        viewModel.currentUser.observe(viewLifecycleOwner) {
+            partnersAdapter = partnersAdapterFactory.create(listOf(), viewModel, it)
 
-        binding.rvFlatMembers.apply {
-            val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            manager.setScrollEnabled(false)
-            layoutManager = manager
-            adapter = partnersAdapter
+            binding.rvFlatMembers.apply {
+                val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                manager.setScrollEnabled(false)
+                layoutManager = manager
+                adapter = partnersAdapter
+            }
         }
         return binding.root
     }

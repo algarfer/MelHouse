@@ -19,8 +19,11 @@ import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,8 +37,10 @@ class FlatFragmentViewModel @Inject constructor(
     private val prefs: Prefs
 ) : ViewModel() {
 
-    val flat: LiveData<Flat> = flatRepository.findByIdAsFlow(prefs.getFlatId()!!)
+    private val _flat = flatRepository.findByIdAsFlow(prefs.getFlatId()!!)
         .catch { _genericError.postValue(it.message) }
+        .shareIn(viewModelScope, started = SharingStarted.Lazily)
+    val flat: LiveData<Flat> = _flat
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
     val partners: LiveData<List<User>> = usersRepository.getRoommatesAsFlow(prefs.getFlatId()!!)
@@ -44,13 +49,17 @@ class FlatFragmentViewModel @Inject constructor(
         .catch { _genericError.postValue(it.message) }
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
-    val isAdmin: LiveData<Boolean>
-        get() = _isAdmin
-    private val _isAdmin = MutableLiveData(false)
+    private val _currentUser = usersRepository.findByIdAsFlow(userSessionFacade.getUserId()!!)
+        .catch { _genericError.postValue(it.message) }
+        .shareIn(viewModelScope, started = SharingStarted.Lazily)
+    val currentUser: LiveData<User> = _currentUser
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
-    val currentUser: LiveData<User?>
-        get() = _currentUser
-    private val _currentUser = MutableLiveData<User?>(null)
+    val isAdmin: LiveData<Boolean> =
+        _flat.combine(_currentUser) { flat, user ->
+            flat.adminId == user.id
+        }.catch { _genericError.postValue(it.message) }
+            .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
     val tasks: LiveData<List<Task>> = taskRepository.findByFlatIdAsFlow(prefs.getFlatId()!!)
         .catch { _genericError.postValue(it.message) }
@@ -68,38 +77,12 @@ class FlatFragmentViewModel @Inject constructor(
         get() = _genericError
     private val _genericError = MutableLiveData<String?>(null)
 
-    fun onCreate() {
-        checkAdmin()
-    }
-
-    private fun checkAdmin() {
-        viewModelScope.launch(Dispatchers.IO) {
-            userSessionFacade.isFlatAdmin().let {
-                _isAdmin.postValue(it)
-            }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Executor.safeCall {
-                    userSessionFacade.getUserData().let {
-                        _currentUser.postValue(it)
-                    }
-                    _done.postValue(true)
-                }
-            } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
-            }
-        }
-    }
-
     fun promoteToAdmin(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Executor.safeCall {
                     val newFlat = userSessionFacade.getFlat()!!.copy(adminId = user.id)
                     flatRepository.update(newFlat)
-
-                    checkAdmin() // Update View
                 }
             } catch (e: PersistenceLayerException) {
                 _genericError.postValue(e.message)
@@ -113,8 +96,6 @@ class FlatFragmentViewModel @Inject constructor(
                 Executor.safeCall {
                     val newUser = user.copy(flatId = null)
                     usersRepository.update(newUser)
-
-                    checkAdmin() // Update View
                 }
             } catch (e: PersistenceLayerException) {
                 _genericError.postValue(e.message)

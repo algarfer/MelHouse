@@ -15,7 +15,8 @@ import dagger.assisted.AssistedInject
 
 class PartnersViewHolder @AssistedInject constructor(
     @Assisted private val view: View,
-    @Assisted private val viewModel: FlatFragmentViewModel
+    @Assisted private val viewModel: FlatFragmentViewModel,
+    @Assisted private val user: User
 ) : AbstractViewHolder<User>(view) {
 
     private val binding = FlatPartnerLayoutBinding.bind(view)
@@ -26,14 +27,7 @@ class PartnersViewHolder @AssistedInject constructor(
         binding.tvUserName.text = item.name
 
         observer = Observer {
-            if(!it) {
-                binding.btnKick.makeGone()
-                binding.btnAscend.makeGone()
-                return@Observer
-            }
-            val user = viewModel.currentUser.value ?: return@Observer
-
-            if (canShowButtons(item, user, viewModel.isAdmin.value!!)) {
+            if (canShowButtons(item, user, it)) {
                 binding.btnKick.makeVisible()
                 binding.btnAscend.makeVisible()
             } else {
@@ -42,7 +36,7 @@ class PartnersViewHolder @AssistedInject constructor(
             }
         }
 
-        viewModel.done.observeForever(observer)
+        viewModel.isAdmin.observeForever(observer)
 
         binding.btnKick.setOnClickListener {
             MaterialAlertDialogBuilder(view.context)

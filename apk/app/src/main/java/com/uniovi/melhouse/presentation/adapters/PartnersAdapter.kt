@@ -15,6 +15,7 @@ import dagger.assisted.AssistedInject
 class PartnersAdapter @AssistedInject constructor(
     @Assisted list: List<User>,
     @Assisted private val viewModel: FlatFragmentViewModel,
+    @Assisted private val user: User,
     private val partnersViewHolderFactory: PartnersViewHolderFactory
 ) : AbstractAdapter<User, PartnersViewHolder>(list) {
 
@@ -28,6 +29,6 @@ class PartnersAdapter @AssistedInject constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PartnersViewHolder {
         return partnersViewHolderFactory.create(LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.flat_partner_layout, parent, false), viewModel)
+            .inflate(R.layout.flat_partner_layout, parent, false), viewModel, user)
     }
 }

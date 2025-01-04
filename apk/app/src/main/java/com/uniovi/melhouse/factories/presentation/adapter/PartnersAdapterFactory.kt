@@ -8,5 +8,5 @@ import dagger.assisted.AssistedFactory
 @AssistedFactory
 interface PartnersAdapterFactory {
 
-    fun create(list: List<User>, viewModel: FlatFragmentViewModel): PartnersAdapter
+    fun create(list: List<User>, viewModel: FlatFragmentViewModel, user: User): PartnersAdapter
 }
