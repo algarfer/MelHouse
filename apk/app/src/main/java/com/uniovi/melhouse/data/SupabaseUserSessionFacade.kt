@@ -22,7 +22,14 @@ class SupabaseUserSessionFacade @Inject constructor(
 ) {
 
     suspend fun loadFromStorage() : Boolean {
-        return supabase.auth.loadFromStorage()
+        val result = supabase.auth.loadFromStorage()
+        if(!result) return false
+        val user = supabase.auth.currentUserOrNull()
+        if(user == null || userRepository.findById(UUID.fromString(user.id)) == null) {
+            supabase.auth.clearSession()
+            return false
+        }
+        return true
     }
 
     suspend fun signUp(email: String, password: String, name: String) : User {
