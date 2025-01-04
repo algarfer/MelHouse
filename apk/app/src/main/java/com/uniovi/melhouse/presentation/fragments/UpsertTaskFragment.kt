@@ -15,8 +15,11 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
+import com.uniovi.melhouse.data.model.toJson
+import com.uniovi.melhouse.data.model.toTask
 import com.uniovi.melhouse.databinding.CalendarUpsertTaskFragmentBinding
 import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
 import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
@@ -28,27 +31,22 @@ import com.uniovi.melhouse.utils.maxDate
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
-import com.uniovi.melhouse.viewmodel.state.TaskState
-import com.uniovi.melhouse.viewmodel.state.toJson
-import com.uniovi.melhouse.viewmodel.state.toTaskState
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 
 @AndroidEntryPoint
 class UpsertTaskFragment : Fragment() {
 
-    private var taskState: TaskState? = null
+    private var task: Task? = null
     private val viewModel: UpsertTaskViewModel by viewModels()
     private lateinit var binding: CalendarUpsertTaskFragmentBinding
-    private val MILLIS_PER_DAY = 86400000
-    private val TASK_STATE_PARAMETER = "task_state_json"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = CalendarUpsertTaskFragmentBinding.inflate(inflater, container, false)
-        taskState = arguments?.getString(TASK_STATE_PARAMETER)?.toTaskState()
+        task = arguments?.getString(TASK_STATE_PARAMETER)?.toTask(withTransientFields = true)
         return binding.root
     }
 
@@ -161,11 +159,11 @@ class UpsertTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.onViewCreated(taskState)
-        val taskState = taskState
-        if(taskState != null) {
-            binding.etTaskTitle.text = taskState.task.name.toEditable()
-            binding.etTaskDescription.text = taskState.task.description?.toEditable()
+        viewModel.onViewCreated(task)
+        val task = task
+        if(task != null) {
+            binding.etTaskTitle.text = task.name.toEditable()
+            binding.etTaskDescription.text = task.description?.toEditable()
         }
 
         binding.dmStatus.dropdownLayout.hint = getString(R.string.task_status)
@@ -286,10 +284,13 @@ class UpsertTaskFragment : Fragment() {
     companion object {
         const val TAG = "UpsertTaskFragment"
 
-        fun create(taskState: TaskState? = null) : UpsertTaskFragment {
+        private const val MILLIS_PER_DAY = 86400000
+        private const val TASK_STATE_PARAMETER = "task_state_json"
+
+        fun create(task: Task? = null) : UpsertTaskFragment {
             return UpsertTaskFragment().apply {
                 arguments = Bundle().apply {
-                    putString(TASK_STATE_PARAMETER, taskState?.toJson())
+                    putString(TASK_STATE_PARAMETER, task?.toJson(withTransientFields = true))
                 }
             }
         }

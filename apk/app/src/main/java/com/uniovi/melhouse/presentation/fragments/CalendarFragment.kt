@@ -51,7 +51,7 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
         get() {
             if (_tasksAdapter == null) {
                 _tasksAdapter = tasksAdapterFactory.create(listOf()) {
-                    taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){
+                    taskPressedHandler(parentFragmentManager, it.id, {viewModel.updateDailyTasks(selectedDate)}){
                         viewModel.updateTasks()
                     }
                 }

@@ -31,7 +31,7 @@ class UpsertTaskViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val taskUserRepository: TaskUserRepository
 ) : ViewModel() {
-    private var taskState: TaskState? = null
+    private var task: Task? = null
 
     private var title: String? = null
     private var description: String? = null
@@ -90,20 +90,17 @@ class UpsertTaskViewModel @Inject constructor(
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
     // TODO - Simplify viewModel and move task to assisted injection
-    fun onViewCreated(taskState: TaskState?) {
-        this.taskState = taskState
+    fun onViewCreated(task: Task?) {
+        this.task = task
         putAsignees()
 
-        if(taskState != null) {
-            val task = taskState.task
+        if(task != null) {
             setTitle(task.name)
             setDescription(task.description)
             setStartDate(task.startDate)
             setEndDate(task.endDate)
             setStatus(task.status)
             setPriority(task.priority)
-
-
         }
     }
 
@@ -125,7 +122,7 @@ class UpsertTaskViewModel @Inject constructor(
 
         if(areErrors) return
 
-        if (taskState?.isInBD == true)
+        if (task != null)
             updateTaskState()
         else
             saveTaskState()
@@ -137,8 +134,7 @@ class UpsertTaskViewModel @Inject constructor(
                 Executor.safeCall {
                     val task = generateTask()
                     taskRepository.insert(task)
-                    if(taskState != null)
-                        taskUserRepository.insertAsignees(task.id, taskState!!.asignees.map { user -> user.id })
+                    taskUserRepository.insertAsignees(task.id, task.assignees.map { user -> user.id })
                     _close.postValue(true)
                 }
             } catch (e: PersistenceLayerException) {
@@ -152,10 +148,10 @@ class UpsertTaskViewModel @Inject constructor(
             try {
                 Executor.safeCall {
                     taskRepository.update(generateTask())
-                    taskUserRepository.deleteAllAsignees(taskState!!.task.id)
+                    taskUserRepository.deleteAllAsignees(task!!.id)
                     taskUserRepository.insertAsignees(
-                        taskState!!.task.id,
-                        taskState!!.asignees.map { user -> user.id })
+                        task!!.id,
+                        task!!.assignees.map { user -> user.id })
                     _close.postValue(true)
                 }
             } catch (e: PersistenceLayerException) {
@@ -165,7 +161,7 @@ class UpsertTaskViewModel @Inject constructor(
     }
 
     private fun generateTask(): Task {
-        return taskState?.task?.copy(
+        return task?.copy(
             name = title.orEmpty(), // TODO - Change to assert !!
             description = description,
             status = _status.value,
@@ -200,9 +196,10 @@ class UpsertTaskViewModel @Inject constructor(
                         _map.postValue(_map.value!!.toMutableList())
                     }
 
-                    if(taskState != null) {
-                        asignees = map.value!!.map { asignee -> taskState!!.asignees.contains(asignee) }.toMutableList()
-                    }
+                    if(task != null)
+                        asignees = map.value!!
+                            .map { asignee -> task!!.assignees.contains(asignee) }
+                            .toMutableList()
                 }
             } catch (e: PersistenceLayerException) {
                 _genericError.postValue(e.message)
@@ -211,7 +208,8 @@ class UpsertTaskViewModel @Inject constructor(
     }
 
     fun changeAsignee(index: Int): Boolean{
-        taskState = TaskState(generateTask(), asignees = getNewAsignees(index), taskState?.isInBD ?: false)
+        task = generateTask()
+        task!!.assignees = getNewAsignees(index)
 
         asignees[index] = !asignees[index]
 
@@ -219,7 +217,7 @@ class UpsertTaskViewModel @Inject constructor(
     }
 
     private fun getNewAsignees(index: Int): MutableList<User> {
-        val newAsignees = taskState?.asignees?.toMutableList().orEmpty().toMutableList()
+        val newAsignees = task!!.assignees.toMutableList()
 
         if (newAsignees.contains(_map.value!![index]))
             newAsignees.remove(_map.value!![index])
