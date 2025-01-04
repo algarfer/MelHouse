@@ -70,10 +70,15 @@ fun Task.toJson(withTransientFields: Boolean = false): String {
 }
 
 fun String.toTask(withTransientFields: Boolean = false): Task {
-    if(!withTransientFields) return Json.decodeFromString<Task>(this)
+    val json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
 
-    val jsonObject = Json.parseToJsonElement(this).jsonObject
-    val baseTask = Json.decodeFromJsonElement<Task>(jsonObject)
+    if(!withTransientFields) return json.decodeFromString<Task>(this)
+
+    val jsonObject = json.parseToJsonElement(this).jsonObject
+    val baseTask = json.decodeFromJsonElement<Task>(jsonObject)
     val assigneesJsonArray = jsonObject["assignees"]?.jsonArray ?: emptyList()
     val assignees = assigneesJsonArray.map { it.jsonPrimitive.content.toUser() }
     return baseTask.copy(assignees = assignees)

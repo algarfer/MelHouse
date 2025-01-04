@@ -37,10 +37,15 @@ fun User.toJson(withTransientFields: Boolean = false): String {
 }
 
 fun String.toUser(withTransientFields: Boolean = false): User {
-    if(!withTransientFields) return Json.decodeFromString<User>(this)
+    val json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
 
-    val jsonObject = Json.parseToJsonElement(this).jsonObject
-    val baseUser = Json.decodeFromJsonElement<User>(jsonObject)
+    if(!withTransientFields) return json.decodeFromString<User>(this)
+
+    val jsonObject = json.parseToJsonElement(this).jsonObject
+    val baseUser = json.decodeFromJsonElement<User>(jsonObject)
     val tasksJsonArray = jsonObject["tasks"]?.jsonArray ?: emptyList()
     val tasks = tasksJsonArray.map { it.jsonPrimitive.content.toTask() }
     return baseUser.copy(tasks = tasks)
