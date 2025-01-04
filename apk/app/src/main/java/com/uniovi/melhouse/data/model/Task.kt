@@ -17,13 +17,13 @@ import java.util.UUID
 @Serializable
 data class Task(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
-    var name: String,
-    var description: String? = null,
-    @Serializable(with = TaskStatusSerializer::class) var status: TaskStatus? = null,
-    @Serializable(with = TaskPrioritySerializer::class) var priority: TaskPriority? = null,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") var startDate: LocalDate? = null,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") var endDate: LocalDate? = null,
-    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID,
+    val name: String,
+    val description: String? = null,
+    @Serializable(with = TaskStatusSerializer::class) val status: TaskStatus? = null,
+    @Serializable(with = TaskPrioritySerializer::class) val priority: TaskPriority? = null,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") val startDate: LocalDate? = null,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") val endDate: LocalDate? = null,
+    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") val flatId: UUID,
     @Transient var assignees: List<User> = emptyList()
 )
 

@@ -11,9 +11,9 @@ import java.util.UUID
 @Serializable
 data class User (
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
-    var name: String,
-    var email: String,
-    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID? = null,
+    val name: String,
+    val email: String,
+    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") val flatId: UUID? = null,
     @Transient var tasks: List<Task> = emptyList()
 )
 
