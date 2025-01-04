@@ -52,9 +52,9 @@ class FlatFragmentViewModel @Inject constructor(
         get() = _currentUser
     private val _currentUser = MutableLiveData<User?>(null)
 
-    val tasks: LiveData<List<Task>>
-        get() = _tasks
-    private val _tasks = MutableLiveData<List<Task>>(emptyList())
+    val tasks: LiveData<List<Task>> = taskRepository.findByFlatIdAsFlow(prefs.getFlatId()!!)
+        .catch { _genericError.postValue(it.message) }
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
     val done: LiveData<Boolean>
         get() = _done
@@ -69,17 +69,6 @@ class FlatFragmentViewModel @Inject constructor(
     private val _genericError = MutableLiveData<String?>(null)
 
     fun onCreate() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Executor.safeCall {
-                    taskRepository.findByFlatId(prefs.getFlatId()!!).let {
-                        _tasks.postValue(it)
-                    }
-                }
-            } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
-            }
-        }
         checkAdmin()
     }
 
