@@ -12,12 +12,11 @@ import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.task.TaskRepository
+import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
-import com.uniovi.melhouse.data.repository.user.loadTasks
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -32,26 +31,42 @@ class FlatFragmentViewModel @Inject constructor(
     private val userSessionFacade: SupabaseUserSessionFacade,
     private val usersRepository: UserRepository,
     private val flatRepository: FlatRepository,
-    private val taskRepository: TaskRepository,
-    private val supabaseClient: SupabaseClient,
+    taskRepository: TaskRepository,
+    taskUserRepository: TaskUserRepository,
     private val prefs: Prefs
 ) : ViewModel() {
 
     private val _flat = flatRepository.findByIdAsFlow(prefs.getFlatId()!!)
         .catch { _genericError.postValue(it.message) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
-    val flat: LiveData<Flat> = _flat
-        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
-
-    val partners: LiveData<List<User>> = usersRepository.getRoommatesAsFlow(prefs.getFlatId()!!)
-        .map { users -> users.sortedBy { if (it.id == userSessionFacade.getUserId()!!) Int.MIN_VALUE else it.id.hashCode() } }
-        .map { users -> users.map { it.loadTasks(supabaseClient); it } }
-        .catch { _genericError.postValue(it.message) }
-        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
-
     private val _currentUser = usersRepository.findByIdAsFlow(userSessionFacade.getUserId()!!)
         .catch { _genericError.postValue(it.message) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
+    private val _partners = usersRepository.getRoommatesAsFlow(prefs.getFlatId()!!)
+        .map { users -> users.sortedBy { if (it.id == userSessionFacade.getUserId()!!) Int.MIN_VALUE else it.id.hashCode() } }
+        .catch { _genericError.postValue(it.message) }
+        .shareIn(viewModelScope, started = SharingStarted.Lazily)
+    private val _tasks = taskRepository.findByFlatIdAsFlow(prefs.getFlatId()!!)
+        .catch { _genericError.postValue(it.message) }
+        .shareIn(viewModelScope, started = SharingStarted.Lazily)
+    private val _userTasks = taskUserRepository.findAllAsFlow()
+        .catch { _genericError.postValue(it.message) }
+        .shareIn(viewModelScope, started = SharingStarted.Lazily)
+
+    val flat: LiveData<Flat> = _flat
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+
+    val partners = combine(_partners, _tasks, _userTasks) { users, tasks, userTasks ->
+        val tasksIds = tasks.map { it.id }
+        val assignments = userTasks.filter { it.taskId in tasksIds }
+
+        users
+            .map { user -> user.tasks = assignments
+                .filter { it.userId == user.id }
+                .map { taskId -> tasks
+                    .find { it.id == taskId.taskId }!! }; user }
+    }.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+
     val currentUser: LiveData<User> = _currentUser
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
@@ -61,14 +76,10 @@ class FlatFragmentViewModel @Inject constructor(
         }.catch { _genericError.postValue(it.message) }
             .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
-    val tasks: LiveData<List<Task>> = taskRepository.findByFlatIdAsFlow(prefs.getFlatId()!!)
-        .catch { _genericError.postValue(it.message) }
+    val tasks: LiveData<List<Task>> = _tasks
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
-    val done: LiveData<Boolean>
-        get() = _done
-    private val _done = MutableLiveData(false)
-
+    // TODO - Move to abstract activity and use Realtime api to check
     val hasLeaved: LiveData<Boolean>
         get() = _hasLeaved
     private val _hasLeaved = MutableLiveData(false)
