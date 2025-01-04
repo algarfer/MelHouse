@@ -11,6 +11,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
 import java.util.UUID
 
@@ -54,6 +60,21 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
     },
 }
 
-fun Task.toJson() = Json.encodeToString(this)
+fun Task.toJson(withTransientFields: Boolean = false): String {
+    if(!withTransientFields) return Json.encodeToString(this)
 
-fun String.toTask() = Json.decodeFromString<Task>(this)
+    val json = Json.encodeToJsonElement(this).jsonObject
+    val asigneesJson = Json.encodeToJsonElement(this.assignees.map { it.toJson() })
+    val extendedJson = json + ("assignees" to asigneesJson)
+    return Json.encodeToString(JsonObject(extendedJson))
+}
+
+fun String.toTask(withTransientFields: Boolean = false): Task {
+    if(!withTransientFields) return Json.decodeFromString<Task>(this)
+
+    val jsonObject = Json.parseToJsonElement(this).jsonObject
+    val baseTask = Json.decodeFromJsonElement<Task>(jsonObject)
+    val assigneesJsonArray = jsonObject["assignees"]?.jsonArray ?: emptyList()
+    val assignees = assigneesJsonArray.map { it.jsonPrimitive.content.toUser() }
+    return baseTask.copy(assignees = assignees)
+}
