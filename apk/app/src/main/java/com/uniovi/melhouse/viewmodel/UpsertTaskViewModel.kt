@@ -15,56 +15,54 @@ import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
+import com.uniovi.melhouse.factories.viewmodel.UpsertTaskViewModelFactory
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateLength
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import javax.inject.Inject
 
-@HiltViewModel
-class UpsertTaskViewModel @Inject constructor(
+@HiltViewModel(
+    assistedFactory = UpsertTaskViewModelFactory::class
+)
+class UpsertTaskViewModel @AssistedInject constructor(
     private val taskRepository: TaskRepository,
     private val prefs: Prefs,
     private val userRepository: UserRepository,
-    private val taskUserRepository: TaskUserRepository
+    private val taskUserRepository: TaskUserRepository,
+    @Assisted private val task: Task?
 ) : ViewModel() {
-    private var task: Task? = null
 
-    private var title: String? = null
-    private var description: String? = null
+    var title: String? = null
+    var description: String? = null
 
     val startDate: LiveData<LocalDate?>
         get() = _startDate
-    private val _startDate = MutableLiveData<LocalDate?>()
+    private val _startDate = MutableLiveData<LocalDate?>(task?.startDate)
     val endDate: LiveData<LocalDate?>
         get() = _endDate
-    private val _endDate = MutableLiveData<LocalDate?>()
+    private val _endDate = MutableLiveData<LocalDate?>(task?.endDate)
     val status: LiveData<TaskStatus?>
         get() = _status
-    private val _status = MutableLiveData<TaskStatus?>()
+    private val _status = MutableLiveData<TaskStatus?>(task?.status)
     val priority: LiveData<TaskPriority?>
         get() = _priority
-    private val _priority = MutableLiveData<TaskPriority?>()
-
-    // Lista para controlar botones seleccionados(true -> en amarillo)
-    var asignees: MutableList<Boolean> = mutableListOf()
-
-    // Para cerrar el viewmodel tras finalizar la corrutinas
-    val close: LiveData<Boolean>
-        get() = _close
-    private val _close = MutableLiveData(false)
-
-    //mapea índice del botón -> compañero de piso
-    val map: LiveData<MutableList<User>>
-        get() = _map
-    private val _map = MutableLiveData<MutableList<User>>(mutableListOf())
-
+    private val _priority = MutableLiveData<TaskPriority?>(task?.priority)
+    val assignees: LiveData<Set<User>>
+        get() = _assignees
+    private val _assignees = MutableLiveData(task?.assignees ?: setOf())
+    val parters: LiveData<List<User>>
+        get() = _partners
+    private val _partners = MutableLiveData<List<User>>(emptyList())
+    val creationSuccessful: LiveData<Boolean>
+        get() = _creationSuccessful
+    private val _creationSuccessful = MutableLiveData(false)
     val genericError: LiveData<String?>
         get() = _genericError
     private val _genericError = MutableLiveData<String?>(null)
-
     val titleError: LiveData<String?>
         get() = _titleError
     private val _titleError = MutableLiveData<String?>(null)
@@ -72,35 +70,32 @@ class UpsertTaskViewModel @Inject constructor(
         get() = _endDateError
     private val _endDateError = MutableLiveData<String?>(null)
 
-    fun setTitle(title: String) {
-        this.title = title
-    }
-
-    fun setDescription(description: String?) {
-        this.description = description
-    }
-
     fun setStartDate(startDate: LocalDate?) = _startDate.postValue(startDate)
-
     fun setEndDate(endDate: LocalDate?) = _endDate.postValue(endDate)
-
     fun setStatus(status: TaskStatus?) = _status.postValue(status)
-
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
-    // TODO - Simplify viewModel and move task to assisted injection
-    fun onViewCreated(task: Task?) {
-        this.task = task
-        putAsignees()
-
-        if(task != null) {
-            setTitle(task.name)
-            setDescription(task.description)
-            setStartDate(task.startDate)
-            setEndDate(task.endDate)
-            setStatus(task.status)
-            setPriority(task.priority)
+    fun setAsignee(user: User) {
+        val temp = _assignees.value!!.toMutableSet()
+        if(_assignees.value!!.contains(user)) {
+            temp.remove(user)
+            _assignees.value = temp.toSet()
+        } else {
+            temp.add(user)
+            _assignees.value = temp.toSet()
         }
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.getRoommates(prefs.getFlatId()!!).let {
+                _partners.postValue(it)
+            }
+        }
+    }
+
+    fun triggerAsigneesObserver() {
+        _assignees.postValue(_assignees.value)
     }
 
     fun upsertTask(context: Context) {
@@ -121,37 +116,33 @@ class UpsertTaskViewModel @Inject constructor(
 
         if(areErrors) return
 
-        if (task != null)
-            updateTaskState()
-        else
-            saveTaskState()
-    }
-
-    private fun saveTaskState() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Executor.safeCall {
-                    val task = generateTask()
-                    taskRepository.insert(task)
-                    taskUserRepository.insertAsignees(task.id, task.assignees.map { user -> user.id })
-                    _close.postValue(true)
-                }
-            } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+        if (task == null)
+            upsert {
+                val task = generateTask()
+                taskRepository.insert(task)
+                taskUserRepository.insertAsignees(task.id, this.assignees.value!!.map { user -> user.id })
             }
-        }
+        else
+            upsert {
+                val task = generateTask()
+                taskRepository.update(generateTask())
+                val oldAssignees = userRepository.findAsigneesById(task.id).toSet()
+                val newAssignees = _assignees.value!!.toSet()
+
+                val toDelete = oldAssignees - newAssignees
+                val toInsert = newAssignees - oldAssignees
+
+                taskUserRepository.deleteAssignees(task.id, toDelete.map { user -> user.id })
+                taskUserRepository.insertAsignees(task.id, toInsert.map { user -> user.id })
+            }
     }
 
-    private fun updateTaskState() {
+    private fun upsert(action: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Executor.safeCall {
-                    taskRepository.update(generateTask())
-                    taskUserRepository.deleteAllAsignees(task!!.id)
-                    taskUserRepository.insertAsignees(
-                        task!!.id,
-                        task!!.assignees.map { user -> user.id })
-                    _close.postValue(true)
+                    action()
+                    _creationSuccessful.postValue(true)
                 }
             } catch (e: PersistenceLayerException) {
                 _genericError.postValue(e.message)
@@ -161,7 +152,7 @@ class UpsertTaskViewModel @Inject constructor(
 
     private fun generateTask(): Task {
         return task?.copy(
-            name = title.orEmpty(), // TODO - Change to assert !!
+            name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
@@ -169,7 +160,7 @@ class UpsertTaskViewModel @Inject constructor(
             endDate = _endDate.value,
         ) ?:
         Task(
-            name = title.orEmpty(), // TODO - Change to assert !!
+            name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
@@ -177,52 +168,5 @@ class UpsertTaskViewModel @Inject constructor(
             endDate = _endDate.value,
             flatId = prefs.getFlatId()!!
         )
-    }
-
-    private fun putAsignees() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Executor.safeCall {
-                    val flatId = prefs.getFlatId()
-
-                    var roomates = emptyList<User>()
-                    if(flatId != null)
-                        roomates = userRepository.getRoommates(flatId)
-
-                    asignees = MutableList(roomates.size) { false }
-                    for ((index, roommate) in roomates.withIndex()) {
-                        _map.value!!.add(index, roommate)
-                        _map.postValue(_map.value!!.toMutableList())
-                    }
-
-                    if(task != null)
-                        asignees = map.value!!
-                            .map { asignee -> task!!.assignees.contains(asignee) }
-                            .toMutableList()
-                }
-            } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
-            }
-        }
-    }
-
-    fun changeAsignee(index: Int): Boolean{
-        task = generateTask()
-        task!!.assignees = getNewAsignees(index)
-
-        asignees[index] = !asignees[index]
-
-        return asignees[index]
-    }
-
-    private fun getNewAsignees(index: Int): MutableList<User> {
-        val newAsignees = task!!.assignees.toMutableList()
-
-        if (newAsignees.contains(_map.value!![index]))
-            newAsignees.remove(_map.value!![index])
-        else
-            newAsignees.add(_map.value!![index])
-
-        return newAsignees
     }
 }
