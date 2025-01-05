@@ -38,10 +38,7 @@ class TasksViewHolder @AssistedInject constructor(
 }
 
 // TODO - Refactor this
-fun taskPressedHandler(fragmentManager: FragmentManager,
-                       taskId: UUID,
-                       updateCalendarViewModel: () -> Unit,
-                       updateTasksViewHolder: () -> Unit) {
-    val modal = TaskBottomSheetDialog.create(taskId, updateCalendarViewModel, updateTasksViewHolder)
+fun taskPressedHandler(fragmentManager: FragmentManager, taskId: UUID) {
+    val modal = TaskBottomSheetDialog.create(taskId)
     fragmentManager.let { modal.show(it, TaskBottomSheetDialog.TAG) }
 }

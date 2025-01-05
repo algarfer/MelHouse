@@ -12,7 +12,5 @@ interface TaskBottomSheetViewModelFactory {
     fun create(
         taskId: UUID,
         @Assisted("close") closeTaskBottomSheetDialog: (() -> Unit) = {  },
-        @Assisted("updateTasks") updateTasksViewHolder: (() -> Unit) = {  },
-        @Assisted("updateCalendar") updateCalendarViewModel: (() -> Unit) = {  }
     ): TaskBottomSheetViewModel
 }

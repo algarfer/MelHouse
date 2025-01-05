@@ -35,7 +35,6 @@ import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
 import javax.inject.Inject
@@ -44,66 +43,51 @@ import javax.inject.Inject
 class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
-    private var selectedDate: LocalDate? = null
-    private var _tasksAdapter: TasksAdapter? = null
     @Inject lateinit var tasksAdapterFactory: TasksAdapterFactory
-    private val tasksAdapter: TasksAdapter
-        get() {
-            if (_tasksAdapter == null) {
-                _tasksAdapter = tasksAdapterFactory.create(listOf()) {
-                    taskPressedHandler(parentFragmentManager, it.id, {viewModel.updateDailyTasks(selectedDate)}){
-                        viewModel.updateTasks()
-                    }
-                }
-            }
-            return _tasksAdapter!!
-        }
+    private lateinit var tasksAdapter: TasksAdapter
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.onCreate()
-
-        viewModel.dailyTasks.observe(this) {
-            tasksAdapter.updateList(it[selectedDate].orEmpty())
-        }
-
-        viewModel.tasks.observe(this) {
-            binding.calendarView.notifyCalendarChanged()
-        }
+    override fun onResume() {
+        super.onResume()
 
         viewModel.genericError.observe(this) {
             if(it == null) return@observe
 
             getWarningSnackbar(requireView(), it).show()
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.updateTasks()
+        viewModel.date.observe(this) {
+            binding.calendarView.scrollToMonth(it.yearMonth)
+            binding.calendarView.notifyDateChanged(it)
+        }
 
-        if (viewModel.date != null) {
-            binding.calendarView.scrollToMonth(viewModel.date!!.yearMonth)
-            binding.calendarView.notifyDateChanged(viewModel.date!!)
-            viewModel.updateDailyTasks(viewModel.date!!)
-            selectedDate = viewModel.date
+        viewModel.dailyTasks.observe(this) {
+            tasksAdapter.updateList(it.orEmpty())
+        }
+
+        viewModel.tasks.observe(this) {
+            binding.calendarView.notifyCalendarChanged()
+            configureBinders(daysOfWeek(firstDayOfWeekFromLocale(Locale.getDefault())))
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.calendar_fragment, container, false)
+    ): View {
+        binding = CalendarFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addStatusBarColorUpdate(R.color.primary)
-        binding = CalendarFragmentBinding.bind(view)
+
+        tasksAdapter = tasksAdapterFactory.create(listOf()) { task ->
+            taskPressedHandler(parentFragmentManager, task.id)
+        }
 
         binding.tasksView.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -122,10 +106,9 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
 
         binding.calendarView.monthScrollListener = { month ->
             binding.calendarViewCurrentMonth.text = month.yearMonth.displayText()
-            selectedDate?.let {
-                selectedDate = null
+            viewModel.date.value?.let {
                 binding.calendarView.notifyDateChanged(it)
-                viewModel.updateDailyTasks(null)
+                viewModel.updateDay(it)
             }
         }
 
@@ -149,13 +132,12 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
             init {
                 view.setOnClickListener {
                     if (day.position == DayPosition.MonthDate) {
-                        if (selectedDate != day.date) {
-                            val oldDate = selectedDate
-                            selectedDate = day.date
+                        if (viewModel.date.value != day.date) {
+                            val oldDate = viewModel.date.value
+                            viewModel.updateDay(day.date)
                             val binding = this@CalendarFragment.binding
                             binding.calendarView.notifyDateChanged(day.date)
                             oldDate?.let { binding.calendarView.notifyDateChanged(it) }
-                            viewModel.updateDailyTasks(day.date)
                         }
                     }
                 }
@@ -207,11 +189,4 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                 }
             }
     }
-
-    override fun onPause() {
-        super.onPause()
-
-        viewModel.date = selectedDate
-    }
-
 }

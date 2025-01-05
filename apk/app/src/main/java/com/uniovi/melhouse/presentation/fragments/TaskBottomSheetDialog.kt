@@ -28,14 +28,12 @@ import java.util.UUID
 @AndroidEntryPoint
 class TaskBottomSheetDialog(
     private val taskId: UUID,
-    private val updateCalendarViewModel: () -> Unit,
-    private val updateTasksViewHolder: () -> Unit
 ) : BottomSheetDialogFragment() {
     private lateinit var binding : TaskDetailsBottomSheetLayoutBinding
     private val viewModel: TaskBottomSheetViewModel by viewModels(extrasProducer = {
         defaultViewModelCreationExtras
             .withCreationCallback<TaskBottomSheetViewModelFactory> { factory ->
-            factory.create(taskId, { dismiss() }, updateTasksViewHolder, updateCalendarViewModel)
+            factory.create(taskId) { dismiss() }
         }
     })
 
@@ -153,10 +151,8 @@ class TaskBottomSheetDialog(
         const val TAG = "TaskBottomSheetDialog"
 
         // TODO - Remove the class constructor and use the bundle to pass the data
-        fun create(taskId: UUID,
-                   updateCalendarViewModel: () -> Unit,
-                   updateTasksViewHolder: () -> Unit): TaskBottomSheetDialog {
-            return TaskBottomSheetDialog(taskId, updateCalendarViewModel, updateTasksViewHolder)
+        fun create(taskId: UUID): TaskBottomSheetDialog {
+            return TaskBottomSheetDialog(taskId)
         }
     }
 }

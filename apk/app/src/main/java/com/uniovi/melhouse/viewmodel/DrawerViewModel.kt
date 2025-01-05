@@ -29,6 +29,7 @@ class DrawerViewModel @Inject constructor(
     val flat: LiveData<Flat?>
         get() = _flat
     private val _flat = MutableLiveData<Flat?>(null)
+    // TODO - Try to handle in AbstractActivity
     val isLogged: LiveData<Boolean>
         get() = _isLogged
     private val _isLogged = MutableLiveData(true)

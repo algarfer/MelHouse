@@ -29,9 +29,7 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
     userRepository: UserRepository,
     taskUserRepository: TaskUserRepository,
     @Assisted val taskId: UUID,
-    @Assisted("close") private var closeTaskBottomSheetDialog: (() -> Unit) = {  },
-    @Assisted("updateTasks") private var updateTasksViewHolder: (() -> Unit) = {  },
-    @Assisted("updateCalendar") private var updateCalendarViewModel: (() -> Unit) = {  }
+    @Assisted("close") private var closeTaskBottomSheetDialog: (() -> Unit) = {  }
 ) : ViewModel() {
 
     private val _task = tasksRepository.findByIdAsFlow(taskId)
@@ -66,7 +64,5 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
         }
 
         closeTaskBottomSheetDialog()
-        updateTasksViewHolder()
-        updateCalendarViewModel()
     }
 }
