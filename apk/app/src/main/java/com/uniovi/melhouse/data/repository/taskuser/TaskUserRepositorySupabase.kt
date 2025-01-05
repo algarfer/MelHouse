@@ -24,6 +24,19 @@ class TaskUserRepositorySupabase @Inject constructor(
             .insert(userIds.map { uuid -> TaskUser(uuid, taskId)})
     }
 
+    override suspend fun deleteAssignees(taskId: UUID, userIds: List<UUID>) {
+        supabaseClient
+            .from(TABLE_NAME)
+            .delete {
+                filter {
+                    and {
+                        isIn("user_id", userIds)
+                        eq("task_id", taskId)
+                    }
+                }
+            }
+    }
+
     override suspend fun deleteAllAsignees(id: UUID) {
         supabaseClient
             .from(TABLE_NAME)
