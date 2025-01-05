@@ -47,8 +47,8 @@ class FlatFragment : Fragment() {
         const val TAG = "FlatFragment"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onResume() {
+        super.onResume()
 
         viewModel.flat.observe(this) { flat ->
             if(flat == null) {
