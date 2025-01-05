@@ -31,11 +31,12 @@ class UpsertFlatViewModel @AssistedInject constructor(
     @Assisted private val flat: Flat?
 ) : ViewModel() {
 
-    var name: String? = null
-    var address: String? = null
-    var floor: Int? = null
-    var door: String? = null
-    var stair: String? = null
+
+    var name: String? = flat?.name
+    var address: String? = flat?.address
+    var floor: Int? = flat?.floor
+    var door: String? = flat?.door
+    var stair: String? = flat?.stair
 
     val nameError: LiveData<String?>
         get() = _nameError
