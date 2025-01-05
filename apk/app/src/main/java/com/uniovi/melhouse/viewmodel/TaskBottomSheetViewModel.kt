@@ -46,7 +46,7 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
         val assignees = taskUsers
             .filter { tuple -> tuple.taskId == task.id }
             .map { tuple -> users.find { user -> user.id == tuple.userId }!! }
-        task.assignees = assignees
+        task.assignees = assignees.toSet()
         task
     }.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 

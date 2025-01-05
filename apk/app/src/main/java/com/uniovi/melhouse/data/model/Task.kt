@@ -30,7 +30,7 @@ data class Task(
     @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") val startDate: LocalDate? = null,
     @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") val endDate: LocalDate? = null,
     @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") val flatId: UUID,
-    @Transient var assignees: List<User> = emptyList()
+    @Transient var assignees: Set<User> = emptySet()
 )
 
 enum class TaskStatus(val value: Int) : LocaleEnum {
@@ -81,5 +81,5 @@ fun String.toTask(withTransientFields: Boolean = false): Task {
     val baseTask = json.decodeFromJsonElement<Task>(jsonObject)
     val assigneesJsonArray = jsonObject["assignees"]?.jsonArray ?: emptyList()
     val assignees = assigneesJsonArray.map { it.jsonPrimitive.content.toUser() }
-    return baseTask.copy(assignees = assignees)
+    return baseTask.copy(assignees = assignees.toSet())
 }

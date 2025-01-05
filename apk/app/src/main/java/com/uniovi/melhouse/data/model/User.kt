@@ -20,7 +20,7 @@ data class User (
     val name: String,
     val email: String,
     @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") val flatId: UUID? = null,
-    @Transient var tasks: List<Task> = emptyList()
+    @Transient var tasks: Set<Task> = emptySet()
 )
 
 fun User.getInitials(): String {
@@ -48,5 +48,5 @@ fun String.toUser(withTransientFields: Boolean = false): User {
     val baseUser = json.decodeFromJsonElement<User>(jsonObject)
     val tasksJsonArray = jsonObject["tasks"]?.jsonArray ?: emptyList()
     val tasks = tasksJsonArray.map { it.jsonPrimitive.content.toTask() }
-    return baseUser.copy(tasks = tasks)
+    return baseUser.copy(tasks = tasks.toSet())
 }
