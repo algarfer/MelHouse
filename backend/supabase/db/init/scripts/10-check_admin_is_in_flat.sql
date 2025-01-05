@@ -10,7 +10,7 @@ begin
     from public.users
     where id = new.admin_id;
 
-    assert f_id = new.id, 'admin_not_in_flat';
+    assert f_id = new.id or f_id is null, 'admin_not_in_flat';
 
     return new;
 end;
