@@ -35,6 +35,7 @@ import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
 import javax.inject.Inject
@@ -71,6 +72,8 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
             binding.calendarView.notifyCalendarChanged()
             configureBinders(daysOfWeek(firstDayOfWeekFromLocale(Locale.getDefault())))
         }
+
+        viewModel.updateDay(LocalDate.now())
     }
 
     override fun onCreateView(
@@ -106,10 +109,6 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
 
         binding.calendarView.monthScrollListener = { month ->
             binding.calendarViewCurrentMonth.text = month.yearMonth.displayText()
-            viewModel.date.value?.let {
-                binding.calendarView.notifyDateChanged(it)
-                viewModel.updateDay(it)
-            }
         }
 
         binding.addTaskFab.setOnClickListener {
