@@ -2,3 +2,4 @@
 .vscode/
 *.local
 **/.env
+backend/**/service-account.json
