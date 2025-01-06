@@ -19,7 +19,10 @@ fun List<User>.toAsigneesPieChart(context: Context): PieData {
     val totalTasks = this.sumOf { it.tasks.size }
 
     this.forEach {user ->
-        entries.add(PieEntry((user.tasks.size.toFloat() / totalTasks) * 100 , user.name))
+        val percentage = (user.tasks.size.toFloat() / totalTasks) * 100
+        if (percentage > 0) {
+            entries.add(PieEntry(percentage, user.name))
+        }
     }
 
     val set = PieDataSet(entries, context.getString(R.string.chart_pie_asignees))
