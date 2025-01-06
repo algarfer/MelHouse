@@ -20,6 +20,8 @@ import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.Task
+import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.databinding.CalendarDayLayoutBinding
 import com.uniovi.melhouse.databinding.CalendarFragmentBinding
 import com.uniovi.melhouse.databinding.CalendarHeaderLayoutBinding
@@ -140,7 +142,6 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
         }
     }
 
-
     private fun configureBinders(daysOfWeek: List<DayOfWeek>) {
         class DayViewContainer(view: View) : ViewContainer(view) {
             lateinit var day: CalendarDay
@@ -170,18 +171,46 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                 val layout = container.binding.calendarDayLayout
                 textView.text = data.date.dayOfMonth.toString()
 
-                val taskIndicator = container.binding.calendarDayIndicator
-                taskIndicator.background = null
+                val taskIndicators = listOf(
+                    container.binding.calendarDayIndicator,
+                    container.binding.calendarDayIndicator2,
+                    container.binding.calendarDayIndicator3
+                )
+
+                taskIndicators.forEach { it.background = null }
+
                 val tasks = viewModel.tasks.value
 
                 if (tasks != null && !tasks[data.date].isNullOrEmpty()) {
-                    val color = if (data.position != DayPosition.MonthDate)
-                        context.getColorCompat(R.color.tertiary).lighterColor()
-                    else
-                        context.getColorCompat(R.color.tertiary)
-                    taskIndicator.setBackgroundColor(color)
-                }
+                    val dayTasks = tasks[data.date]!!.sortedWith(
+                        compareBy(
+                            { task ->
+                                when (task.status) {
+                                    TaskStatus.PENDING -> 1
+                                    TaskStatus.INPROGRESS -> 2
+                                    TaskStatus.DONE -> 3
+                                    TaskStatus.CANCELLED -> 4
+                                    null -> Int.MAX_VALUE
+                                }
+                            },
+                            { it.id }
+                        )
+                    ).subList(0, 3.coerceAtMost(tasks[data.date]!!.size))
 
+                    for ((index, task) in dayTasks.withIndex()) {
+                        var color = when (task.status) {
+                            TaskStatus.PENDING -> context.getColorCompat(R.color.task_status_pending)
+                            TaskStatus.INPROGRESS -> context.getColorCompat(R.color.task_status_in_progress)
+                            TaskStatus.DONE -> context.getColorCompat(R.color.task_status_done)
+                            TaskStatus.CANCELLED -> context.getColorCompat(R.color.task_status_cancelled)
+                            null -> context.getColorCompat(R.color.tertiary)
+                        }
+                        if (data.position != DayPosition.MonthDate)
+                            color = color.lighterColor()
+
+                        taskIndicators[index].setBackgroundColor(color)
+                    }
+                }
                 if (data.position != DayPosition.MonthDate) {
                     textView.setTextColorRes(R.color.on_primary_container)
                     layout.setBackgroundColor(context.getColorCompat(R.color.primary_container).lighterColor())
