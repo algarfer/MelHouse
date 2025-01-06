@@ -6,9 +6,11 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -205,21 +207,6 @@ fun createFlat() {
     )
     textInputEditText17.perform(replaceText("A"), closeSoftKeyboard())
 
-    val textInputEditText18 = onView(
-        allOf(
-            withId(R.id.etFlatBedrooms),
-            childAtPosition(
-                childAtPosition(
-                    withId(R.id.flatBedroomsLayout),
-                    0
-                ),
-                0
-            ),
-            isDisplayed()
-        )
-    )
-    textInputEditText18.perform(replaceText("3"), closeSoftKeyboard())
-
     val materialButton6 = onView(
         allOf(
             withId(R.id.btnContinuar), withText("Continuar"),
@@ -238,13 +225,153 @@ fun createFlat() {
     )
     materialButton6.perform(click())
 
+    checkJoinedFlat()
+}
+
+fun checkJoinedFlat() {
     val textView = onView(
         allOf(
-            withId(R.id.tvTodayTasks), withText("Tareas de hoy"),
+            withId(R.id.tvTodayTasks), withText("Tareas pendientes para hoy"),
             isDisplayed()
         )
     )
-    textView.check(matches(withText("Tareas de hoy")))
+    textView.check(matches(withText("Tareas pendientes para hoy")))
+}
+
+fun signOut() {
+    val materialButton3 = onView(
+        allOf(
+            withId(R.id.btnMenuLines),
+            childAtPosition(
+                allOf(
+                    withId(R.id.main),
+                    childAtPosition(
+                        withId(R.id.drawerLayout),
+                        0
+                    )
+                ),
+                2
+            ),
+            isDisplayed()
+        )
+    )
+    materialButton3.perform(click())
+
+    val navigationMenuItemView = onView(
+        allOf(
+            withId(R.id.navigation_logout),
+            childAtPosition(
+                allOf(
+                    withId(com.google.android.material.R.id.design_navigation_view),
+                    childAtPosition(
+                        withId(R.id.navigationView),
+                        0
+                    )
+                ),
+                7
+            ),
+            isDisplayed()
+        )
+    )
+    navigationMenuItemView.perform(click())
+
+    val button = onView(
+        allOf(
+            withId(R.id.loginButton), withText("Iniciar Sesión"),
+            withParent(
+                allOf(
+                    withId(R.id.main),
+                    withParent(withId(android.R.id.content))
+                )
+            ),
+            isDisplayed()
+        )
+    )
+    button.check(matches(isDisplayed()))
+}
+
+fun leaveFlat(){
+    val materialButton3 = onView(
+        allOf(
+            withId(R.id.btnMenuLines),
+            childAtPosition(
+                allOf(
+                    withId(R.id.main),
+                    childAtPosition(
+                        withId(R.id.drawerLayout),
+                        0
+                    )
+                ),
+                2
+            )
+        )
+    )
+
+    materialButton3.check(matches(isDisplayed())) // Verifica que el botón esté visible
+    materialButton3.perform(click())
+
+
+
+    val navigationMenuItemView = onView(
+        allOf(
+            withId(R.id.navigation_flat),
+            childAtPosition(
+                allOf(
+                    withId(com.google.android.material.R.id.design_navigation_view),
+                    childAtPosition(
+                        withId(R.id.navigationView),
+                        0
+                    )
+                ),
+                4
+            ),
+            isDisplayed()
+        )
+    )
+    Thread.sleep(1000)
+    try {
+        navigationMenuItemView.perform(click())
+    } catch (e: RuntimeException) {
+        Thread.sleep(1000)
+    }
+
+
+    val materialButton4 = onView(
+        allOf(
+            withId(R.id.btnLeave), withContentDescription("Abandonar el piso"),
+            childAtPosition(
+                childAtPosition(
+                    withClassName(`is`("android.widget.ScrollView")),
+                    0
+                ),
+                2
+            )
+        )
+    )
+    materialButton4.perform(scrollTo(), click())
+
+    val materialButton5 = onView(
+        allOf(
+            withId(android.R.id.button1), withText("Continuar"),
+            childAtPosition(
+                childAtPosition(
+                    withId(com.google.android.material.R.id.buttonPanel),
+                    0
+                ),
+                3
+            )
+        )
+    )
+    materialButton5.perform(scrollTo(), click())
+
+    val textView = onView(
+        allOf(
+            withId(R.id.tvNoFlat), withText("Entrar a un piso"),
+            withParent(withParent(withId(R.id.menuOptionsFragment))),
+            isDisplayed()
+        )
+    )
+    textView.check(matches(withText("Entrar a un piso")))
 }
 
 fun childAtPosition(

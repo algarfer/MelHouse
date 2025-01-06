@@ -4,9 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -18,15 +16,15 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.`is`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class FlatTest {
+class JoinFlatTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -46,14 +44,7 @@ class FlatTest {
     val prefs: Prefs = TestPrefs()
 
     @Test
-    fun createFlatTest() {
-        signIn()
-
-        createFlat()
-    }
-
-    @Test
-    fun joinFlatTest(){
+    fun joinFlatTest() {
         signIn()
 
         val textInputEditText6 = onView(
@@ -89,6 +80,7 @@ class FlatTest {
         )
         materialButton4.perform(click())
 
-        //TODO Check that the user has joined the flat
+        checkJoinedFlat()
+
     }
 }

@@ -1,4 +1,5 @@
 package com.uniovi.melhouse.di.modules
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
@@ -25,7 +26,7 @@ object TestDatabaseModule {
     @Provides
     @Singleton
     fun provideSupabase() : SupabaseClient {
-        val supabaseClient = mockk<SupabaseClient>()
+        val supabaseClient = mockk<SupabaseClient>(relaxed = true)
         val sessionM = mockk<SessionManager>()
         val userSession = mockk<UserSession>()
         val userInfo = mockk<UserInfo>()
