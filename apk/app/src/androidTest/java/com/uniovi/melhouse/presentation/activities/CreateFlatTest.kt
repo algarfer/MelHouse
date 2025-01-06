@@ -3,7 +3,6 @@ package com.uniovi.melhouse.presentation.activities
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.uniovi.melhouse.data.model.User
-import com.uniovi.melhouse.data.repository.user.loadTasks
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.preferences.TestPrefs
 import dagger.hilt.android.testing.BindValue
@@ -48,7 +47,7 @@ class CreateFlatTest {
         val user = mockk<User>(relaxed = true)
 
         // Configurar el mock de la función suspendida
-        coEvery { user.loadTasks(any()) } just Runs
+//        coEvery { user.loadTasks(any()) } just Runs
 
         signIn()
         createFlat()
