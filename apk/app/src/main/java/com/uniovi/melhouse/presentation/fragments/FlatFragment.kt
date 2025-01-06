@@ -112,6 +112,34 @@ class FlatFragment : Fragment() {
             }
         }
 
+        viewModel.tasks.observe(this) {
+            if(it.isEmpty()) return@observe
+
+            val (data, customLegend) = it.toStatusBarChartData(requireContext())
+
+            binding.bcTaskStatus.apply {
+                this.data = data
+                description.isEnabled = false
+                axisLeft.setDrawLabels(false)
+                axisLeft.setDrawGridLines(false)
+                axisLeft.setDrawAxisLine(false)
+                axisRight.granularity = (it.size/10).toFloat()
+                xAxis.setDrawLabels(false)
+                xAxis.setDrawGridLines(false)
+                isHighlightPerTapEnabled = false
+                setFitBars(true)
+                animateY(800)
+                setTouchEnabled(false)
+                legend.setCustom(customLegend)
+                legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+                legend.setDrawInside(false)
+                legend.isWordWrapEnabled = true
+                legend.textSize = 10f
+                legend.xEntrySpace = 75f
+            }
+            binding.bcTaskStatus.invalidate()
+        }
+
         viewModel.partners.observe(this) {
             it?.let {
                 partnersAdapter.updateList(it)
@@ -135,36 +163,8 @@ class FlatFragment : Fragment() {
                     isHighlightPerTapEnabled = false
                     animateY(800)
                 }
-                binding.pcTaskAssignee.invalidate() //refresh
+                binding.pcTaskAssignee.invalidate()
             }
-        }
-
-        viewModel.tasks.observe(this) {
-            if(it.isEmpty()) return@observe
-
-            val (data, customLegend) = it.toStatusBarChartData(requireContext())
-
-            binding.bcTaskStatus.apply {
-                this.data = data
-                description.isEnabled = false
-                axisLeft.setDrawLabels(false)
-                axisLeft.setDrawGridLines(false)
-                axisLeft.setDrawAxisLine(false)
-                axisRight.granularity = (it.size / 10).toFloat()
-                xAxis.setDrawLabels(false)
-                xAxis.setDrawGridLines(false)
-                isHighlightPerTapEnabled = false
-                setFitBars(true)
-                animateY(800)
-                setTouchEnabled(false)
-                legend.setCustom(customLegend)
-                legend.orientation = Legend.LegendOrientation.VERTICAL
-                legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-                legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-                legend.setDrawInside(true)
-                legend.isWordWrapEnabled = true
-            }
-            binding.bcTaskStatus.invalidate() // refresh
         }
 
         viewModel.genericError.observe(this) {

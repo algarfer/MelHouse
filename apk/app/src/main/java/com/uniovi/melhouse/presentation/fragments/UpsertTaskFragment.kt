@@ -206,6 +206,11 @@ class UpsertTaskFragment : Fragment() {
         binding.dmStatus.tvDropdownField.apply {
             isFocusable = false
             isClickable = true
+
+            val defaultStatus = TaskStatus.PENDING
+            setText(defaultStatus.getString(requireContext()), false)
+            viewModel.setStatus(defaultStatus)
+
             setAdapter(
                 TaskStatusDropDownMenuAdapter(
                 requireContext(),
@@ -224,6 +229,11 @@ class UpsertTaskFragment : Fragment() {
         binding.dmPriority.tvDropdownField.apply {
             isFocusable = false
             isClickable = true
+
+            val defaultPriority = TaskPriority.MEDIUM
+            setText(defaultPriority.getString(requireContext()), false)
+            viewModel.setPriority(defaultPriority)
+
             setAdapter(
                 TaskPriorityDropDownMenuAdapter(
                 requireContext(),

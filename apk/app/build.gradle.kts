@@ -75,6 +75,14 @@ android {
 
 dependencies {
 
+    androidTestImplementation (libs.androidx.core)
+    androidTestImplementation (libs.androidx.runner)
+    testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    kaptAndroidTest (libs.hilt.android.compiler)
+    testImplementation (libs.hilt.android.test)
+    kaptTest (libs.hilt.android.compiler)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

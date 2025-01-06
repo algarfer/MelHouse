@@ -18,7 +18,7 @@
 
     <string name="chart_not_available_short">N/A</string>
     <string name="chart_bar_tasks_status">Estado de las tareas</string>
-    <string name="chart_pie_asignees">Tareas asignadas</string>
+    <string name="chart_pie_asignees">Tareas</string>
 
     <string name="flat_no_flat">Entrar a un piso</string>
     <string name="flat_code">Código del piso</string>
@@ -30,7 +30,7 @@
     <string name="flat_floor">Piso</string>
     <string name="flat_door">Puerta</string>
     <string name="flat_stair">Escalera</string>
-    <string name="flat_bedrooms">Habitaciones</string>
+    <string name="flat_n_mates">Compañeros</string>
     <string name="flat_invitation_code">Código: %1$s</string>
     <string name="flat_edit">Editar el piso</string>
     <string name="flat_invitation_code_large">Codigo de invitación</string>
@@ -43,7 +43,12 @@
     <string name="flat_leave">Abandonar el piso</string>
     <string name="flat_leave_dialog_title">Abandonar el piso</string>
     <string name="flat_leave_dialog_supporting_text">Estas a punto de salir del piso \"%1$s\". ¿Estás seguro?</string>
-
+    <string name="flat_assignee_1">Asignado 1</string>
+    <string name="flat_assignee_2">Asignado 2</string>
+    <string name="flat_assignee_3">Asignado 3</string>
+    <string name="flat_assign">¿Quién debe realizar la tarea?</string>
+    <string name="flat_statistics">Estadísticas</string>
+    <string name="flat_invitation_code_copied">Código del piso copiado</string>
 
     <string name="task_title">Título*</string>
     <string name="task_description">Descripción</string>
@@ -127,6 +132,6 @@
 
     <string name="settings_general">General</string>
     <string name="settings_dark_mode">Modo oscuro</string>
-    <string name="flat_invitation_code_copied">Código del piso copiado</string>
+    <string name="settings_delete_data">Eliminar todos mis datos</string>
 
 </resources>

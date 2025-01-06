@@ -152,7 +152,7 @@
                     android:inputType="number"
                     android:clickable="false"
                     android:enabled="false"
-                    android:hint="@string/flat_bedrooms" />
+                    android:hint="@string/flat_n_mates" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.constraintlayout.widget.Guideline

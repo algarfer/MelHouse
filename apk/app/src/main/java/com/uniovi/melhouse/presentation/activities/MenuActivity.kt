@@ -102,7 +102,6 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
                 return true
             }
             R.id.navigation_flat -> FlatFragment()
-//            R.id.navigation_account -> AccountFragment()
             R.id.navigation_settings -> SettingsFragment()
             R.id.navigation_logout -> {
                 viewModel.logout()

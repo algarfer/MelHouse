@@ -163,54 +163,6 @@ class UserTest {
     fun singOutTest() {
         signIn()
 
-        val materialButton3 = onView(
-            allOf(
-                withId(R.id.btnMenuLines),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.main),
-                        childAtPosition(
-                            withId(R.id.drawerLayout),
-                            0
-                        )
-                    ),
-                    2
-                ),
-                isDisplayed()
-            )
-        )
-        materialButton3.perform(click())
-
-        val navigationMenuItemView = onView(
-            allOf(
-                withId(R.id.navigation_logout),
-                childAtPosition(
-                    allOf(
-                        withId(com.google.android.material.R.id.design_navigation_view),
-                        childAtPosition(
-                            withId(R.id.navigationView),
-                            0
-                        )
-                    ),
-                    7
-                ),
-                isDisplayed()
-            )
-        )
-        navigationMenuItemView.perform(click())
-
-        val button = onView(
-            allOf(
-                withId(R.id.loginButton), withText("Iniciar Sesión"),
-                withParent(
-                    allOf(
-                        withId(R.id.main),
-                        withParent(withId(android.R.id.content))
-                    )
-                ),
-                isDisplayed()
-            )
-        )
-        button.check(matches(isDisplayed()))
+        signOut()
     }
 }

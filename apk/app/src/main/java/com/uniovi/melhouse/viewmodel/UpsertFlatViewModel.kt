@@ -59,6 +59,7 @@ class UpsertFlatViewModel @AssistedInject constructor(
             areErrors = true
         } else if(!name.validateLength()) {
             _nameError.postValue(context.getString(R.string.error_form_flat_name_length))
+            areErrors = true
         }
         if(address.isNullOrEmpty()) {
             _addressError.postValue(context.getString(R.string.error_form_flat_address_empty))
