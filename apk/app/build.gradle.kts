@@ -75,10 +75,10 @@ android {
 
 dependencies {
 
-    androidTestImplementation ("androidx.test:core:1.6.1")
-    androidTestImplementation ("androidx.test:runner:1.6.2")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    androidTestImplementation (libs.androidx.core)
+    androidTestImplementation (libs.androidx.runner)
+    testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     kaptAndroidTest (libs.hilt.android.compiler)
     testImplementation (libs.hilt.android.test)
     kaptTest (libs.hilt.android.compiler)
