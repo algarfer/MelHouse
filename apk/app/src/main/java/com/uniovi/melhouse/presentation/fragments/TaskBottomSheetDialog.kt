@@ -26,9 +26,8 @@ import dagger.hilt.android.lifecycle.withCreationCallback
 import java.util.UUID
 
 @AndroidEntryPoint
-class TaskBottomSheetDialog(
-    private val taskId: UUID,
-) : BottomSheetDialogFragment() {
+class TaskBottomSheetDialog : BottomSheetDialogFragment() {
+
     private lateinit var binding : TaskDetailsBottomSheetLayoutBinding
     private val viewModel: TaskBottomSheetViewModel by viewModels(extrasProducer = {
         defaultViewModelCreationExtras
@@ -36,9 +35,11 @@ class TaskBottomSheetDialog(
             factory.create(taskId) { dismiss() }
         }
     })
+    private lateinit var taskId: UUID
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = TaskDetailsBottomSheetLayoutBinding.inflate(inflater, container, false)
+        taskId = UUID.fromString(arguments?.getString(TASK_ID_PARAMETER))
 
         viewModel.task.observe(this) { task ->
             if(task == null) return@observe
@@ -149,10 +150,14 @@ class TaskBottomSheetDialog(
 
     companion object {
         const val TAG = "TaskBottomSheetDialog"
+        private const val TASK_ID_PARAMETER = "task_id"
 
-        // TODO - Remove the class constructor and use the bundle to pass the data
         fun create(taskId: UUID): TaskBottomSheetDialog {
-            return TaskBottomSheetDialog(taskId)
+            return TaskBottomSheetDialog().apply {
+                arguments = Bundle().apply {
+                    putString(TASK_ID_PARAMETER, taskId.toString())
+                }
+            }
         }
     }
 }
