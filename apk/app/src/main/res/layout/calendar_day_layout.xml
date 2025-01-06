@@ -1,30 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/calendar_day_layout"
     android:background="@color/primary_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="1dp" >
+    android:layout_margin="1dp">
 
     <TextView
         android:id="@+id/calendar_day_text"
+        app:layout_constraintTop_toBottomOf="@id/top_border"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="4dp"
-        android:gravity="center"
         android:textColor="@color/on_primary_container"
         android:textSize="12sp"
         tools:text="24" />
 
     <View
         android:id="@+id/calendar_day_indicator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:layout_gravity="bottom"
         android:background="@color/tertiary"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:translationZ="-8dp"/>
 
-</FrameLayout>
+    <View
+        android:id="@+id/left_border"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <View
+        android:id="@+id/right_border"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <View
+        android:id="@+id/bottom_border"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
+        />
+
+    <View
+        android:id="@+id/top_border"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

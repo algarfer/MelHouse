@@ -32,10 +32,11 @@ import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.setTextColorRes
 import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.utils.getWarningSnackbar
+import com.uniovi.melhouse.utils.makeGone
+import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
 import javax.inject.Inject
@@ -73,7 +74,12 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
             configureBinders(daysOfWeek(firstDayOfWeekFromLocale(Locale.getDefault())))
         }
 
-        viewModel.updateDay(LocalDate.now())
+        viewModel.today.observe(this) {
+            binding.calendarView.notifyCalendarChanged()
+            configureBinders(daysOfWeek(firstDayOfWeekFromLocale(Locale.getDefault())))
+        }
+
+        viewModel.selectDay(viewModel.today.value!!)
     }
 
     override fun onCreateView(
@@ -122,28 +128,9 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
         }
     }
 
-
     private fun configureBinders(daysOfWeek: List<DayOfWeek>) {
-        class DayViewContainer(view: View) : ViewContainer(view) {
-            lateinit var day: CalendarDay
-            val binding = CalendarDayLayoutBinding.bind(view)
-
-            init {
-                view.setOnClickListener {
-                    if (day.position == DayPosition.MonthDate) {
-                        if (viewModel.date.value != day.date) {
-                            val oldDate = viewModel.date.value
-                            viewModel.updateDay(day.date)
-                            val binding = this@CalendarFragment.binding
-                            binding.calendarView.notifyDateChanged(day.date)
-                            oldDate?.let { binding.calendarView.notifyDateChanged(it) }
-                        }
-                    }
-                }
-            }
-        }
         binding.calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
-            override fun create(view: View) = DayViewContainer(view)
+            override fun create(view: View) = DayViewContainer(view, viewModel, binding)
             override fun bind(container: DayViewContainer, data: CalendarDay) {
                 container.day = data
                 val context = container.binding.root.context
@@ -163,9 +150,15 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                     taskIndicator.setBackgroundColor(color)
                 }
 
-                if (data.position != DayPosition.MonthDate) {
+                if(data.position != DayPosition.MonthDate && data.date == viewModel.today.value) {
+                    textView.setTextColorRes(R.color.on_primary)
+                    layout.setBackgroundColor(context.getColorCompat(R.color.primary).lighterColor())
+                } else if (data.position != DayPosition.MonthDate) {
                     textView.setTextColorRes(R.color.on_primary_container)
                     layout.setBackgroundColor(context.getColorCompat(R.color.primary_container).lighterColor())
+                } else if (data.date == viewModel.today.value) {
+                    textView.setTextColorRes(R.color.on_primary)
+                    layout.setBackgroundColor(context.getColorCompat(R.color.primary))
                 }
             }
         }
@@ -187,5 +180,41 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                     }
                 }
             }
+    }
+    class DayViewContainer(
+        view: View,
+        viewModel: CalendarViewModel,
+        binding: CalendarFragmentBinding
+    ) : ViewContainer(view) {
+        lateinit var day: CalendarDay
+        val binding = CalendarDayLayoutBinding.bind(view)
+
+        init {
+            view.setOnClickListener {
+                if (day.position == DayPosition.MonthDate) {
+                    if (viewModel.date.value != day.date) {
+                        val oldDate = viewModel.date.value
+                        viewModel.selectDay(day.date, this)
+                        val b = binding
+                        b.calendarView.notifyDateChanged(day.date)
+                        oldDate?.let { b.calendarView.notifyDateChanged(it) }
+                    }
+                }
+            }
+        }
+
+        fun select() {
+            binding.topBorder.makeVisible()
+            binding.bottomBorder.makeVisible()
+            binding.leftBorder.makeVisible()
+            binding.rightBorder.makeVisible()
+        }
+
+        fun deselect() {
+            binding.topBorder.makeGone()
+            binding.bottomBorder.makeGone()
+            binding.leftBorder.makeGone()
+            binding.rightBorder.makeGone()
+        }
     }
 }
