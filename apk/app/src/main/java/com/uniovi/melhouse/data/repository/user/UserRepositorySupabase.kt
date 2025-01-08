@@ -5,6 +5,7 @@ import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.realtime.selectSingleValueAsFlow
 import kotlinx.coroutines.flow.Flow
@@ -58,6 +59,12 @@ class UserRepositorySupabase @Inject constructor(
             .from(TABLE_NAME)
             .selectAsFlow(User::id)
             .map { it.filter { user -> user.flatId == flatId } }
+    }
+
+    override suspend fun deleteUserForever() {
+        supabaseClient
+            .postgrest
+            .rpc("delete_user_forever")
     }
 
     override suspend fun insert(entity: User) {

@@ -132,6 +132,8 @@
 
     <string name="settings_general">General</string>
     <string name="settings_dark_mode">Modo oscuro</string>
-    <string name="settings_delete_data">Eliminar todos mis datos</string>
+    <string name="settings_delete_data">Eliminar cuenta de usuario</string>
+    <string name="settings_delete_data_dialog_title">Eliminar cuenta de usuario</string>
+    <string name="settings_delete_data_dialog_supporting_text">Esta a punto de eliminar su cuenta de usuario, esta acción es irreversible</string>
 
 </resources>

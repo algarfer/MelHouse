@@ -11,4 +11,5 @@ interface UserRepository : Repository<User> {
     suspend fun findByIds(ids: List<UUID>): List<User>
     suspend fun getRoommates(flatId: UUID): List<User>
     fun getRoommatesAsFlow(flatId: UUID): Flow<List<User>>
+    suspend fun deleteUserForever()
 }
