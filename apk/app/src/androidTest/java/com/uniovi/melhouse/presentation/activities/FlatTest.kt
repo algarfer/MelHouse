@@ -17,6 +17,7 @@ import com.uniovi.melhouse.preferences.TestPrefs
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +26,7 @@ import org.junit.runner.RunWith
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class JoinFlatTest {
+class FlatTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -49,6 +50,12 @@ class JoinFlatTest {
     @BindValue
     @JvmField
     val prefs: Prefs = TestPrefs()
+
+    @Test
+    fun createFlatTest() = runTest {
+        signIn()
+        createFlat()
+    }
 
     @Test
     fun joinFlatTest() {
