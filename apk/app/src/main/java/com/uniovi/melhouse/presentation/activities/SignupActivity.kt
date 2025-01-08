@@ -27,8 +27,7 @@ class SignupActivity : AbstractActivity() {
                 binding.etName.text.toString(),
                 binding.etEmail.text.toString(),
                 binding.etPassword.text.toString(),
-                binding.etConfirmPassword.text.toString(),
-                this
+                binding.etConfirmPassword.text.toString()
             )
         }
     }

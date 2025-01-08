@@ -25,8 +25,7 @@ class LoginActivity : AbstractActivity() {
         binding.btnLogin.setOnClickListener {
             viewModel.login(
                 binding.etEmail.text.toString(),
-                binding.etPassword.text.toString(),
-                this
+                binding.etPassword.text.toString()
             )
         }
     }

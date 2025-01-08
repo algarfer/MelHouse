@@ -11,6 +11,7 @@ import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NoFlatFragmentViewModel @Inject constructor(
     private val flatRepository: FlatRepository,
-    private val prefs: Prefs
+    private val prefs: Prefs,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     val flatCodeError: LiveData<String?>
@@ -34,9 +36,9 @@ class NoFlatFragmentViewModel @Inject constructor(
     private val _snackBarMsg: MutableLiveData<String?> = MutableLiveData(null)
 
 
-    fun joinFlat(flatCode: String, context: Context) {
+    fun joinFlat(flatCode: String) {
         if (flatCode.isBlank()) {
-            _flatCodeError.postValue(context.getString(R.string.error_form_flat_code_empty))
+            _flatCodeError.postValue(applicationContext.getString(R.string.error_form_flat_code_empty))
             return
         }
 
@@ -50,7 +52,7 @@ class NoFlatFragmentViewModel @Inject constructor(
                     prefs.setFlatId(flat.id)
                 }
             } catch (e: PersistenceLayerException) {
-                _snackBarMsg.postValue(e.getMessage(context))
+                _snackBarMsg.postValue(e.getMessage(applicationContext))
             }
         }
     }

@@ -46,7 +46,7 @@ class UpsertFlatFragment : Fragment() {
 
     private fun setupListeners() {
         binding.btnContinuar.setOnClickListener {
-            viewModel.upsertFlat(requireContext())
+            viewModel.upsertFlat()
         }
         binding.btnCancelar.setOnClickListener {
             parentFragmentManager.popBackStack()

@@ -21,6 +21,7 @@ import com.uniovi.melhouse.utils.validateLength
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -33,7 +34,8 @@ class UpsertTaskViewModel @AssistedInject constructor(
     private val prefs: Prefs,
     private val userRepository: UserRepository,
     private val taskUserRepository: TaskUserRepository,
-    @Assisted private val task: Task?
+    @Assisted private val task: Task?,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     var title: String? = null
@@ -98,19 +100,19 @@ class UpsertTaskViewModel @AssistedInject constructor(
         _assignees.postValue(_assignees.value)
     }
 
-    fun upsertTask(context: Context) {
+    fun upsertTask() {
         var areErrors = false
         val title = title
         if(title.isNullOrEmpty()) {
-            _titleError.value = context.getString(R.string.error_task_title_missing)
+            _titleError.value = applicationContext.getString(R.string.error_task_title_missing)
             areErrors = true
         }
         else if(!title.validateLength()) {
-            _titleError.value = context.getString(R.string.error_task_title_length)
+            _titleError.value = applicationContext.getString(R.string.error_task_title_length)
             areErrors = true
         }
         if(_endDate.value == null) {
-            _endDateError.value = context.getString(R.string.error_task_end_date_missing)
+            _endDateError.value = applicationContext.getString(R.string.error_task_end_date_missing)
             areErrors = true
         }
 

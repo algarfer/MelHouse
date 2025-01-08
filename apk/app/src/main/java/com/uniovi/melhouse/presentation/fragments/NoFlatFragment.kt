@@ -38,7 +38,7 @@ class NoFlatFragment : Fragment() {
             val scanResult = IntentIntegrator.parseActivityResult(result.resultCode, intent)
             if (scanResult != null) {
                 if (scanResult.contents != null) {
-                    viewModel.joinFlat(scanResult.contents, requireContext())
+                    viewModel.joinFlat(scanResult.contents)
                 } else {
                     Toast.makeText(requireContext(), R.string.flat_qr_cancelled, Toast.LENGTH_SHORT).show()
                 }
@@ -55,7 +55,7 @@ class NoFlatFragment : Fragment() {
         binding = FragmentNoFlatBinding.inflate(inflater, container, false)
         setupObservers()
         binding.btnJoinFlat.setOnClickListener {
-            viewModel.joinFlat(binding.etFlatCode.text.toString(), requireContext())
+            viewModel.joinFlat(binding.etFlatCode.text.toString())
         }
         binding.btnJoinQRFlat.setOnClickListener {
             initFlatQRScan()

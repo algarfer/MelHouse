@@ -250,7 +250,7 @@ class UpsertTaskFragment : Fragment() {
         }
 
         binding.btnSave.setOnClickListener {
-            viewModel.upsertTask(requireContext())
+            viewModel.upsertTask()
         }
 
         binding.btnClearStartDate.setOnClickListener {

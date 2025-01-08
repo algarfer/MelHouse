@@ -18,6 +18,7 @@ import com.uniovi.melhouse.utils.validateLength
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -28,10 +29,9 @@ class UpsertFlatViewModel @AssistedInject constructor(
     private val flatRepository: FlatRepository,
     private val userSessionFacade: SupabaseUserSessionFacade,
     private val prefs: Prefs,
-    @Assisted private val flat: Flat?
+    @Assisted private val flat: Flat?,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
-
-
     var name: String? = flat?.name
     var address: String? = flat?.address
     var floor: Int? = flat?.floor
@@ -51,18 +51,18 @@ class UpsertFlatViewModel @AssistedInject constructor(
         get() = _genericError
     private val _genericError = MutableLiveData<String?>(null)
 
-    fun upsertFlat(context: Context) {
+    fun upsertFlat() {
         var areErrors = false
         val name = name
         if(name.isNullOrEmpty()) {
-            _nameError.postValue(context.getString(R.string.error_form_flat_name_empty))
+            _nameError.postValue(applicationContext.getString(R.string.error_form_flat_name_empty))
             areErrors = true
         } else if(!name.validateLength()) {
-            _nameError.postValue(context.getString(R.string.error_form_flat_name_length))
+            _nameError.postValue(applicationContext.getString(R.string.error_form_flat_name_length))
             areErrors = true
         }
         if(address.isNullOrEmpty()) {
-            _addressError.postValue(context.getString(R.string.error_form_flat_address_empty))
+            _addressError.postValue(applicationContext.getString(R.string.error_form_flat_address_empty))
             areErrors = true
         }
 
