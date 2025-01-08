@@ -28,12 +28,24 @@ import javax.inject.Singleton
 object TestRepositoriesModule {
     private val identifiedUserId = UUID.fromString("11111111-1111-1111-1111-111111111111")
     private val identifiedFlatId = UUID.fromString("22222222-2222-2222-2222-222222222222")
-    private val users: MutableList<User> = mutableListOf(User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId, fcmToken = ""))
+    private val users: MutableList<User> = mutableListOf()
     private val tasks: MutableList<Task> = mutableListOf()
-    private val flats: MutableList<Flat> = mutableListOf(
-        Flat(UUID.randomUUID(), "Flat1", "Flat1", 1, "Flat1", "Flat1", "JAVIMONT", identifiedUserId)
-    )
+    private val flats: MutableList<Flat> = mutableListOf()
     private val taskUsers: MutableList<TaskUser> = mutableListOf()
+
+    fun clearAll() {
+        users.clear()
+        tasks.clear()
+        flats.clear()
+        taskUsers.clear()
+
+        users.add(
+            User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId, fcmToken = "")
+        )
+        flats.add(
+            Flat(UUID.randomUUID(), "Flat1", "Flat1", 1, "Flat1", "Flat1", "JAVIMONT", identifiedUserId)
+        )
+    }
 
     @Provides
     @Singleton

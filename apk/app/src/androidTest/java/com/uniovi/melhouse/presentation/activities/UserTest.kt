@@ -12,7 +12,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.di.modules.TestRepositoriesModule
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.preferences.TestPrefs
 import dagger.hilt.android.testing.BindValue
@@ -36,10 +38,16 @@ class UserTest {
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(SplashScreenActivity::class.java)
 
+    @Rule
+    @JvmField
+    var mGrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.POST_NOTIFICATIONS")
+
     @Before
     fun init() {
-        // Perform any setup here
-        hiltRule.inject() // Inject Hilt dependencies
+        hiltRule.inject()
+        TestRepositoriesModule.clearAll()
     }
 
     @BindValue
