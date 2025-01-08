@@ -98,7 +98,13 @@
     <string name="error_invalid_login_credentials">Credenciales de acceso no validas</string>
     <string name="error_unknown">Error desconocido</string>
 
+    <string name="error_error">Error</string>
     <string name="error_flat_not_found">El piso indicado no existe.</string>
+    <string name="error_user_no_flat">El usuario no está en un piso</string>
+    <string name="error_max_user_flat">No entran más personas en el piso</string>
+    <string name="error_admin_not_in_flat">El usuario no está en este piso</string>
+    <string name="error_cannot_leave_empty_flat_admin">No se puede abandonar un piso no vacio siendo administrador</string>
+    <string name="error_cannot_delete_user_in_flat">No se puede eliminar la cuenta estando en un piso</string>
 
     <string name="error_lost_connection_title">Conexión perdida</string>
     <string name="error_lost_connection_msg">Has perdido la conexión con el servidor. Comprueba tu conexión a internet y vuelve a intentarlo.</string>

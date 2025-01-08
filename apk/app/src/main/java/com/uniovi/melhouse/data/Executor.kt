@@ -21,6 +21,16 @@ object Executor {
             R.string.error_form_signup_user_already_exists
         } else if (exception.statusCode == 500 && exception.error == "flat_not_found") {
             R.string.error_flat_not_found
+        } else if(exception.error == "cannot_delete_user_in_flat") {
+            R.string.error_cannot_delete_user_in_flat
+        } else if(exception.error == "cannot_leave_empty_flat_admin") {
+            R.string.error_cannot_leave_empty_flat_admin
+        } else if(exception.error == "admin_not_in_flat") {
+            R.string.error_admin_not_in_flat
+        } else if(exception.error == "max_user_flat") {
+            R.string.error_max_user_flat
+        } else if(exception.error == "user_no_flat") {
+            R.string.error_user_no_flat
         } else {
             null
         }

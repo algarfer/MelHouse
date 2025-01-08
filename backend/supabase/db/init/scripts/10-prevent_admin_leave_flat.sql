@@ -16,7 +16,7 @@ begin
   where flat_id = old.flat_id;
 
   if a_id = old.id and new.flat_id is null and qty > 1 then
-    raise exception'cannot_leave_empty_flat_admin';
+    raise exception 'cannot_leave_empty_flat_admin';
   end if;
 
   return new;
