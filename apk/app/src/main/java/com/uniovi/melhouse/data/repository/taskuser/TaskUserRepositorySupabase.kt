@@ -12,7 +12,7 @@ import javax.inject.Inject
 @OptIn(SupabaseExperimental::class)
 class TaskUserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
-) : TaskUserRepository {
+) : TaskUserRepositoryAbstract() {
 
     companion object {
         private const val TABLE_NAME = "tasks_users"
@@ -47,33 +47,9 @@ class TaskUserRepositorySupabase @Inject constructor(
             }
     }
 
-    override suspend fun insert(entity: TaskUser) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun update(entity: TaskUser) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun delete(entity: TaskUser) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun findById(id: UUID): TaskUser? {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun findAll(): List<TaskUser> {
-        TODO("Not yet implemented")
-    }
-
     override fun findAllAsFlow(): Flow<List<TaskUser>> {
         return supabaseClient
             .from(TABLE_NAME)
             .selectAsFlow(listOf(TaskUser::taskId, TaskUser::userId))
-    }
-
-    override fun findByIdAsFlow(id: UUID): Flow<TaskUser> {
-        TODO("Not yet implemented")
     }
 }
