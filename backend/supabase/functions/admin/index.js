@@ -3,40 +3,35 @@ import { createClient } from "npm:@supabase/supabase-js";
 import serviceAccount from "../service-account.json" assert { type: "json" };
 import admin from "npm:firebase-admin";
 
-console.log("Creating supabase client")
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
 );
-console.log("Supabase client created successfully")
 
-console.log("Initializing Firebase Admin")
-if(admin.apps.length === 0) {
-  console.log("Firebase Admin not initialized yet")
+if (admin.apps.length === 0) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
-} else {
-  console.log("Firebase Admin already initialized")
 }
-console.log("Firebase Admin initialized successfully")
 
 serve(async (req) => {
-  console.log("Checking valid request")
-  if (req.method !== "POST")
+  if (req.method !== "POST") {
+    console.error("Method not allowed");
     return new Response("Method not allowed", {
       status: 405,
       headers: { "Content-Type": "application/json" },
     });
+  }
 
-  if (req.headers.get("host") !== "functions:9000")
+  if (req.headers.get("host") !== "functions:9000") {
+    console.error("Unauthorized");
     return new Response("Unauthorized", {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
+  }
 
   const payload = await req.json();
-
   const { name, admin_id } = payload.record;
   const { data } = await supabase
     .from("users")
@@ -45,7 +40,7 @@ serve(async (req) => {
   const { fcm_token, name: username } = data[0];
 
   if (!fcm_token) {
-    console.log("User without FCM token")
+    console.error("User without FCM token");
     return new Response("No FCM token", {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -60,16 +55,18 @@ serve(async (req) => {
     },
   };
 
-  console.log("Sending notification")
+  console.log("Sending notification");
   const response = await admin.messaging().send(message);
-  console.log("Notification sent", response);
 
-  if (typeof response !== "string")
+  if (typeof response !== "string") {
+    console.error("Error", response);
     return new Response("Error", {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
+  }
 
+  console.log("Notification sent", response);
   return new Response("Done", {
     headers: { "Content-Type": "application/json" },
   });
