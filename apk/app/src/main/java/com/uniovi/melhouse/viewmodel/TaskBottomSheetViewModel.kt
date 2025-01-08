@@ -1,9 +1,6 @@
 package com.uniovi.melhouse.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
@@ -33,7 +30,7 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
     @Assisted val taskId: UUID,
     @Assisted("close") private var closeTaskBottomSheetDialog: (() -> Unit) = {  },
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+) : AbstractViewModel() {
 
     private val _task = tasksRepository.findByIdAsFlow(taskId)
         .catch { e -> _genericError.postValue(e.localizedMessage) }
@@ -50,10 +47,6 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
         task.assignees = assignees.toSet()
         task
     }.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
-
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>()
 
     fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {

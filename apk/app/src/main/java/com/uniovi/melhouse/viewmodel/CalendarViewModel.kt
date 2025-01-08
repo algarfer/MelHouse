@@ -1,8 +1,5 @@
 package com.uniovi.melhouse.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -25,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     tasksRepository: TaskRepository
-) : ViewModel() {
+) : AbstractViewModel() {
 
     private val _tasks = tasksRepository.findAllAsFlow()
         .map { tasks ->
@@ -43,9 +40,6 @@ class CalendarViewModel @Inject constructor(
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
     var date = _date
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
     val today = liveData {
         while (true) {
             emit(LocalDate.now())

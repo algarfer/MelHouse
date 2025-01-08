@@ -47,8 +47,8 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         setContentView(binding.root)
 
         viewModel.onCreate()
-
         val headerView = binding.navigationView.getHeaderView(0)
+        viewModel.clearAllErrors()
 
         viewModel.user.observe(this) {
             if (it == null) return@observe
@@ -66,6 +66,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         viewModel.genericError.observe(this) {
             if (it == null) return@observe
             getWarningSnackbar(headerView, it).show()
+            viewModel.clearGenericError()
         }
 
         observeFlat()

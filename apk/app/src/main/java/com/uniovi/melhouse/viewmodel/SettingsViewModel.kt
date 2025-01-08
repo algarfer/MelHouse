@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
 import com.uniovi.melhouse.data.repository.user.UserRepository
@@ -24,11 +23,7 @@ class SettingsViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val supabase: SupabaseClient,
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
-
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>()
+) : AbstractViewModel() {
 
     val goToStart: LiveData<Boolean>
         get() = _goToStart

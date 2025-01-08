@@ -59,6 +59,8 @@ class UpsertTaskFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.clearAllErrors()
+
         viewModel.startDate.observe(viewLifecycleOwner) {
             if(it != null) {
                 binding.btnClearStartDate.makeVisible()
@@ -139,6 +141,7 @@ class UpsertTaskFragment : Fragment() {
         viewModel.genericError.observe(viewLifecycleOwner) {
             if(it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
 
         viewModel.titleError.observe(viewLifecycleOwner) {

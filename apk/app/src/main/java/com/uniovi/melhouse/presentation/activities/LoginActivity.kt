@@ -31,6 +31,7 @@ class LoginActivity : AbstractActivity() {
     }
 
     private fun setupObservers() {
+        viewModel.clearAllErrors()
         viewModel.emailError.observe(this) {
             binding.emailLayout.error = it
         }
@@ -49,6 +50,7 @@ class LoginActivity : AbstractActivity() {
         viewModel.genericError.observe(this) {
             if(it.isNullOrEmpty()) return@observe
             getWarningSnackbar(binding.root, it).show()
+            viewModel.clearGenericError()
         }
     }
 

@@ -26,15 +26,15 @@ import com.uniovi.melhouse.databinding.CalendarFragmentBinding
 import com.uniovi.melhouse.databinding.CalendarHeaderLayoutBinding
 import com.uniovi.melhouse.factories.presentation.adapter.TasksAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.TasksAdapter
+import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
 import com.uniovi.melhouse.utils.displayText
 import com.uniovi.melhouse.utils.getColorCompat
-import com.uniovi.melhouse.utils.lighterColor
-import com.uniovi.melhouse.utils.setTextColorRes
-import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.utils.getWarningSnackbar
+import com.uniovi.melhouse.utils.lighterColor
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
+import com.uniovi.melhouse.utils.setTextColorRes
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
@@ -54,11 +54,12 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
 
     override fun onResume() {
         super.onResume()
+        viewModel.clearGenericError()
 
         viewModel.genericError.observe(this) {
             if(it == null) return@observe
-
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
 
         viewModel.date.observe(this) {

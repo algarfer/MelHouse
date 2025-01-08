@@ -1,10 +1,10 @@
 package com.uniovi.melhouse.presentation.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +53,8 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.clearAllErrors()
+
         viewModel.todayTasks.observe(viewLifecycleOwner) { tasks ->
             if (tasks.isNullOrEmpty()) {
                 binding.recyclerTodayTasks.visibility = View.GONE
@@ -78,6 +80,7 @@ class MenuFragment : Fragment() {
         viewModel.genericError.observe(viewLifecycleOwner) {
             if(it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
     }
 }

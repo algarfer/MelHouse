@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
@@ -21,20 +20,14 @@ class NoFlatFragmentViewModel @Inject constructor(
     private val flatRepository: FlatRepository,
     private val prefs: Prefs,
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+) : AbstractViewModel() {
 
     val flatCodeError: LiveData<String?>
         get() = _flatCodeError
     private val _flatCodeError: MutableLiveData<String?> = MutableLiveData(null)
-
     val joinFlatSuccess: LiveData<Boolean>
         get() = _joinFlatSuccess
     private val _joinFlatSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
-
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError: MutableLiveData<String?> = MutableLiveData(null)
-
 
     fun joinFlat(flatCode: String) {
         if (flatCode.isBlank()) {
@@ -57,4 +50,8 @@ class NoFlatFragmentViewModel @Inject constructor(
         }
     }
 
+    override fun clearAllErrors() {
+        super.clearAllErrors()
+        _flatCodeError.value = null
+    }
 }

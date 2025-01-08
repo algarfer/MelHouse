@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.Executor
@@ -37,7 +36,7 @@ class FlatFragmentViewModel @Inject constructor(
     taskUserRepository: TaskUserRepository,
     private val prefs: Prefs,
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+) : AbstractViewModel() {
 
     private val _flat = flatRepository.findByIdAsFlow(prefs.getFlatId()!!)
         .catch { e -> _genericError.postValue(e.localizedMessage) }
@@ -86,10 +85,6 @@ class FlatFragmentViewModel @Inject constructor(
     val hasLeaved: LiveData<Boolean>
         get() = _hasLeaved
     private val _hasLeaved = MutableLiveData(false)
-
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
 
     fun promoteToAdmin(user: User) {
         viewModelScope.launch(Dispatchers.IO) {

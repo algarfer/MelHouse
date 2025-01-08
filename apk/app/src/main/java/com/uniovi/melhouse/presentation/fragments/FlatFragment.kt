@@ -49,6 +49,7 @@ class FlatFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        viewModel.clearAllErrors()
 
         viewModel.flat.observe(this) { flat ->
             if(flat == null) {
@@ -172,8 +173,8 @@ class FlatFragment : Fragment() {
 
         viewModel.genericError.observe(this) {
             if(it == null) return@observe
-
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
     }
 

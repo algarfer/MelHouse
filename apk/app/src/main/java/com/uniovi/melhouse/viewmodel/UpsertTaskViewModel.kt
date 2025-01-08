@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
@@ -36,7 +35,7 @@ class UpsertTaskViewModel @AssistedInject constructor(
     private val taskUserRepository: TaskUserRepository,
     @Assisted private val task: Task?,
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+) : AbstractViewModel() {
 
     var title: String? = null
     var description: String? = null
@@ -62,9 +61,6 @@ class UpsertTaskViewModel @AssistedInject constructor(
     val creationSuccessful: LiveData<Boolean>
         get() = _creationSuccessful
     private val _creationSuccessful = MutableLiveData(false)
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
     val titleError: LiveData<String?>
         get() = _titleError
     private val _titleError = MutableLiveData<String?>(null)
@@ -170,5 +166,11 @@ class UpsertTaskViewModel @AssistedInject constructor(
             endDate = _endDate.value,
             flatId = prefs.getFlatId()!!
         )
+    }
+
+    override fun clearAllErrors () {
+        super.clearAllErrors()
+        _titleError.value = null
+        _endDateError.value = null
     }
 }

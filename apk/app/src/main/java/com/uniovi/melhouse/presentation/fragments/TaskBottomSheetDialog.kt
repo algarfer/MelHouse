@@ -41,6 +41,8 @@ class TaskBottomSheetDialog : BottomSheetDialogFragment() {
         binding = TaskDetailsBottomSheetLayoutBinding.inflate(inflater, container, false)
         taskId = UUID.fromString(arguments?.getString(TASK_ID_PARAMETER))
 
+        viewModel.clearAllErrors()
+
         viewModel.task.observe(this) { task ->
             if(task == null) return@observe
 
@@ -119,6 +121,7 @@ class TaskBottomSheetDialog : BottomSheetDialogFragment() {
             if (it == null) return@observe
 
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
 
         return binding.root

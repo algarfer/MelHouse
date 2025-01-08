@@ -2,11 +2,11 @@ package com.uniovi.melhouse.presentation.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.toFlat
@@ -69,6 +69,8 @@ class UpsertFlatFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.clearAllErrors()
+
         viewModel.nameError.observe(viewLifecycleOwner) {
             binding.flatNameLayout.error = it
         }
@@ -88,6 +90,7 @@ class UpsertFlatFragment : Fragment() {
         viewModel.genericError.observe(viewLifecycleOwner) {
             if(it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
     }
 

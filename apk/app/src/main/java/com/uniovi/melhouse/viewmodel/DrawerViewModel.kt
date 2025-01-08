@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
 import com.uniovi.melhouse.data.model.Flat
@@ -24,7 +23,7 @@ class DrawerViewModel @Inject constructor(
     private val userSessionFacade: SupabaseUserSessionFacade,
     private val supabase: SupabaseClient,
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+) : AbstractViewModel() {
 
     val user: LiveData<User?>
         get() = _user
@@ -36,9 +35,6 @@ class DrawerViewModel @Inject constructor(
     val isLogged: LiveData<Boolean>
         get() = _isLogged
     private val _isLogged = MutableLiveData(true)
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
 
     fun onCreate() {
         viewModelScope.launch(Dispatchers.IO) {

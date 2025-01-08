@@ -1,19 +1,19 @@
 package com.uniovi.melhouse.presentation.fragments
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.google.zxing.integration.android.IntentIntegrator
-import com.uniovi.melhouse.databinding.FragmentNoFlatBinding
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import android.app.Activity
-import android.content.Intent
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.zxing.integration.android.IntentIntegrator
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.databinding.FragmentNoFlatBinding
 import com.uniovi.melhouse.presentation.activities.MenuActivity
 import com.uniovi.melhouse.viewmodel.NoFlatFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,6 +70,8 @@ class NoFlatFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.clearAllErrors()
+
         viewModel.flatCodeError.observe(viewLifecycleOwner) { errorMessage ->
             binding.flatCodeLayout.error = errorMessage
         }
@@ -87,6 +89,7 @@ class NoFlatFragment : Fragment() {
         viewModel.genericError.observe(viewLifecycleOwner) { message ->
             message?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.clearGenericError()
             }
         }
     }

@@ -1,8 +1,5 @@
 package com.uniovi.melhouse.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.data.repository.task.TaskRepository
@@ -21,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MenuFragmentViewModel @Inject constructor(
     taskRepository: TaskRepository
-) : ViewModel() {
+) : AbstractViewModel() {
 
     private val today = flow {
         while (true) {
@@ -55,8 +52,4 @@ class MenuFragmentViewModel @Inject constructor(
     val tomorrowTasks = _tasks.combine(tomorrow) { tasks, date ->
         tasks.filter { it.endDate == date }
     }.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
-
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
 }

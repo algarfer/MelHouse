@@ -33,6 +33,8 @@ class SignupActivity : AbstractActivity() {
     }
 
     private fun setupObservers() {
+        viewModel.clearAllErrors()
+
         viewModel.nameError.observe(this) {
             binding.nameLayout.error = it
         }
@@ -60,6 +62,7 @@ class SignupActivity : AbstractActivity() {
         viewModel.genericError.observe(this) {
             if(it.isNullOrEmpty()) return@observe
             getWarningSnackbar(binding.root, it).show()
+            viewModel.clearGenericError()
         }
     }
 

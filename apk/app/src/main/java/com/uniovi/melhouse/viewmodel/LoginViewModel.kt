@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.SupabaseUserSessionFacade
@@ -20,7 +19,7 @@ class LoginViewModel @Inject constructor(
     private val supabaseUserSessionFacade: SupabaseUserSessionFacade,
     private val prefs: Prefs,
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+) : AbstractViewModel() {
 
     val passwordError: LiveData<String?>
         get() = _passwordError
@@ -31,9 +30,6 @@ class LoginViewModel @Inject constructor(
     val loginSuccessfull: LiveData<Boolean>
         get() = _loginSuccessfull
     private val _loginSuccessfull = MutableLiveData(false)
-    val genericError: LiveData<String>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String>(null)
 
     fun login(email: String, password: String) {
         var areErrors = false
@@ -60,5 +56,11 @@ class LoginViewModel @Inject constructor(
                 _genericError.postValue(e.getMessage(applicationContext))
             }
         }
+    }
+
+    override fun clearAllErrors() {
+        super.clearAllErrors()
+        _passwordError.value = null
+        _emailError.value = null
     }
 }

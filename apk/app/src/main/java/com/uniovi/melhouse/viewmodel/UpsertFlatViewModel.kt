@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
@@ -31,7 +30,7 @@ class UpsertFlatViewModel @AssistedInject constructor(
     private val prefs: Prefs,
     @Assisted private val flat: Flat?,
     @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+) : AbstractViewModel() {
     var name: String? = flat?.name
     var address: String? = flat?.address
     var floor: Int? = flat?.floor
@@ -47,9 +46,6 @@ class UpsertFlatViewModel @AssistedInject constructor(
     val creationSuccessful: LiveData<Boolean>
         get() = _creationSuccessful
     private val _creationSuccessful = MutableLiveData(false)
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
 
     fun upsertFlat() {
         var areErrors = false
@@ -105,5 +101,11 @@ class UpsertFlatViewModel @AssistedInject constructor(
             stair = stair?.ifEmptyNull(),
             adminId = userSessionFacade.getUserId()!!
         )
+    }
+
+    override fun clearAllErrors() {
+        super.clearAllErrors()
+        _nameError.value = null
+        _addressError.value = null
     }
 }
