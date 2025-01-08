@@ -124,6 +124,7 @@ class FlatFragment : Fragment() {
                 axisLeft.setDrawGridLines(false)
                 axisLeft.setDrawAxisLine(false)
                 axisRight.granularity = (it.size/10).toFloat()
+                axisRight.textColor = requireContext().getColorCompat(R.color.on_background)
                 xAxis.setDrawLabels(false)
                 xAxis.setDrawGridLines(false)
                 isHighlightPerTapEnabled = false
@@ -136,6 +137,8 @@ class FlatFragment : Fragment() {
                 legend.isWordWrapEnabled = true
                 legend.textSize = 10f
                 legend.xEntrySpace = 75f
+                legend.textColor = requireContext().getColorCompat(R.color.on_background)
+                data.setValueTextColor(requireContext().getColorCompat(R.color.on_background))
             }
             binding.bcTaskStatus.invalidate()
         }
