@@ -20,4 +20,12 @@ class TestPrefs : Prefs(){
     override fun clearAll() {
         flatId = null
     }
+
+    override fun setFcmToken(token: String) {}
+
+    override fun getFcmToken() = ""
+
+    override fun setFcmTokenStoredServer(value: Boolean) {}
+
+    override fun getFcmTokenStoredServer() = true
 }

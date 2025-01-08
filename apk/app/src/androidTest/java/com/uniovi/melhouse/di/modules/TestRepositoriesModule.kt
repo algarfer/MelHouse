@@ -28,7 +28,7 @@ import javax.inject.Singleton
 object TestRepositoriesModule {
     private val identifiedUserId = UUID.fromString("11111111-1111-1111-1111-111111111111")
     private val identifiedFlatId = UUID.fromString("22222222-2222-2222-2222-222222222222")
-    private val users: MutableList<User> = mutableListOf(User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId))
+    private val users: MutableList<User> = mutableListOf(User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId, fcmToken = ""))
     private val tasks: MutableList<Task> = mutableListOf()
     private val flats: MutableList<Flat> = mutableListOf(
         Flat(UUID.randomUUID(), "Flat1", "Flat1", 1, "Flat1", "Flat1", "JAVIMONT", identifiedUserId)
@@ -49,12 +49,7 @@ object TestRepositoriesModule {
         coEvery { mockk.findById(any()) } answers {
             val userId = arg<UUID>(0)
             Log.i("userId", userId.toString())
-            val ret: User?
-            //if(userId == identifiedUserId)// ID del usuario identificado
-                //ret = User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId)
-            //else
-                ret = users.find { user -> user.id == userId }
-            ret
+            users.find { user -> user.id == userId }
         }
 
         coEvery { mockk.findByIds(any()) } answers {
@@ -71,12 +66,14 @@ object TestRepositoriesModule {
             User(
                 name = "Roommate1",
                 email = "roommate1@email.com",
-                flatId = null
+                flatId = null,
+                fcmToken = ""
             ),
             User(
                 name = "Roommate2",
                 email = "roommate2@email.com",
-                flatId = null
+                flatId = null,
+                fcmToken = ""
             )
         )
 

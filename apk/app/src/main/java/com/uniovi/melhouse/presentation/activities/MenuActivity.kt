@@ -1,7 +1,6 @@
 package com.uniovi.melhouse.presentation.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
@@ -18,12 +17,12 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.getInitials
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 import com.uniovi.melhouse.presentation.fragments.FlatFragment
-import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.DrawerViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener  {
@@ -88,8 +87,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= 33)
-            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
 
         setup()
     }
