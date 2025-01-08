@@ -19,6 +19,7 @@ data class User (
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     val name: String,
     val email: String,
+    @SerialName("fcm_token") val fcmToken: String?,
     @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") val flatId: UUID? = null,
     @Transient var tasks: Set<Task> = emptySet()
 )

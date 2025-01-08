@@ -17,6 +17,7 @@ create table public.users(
     name text not null,
     email text not null,
     flat_id uuid,
+    fcm_token text,
     constraint pk_users primary key (id),
     constraint uq_users_email unique (email),
     constraint fk_user_id foreign key (id) references auth.users (id) on delete cascade,
