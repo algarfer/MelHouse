@@ -120,6 +120,7 @@ dependencies {
     implementation(libs.mpandroidchart)
 
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 }
 
 kapt {
