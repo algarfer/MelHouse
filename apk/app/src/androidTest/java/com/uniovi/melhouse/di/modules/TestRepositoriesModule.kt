@@ -220,7 +220,11 @@ object TestRepositoriesModule {
         coEvery { mockk.joinFlat(any()) } answers {
             val invitationCode = arg<String>(0)
             val flat = flats.find { flat -> flat.invitationCode == invitationCode }!!
-//            users.find { user -> user.id == identifiedUserId }?.flatId = flat.id
+            users.find { user -> user.id == identifiedUserId }?.let { user ->
+                val updatedUser = user.copy(flatId = flat.id)
+                users[users.indexOf(user)] = updatedUser
+            }
+
             Log.i("joinFlat", flat.toString())
             Log.i("joinFlat", users.toString())
             flat

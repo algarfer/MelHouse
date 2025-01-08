@@ -268,7 +268,7 @@ fun signOut() {
                         0
                     )
                 ),
-                7
+                6
             ),
             isDisplayed()
         )
