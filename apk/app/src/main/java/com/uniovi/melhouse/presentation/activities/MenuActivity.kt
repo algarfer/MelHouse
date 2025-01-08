@@ -1,11 +1,12 @@
 package com.uniovi.melhouse.presentation.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -30,6 +31,8 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
     private lateinit var binding: ActivityMenuBinding
     private lateinit var drawerLayout: DrawerLayout
     private val viewModel: DrawerViewModel by viewModels()
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     private fun setup(){
         supportFragmentManager.commit {
@@ -38,7 +41,6 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         }
     }
 
-    @SuppressLint("PrivateResource")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -85,6 +87,9 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        if (Build.VERSION.SDK_INT >= 33)
+            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
 
         setup()
     }

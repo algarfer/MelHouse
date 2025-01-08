@@ -67,19 +67,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun showNotification(title: String, body: String) {
-        val builder: NotificationCompat.Builder =
-            NotificationCompat.Builder(this, "default_channel")
-                .setSmallIcon(R.drawable.logo)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        val manager = NotificationManagerCompat.from(this)
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            val builder: NotificationCompat.Builder =
+                NotificationCompat.Builder(this, "default_channel")
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+            val manager = NotificationManagerCompat.from(this)
             manager.notify(Random.nextInt(), builder.build())
         }
     }
