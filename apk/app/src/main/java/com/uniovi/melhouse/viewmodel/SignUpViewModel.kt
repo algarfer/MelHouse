@@ -49,7 +49,7 @@ class SignUpViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                supabaseUserSessionFacade.signUp(emailTrimmed, password, nameTrimmed)
+                supabaseUserSessionFacade.signUp(emailTrimmed, password, nameTrimmed, prefs.getFcmToken()!!)
                 supabaseUserSessionFacade.getUserData().let {
                     prefs.setFlatId(it.flatId)
                 }

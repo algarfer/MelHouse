@@ -4,6 +4,7 @@ import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
+import com.uniovi.melhouse.preference.Prefs
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
@@ -18,7 +19,8 @@ import javax.inject.Singleton
 class SupabaseUserSessionFacade @Inject constructor(
     private val supabase: SupabaseClient,
     private val userRepository: UserRepository,
-    private val flatRepository: FlatRepository
+    private val flatRepository: FlatRepository,
+    private val prefs: Prefs
 ) {
 
     suspend fun loadFromStorage() : Boolean {
@@ -32,15 +34,17 @@ class SupabaseUserSessionFacade @Inject constructor(
         return true
     }
 
-    suspend fun signUp(email: String, password: String, name: String) : User {
+    suspend fun signUp(email: String, password: String, name: String, fcmToken: String) : User {
         Executor.safeCall {
             supabase.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
                 data = buildJsonObject {
                     put("name", name)
+                    put("fcm_token", fcmToken)
                 }
             }
+            prefs.setFcmTokenStoredServer(true)
         }
 
         supabase
@@ -74,6 +78,7 @@ class SupabaseUserSessionFacade @Inject constructor(
                     .currentSessionOrNull()!!
             )
 
+        updateFCMToken(prefs.getFcmToken()!!)
         return getUserData()
     }
 
@@ -114,6 +119,14 @@ class SupabaseUserSessionFacade @Inject constructor(
                 .postgrest
                 .rpc("is_admin")
                 .decodeAs()
+        }
+    }
+
+    suspend fun updateFCMToken(token: String?) {
+        Executor.safeCall {
+            val user = getUserData()
+            userRepository.update(user.copy(fcmToken = token))
+            prefs.setFcmTokenStoredServer(true)
         }
     }
 }

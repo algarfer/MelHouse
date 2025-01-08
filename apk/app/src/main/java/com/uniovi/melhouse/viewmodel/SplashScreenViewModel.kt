@@ -25,7 +25,7 @@ class SplashScreenViewModel @Inject constructor(
     var isLogged: Boolean = false
         private set
 
-    fun initApp() {
+    init {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 isLogged = supabaseUserSessionFacade.loadFromStorage()
@@ -36,6 +36,27 @@ class SplashScreenViewModel @Inject constructor(
                 supabaseUserSessionFacade.clearSession()
             } finally {
                 _isReady.postValue(true)
+            }
+        }
+    }
+
+    fun updateFCMToken(token: String) {
+        val previousToken = prefs.getFcmToken()
+
+        if(previousToken == null || previousToken != token) {
+            prefs.setFcmToken(token)
+            prefs.setFcmTokenStoredServer(false)
+        }
+
+        uploadToken()
+    }
+
+    private fun uploadToken() {
+        supabaseUserSessionFacade.getUserId()?.let {
+            if(!prefs.getFcmTokenStoredServer()) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    supabaseUserSessionFacade.updateFCMToken(prefs.getFcmToken())
+                }
             }
         }
     }

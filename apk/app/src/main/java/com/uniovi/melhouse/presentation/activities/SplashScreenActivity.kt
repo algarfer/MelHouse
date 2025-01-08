@@ -2,6 +2,7 @@ package com.uniovi.melhouse.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.activity.enableEdgeToEdge
@@ -9,6 +10,8 @@ import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.network.InternetConnectionObserver
 import com.uniovi.melhouse.viewmodel.SplashScreenViewModel
@@ -63,6 +66,18 @@ class SplashScreenActivity : AbstractActivity() {
             startActivity(intent)
             finish()
         }
-        viewModel.initApp()
+
+        FirebaseMessaging
+            .getInstance()
+            .token
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                val token = task.result
+                viewModel.updateFCMToken(token)
+            })
     }
 }

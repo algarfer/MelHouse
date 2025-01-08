@@ -56,6 +56,7 @@ class DrawerViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
+            userSessionFacade.updateFCMToken(null)
             supabase.auth.signOut()
             supabase.auth.clearSession()
 
