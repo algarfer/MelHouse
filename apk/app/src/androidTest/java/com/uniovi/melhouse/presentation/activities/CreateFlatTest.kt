@@ -32,8 +32,7 @@ class CreateFlatTest {
 
     @Before
     fun init() {
-        // Perform any setup here
-        hiltRule.inject() // Inject Hilt dependencies
+        hiltRule.inject()
     }
 
     @BindValue
@@ -42,13 +41,6 @@ class CreateFlatTest {
 
     @Test
     fun createFlatTest() = runTest {
-        mockkStatic("com.uniovi.melhouse.data.repository.user.UserRepositoryKt")
-
-        val user = mockk<User>(relaxed = true)
-
-        // Configurar el mock de la función suspendida
-//        coEvery { user.loadTasks(any()) } just Runs
-
         signIn()
         createFlat()
     }
