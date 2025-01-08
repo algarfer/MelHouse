@@ -1,13 +1,13 @@
 package com.uniovi.melhouse.presentation.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.CalendarConstraints
@@ -207,18 +207,16 @@ class UpsertTaskFragment : Fragment() {
             isFocusable = false
             isClickable = true
 
-            val defaultStatus = TaskStatus.PENDING
+            val defaultStatus = task?.status ?: TaskStatus.PENDING
             setText(defaultStatus.getString(requireContext()), false)
             viewModel.setStatus(defaultStatus)
 
             setAdapter(
                 TaskStatusDropDownMenuAdapter(
-                requireContext(),
-                TaskStatus.entries)
+                    requireContext(),
+                    TaskStatus.entries
+                )
             )
-            setOnClickListener {
-                showDropDown()
-            }
             setOnItemClickListener { adapterView, _, position, _ ->
                 val item = adapterView.getItemAtPosition(position) as TaskStatus
                 setText(item.getString(requireContext()), false)
@@ -230,18 +228,16 @@ class UpsertTaskFragment : Fragment() {
             isFocusable = false
             isClickable = true
 
-            val defaultPriority = TaskPriority.MEDIUM
+            val defaultPriority = task?.priority ?: TaskPriority.MEDIUM
             setText(defaultPriority.getString(requireContext()), false)
             viewModel.setPriority(defaultPriority)
 
             setAdapter(
                 TaskPriorityDropDownMenuAdapter(
-                requireContext(),
-                TaskPriority.entries)
+                    requireContext(),
+                    TaskPriority.entries
+                )
             )
-            setOnClickListener {
-                showDropDown()
-            }
             setOnItemClickListener { adapterView, _, position, _ ->
                 val item = adapterView.getItemAtPosition(position) as TaskPriority
                 setText(item.getString(requireContext()), false)
@@ -276,8 +272,7 @@ class UpsertTaskFragment : Fragment() {
             binding.etTaskDescription.text = task.description?.toEditable()
             binding.etStartDate.text = task.startDate?.toString()?.toEditable()
             binding.etEndDate.text = task.endDate?.toString()?.toEditable()
-            binding.dmStatus.tvDropdownField.text = task.status?.getString(requireContext())?.toEditable()
-            binding.dmPriority.tvDropdownField.text = task.priority?.getString(requireContext())?.toEditable()
+            // Status and priority are set earlier with the listeners
         }
     }
 
