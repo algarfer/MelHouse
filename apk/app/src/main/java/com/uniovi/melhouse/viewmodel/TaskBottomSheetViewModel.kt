@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ import com.uniovi.melhouse.factories.viewmodel.TaskBottomSheetViewModelFactory
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -29,16 +31,17 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
     userRepository: UserRepository,
     taskUserRepository: TaskUserRepository,
     @Assisted val taskId: UUID,
-    @Assisted("close") private var closeTaskBottomSheetDialog: (() -> Unit) = {  }
+    @Assisted("close") private var closeTaskBottomSheetDialog: (() -> Unit) = {  },
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     private val _task = tasksRepository.findByIdAsFlow(taskId)
-        .catch { e -> _genericError.postValue(e.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
     private val _taskUsers = taskUserRepository.findAllAsFlow()
         .map { tupleList -> tupleList.filter { tuple -> tuple.taskId == taskId } }
-        .catch { e -> _genericError.postValue(e.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
     private val _users = userRepository.findAllAsFlow()
-        .catch { e -> _genericError.postValue(e.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
 
     val task = combine(_task, _taskUsers, _users) { task, taskUsers, users ->
         val assignees = taskUsers
@@ -59,7 +62,7 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
                     tasksRepository.delete(task.value!!)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
 

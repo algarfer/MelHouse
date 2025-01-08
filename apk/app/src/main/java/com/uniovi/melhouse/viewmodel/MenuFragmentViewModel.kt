@@ -46,7 +46,7 @@ class MenuFragmentViewModel @Inject constructor(
         }
     }
     private val _tasks = taskRepository.findAllAsFlow()
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
 
     val todayTasks = _tasks.combine(today) { tasks, date ->

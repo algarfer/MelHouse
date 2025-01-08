@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.viewmodel
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +22,8 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val prefs: Prefs,
     private val userRepository: UserRepository,
-    private val supabase: SupabaseClient
+    private val supabase: SupabaseClient,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     val genericError: LiveData<String?>
@@ -54,7 +57,7 @@ class SettingsViewModel @Inject constructor(
                     _goToStart.postValue(true)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }

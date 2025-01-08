@@ -46,7 +46,7 @@ class LoginActivity : AbstractActivity() {
             finish()
         }
 
-        viewModel.snackBarMsg.observe(this) {
+        viewModel.genericError.observe(this) {
             if(it.isNullOrEmpty()) return@observe
             getWarningSnackbar(binding.root, it).show()
         }

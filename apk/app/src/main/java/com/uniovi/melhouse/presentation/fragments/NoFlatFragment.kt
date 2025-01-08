@@ -15,10 +15,8 @@ import android.content.Intent
 import androidx.fragment.app.viewModels
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.presentation.activities.MenuActivity
-import com.uniovi.melhouse.viewmodel.DrawerViewModel
 import com.uniovi.melhouse.viewmodel.NoFlatFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class NoFlatFragment : Fragment() {
@@ -86,7 +84,7 @@ class NoFlatFragment : Fragment() {
             }
         }
 
-        viewModel.snackBarMsg.observe(viewLifecycleOwner) { message ->
+        viewModel.genericError.observe(viewLifecycleOwner) { message ->
             message?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }

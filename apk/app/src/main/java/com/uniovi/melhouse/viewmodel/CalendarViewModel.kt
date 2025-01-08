@@ -33,13 +33,13 @@ class CalendarViewModel @Inject constructor(
                 .filter { it.endDate != null }
                 .groupBy { it.endDate }
         }
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
     private val _date = MutableSharedFlow<LocalDate>()
     val tasks = _tasks
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
     val dailyTasks = _tasks.combine(_date) { tasks, date -> tasks[date] }
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
     var date = _date
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)

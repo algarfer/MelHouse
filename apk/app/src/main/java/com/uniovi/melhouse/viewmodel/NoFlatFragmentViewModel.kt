@@ -31,9 +31,9 @@ class NoFlatFragmentViewModel @Inject constructor(
         get() = _joinFlatSuccess
     private val _joinFlatSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val snackBarMsg: LiveData<String?>
-        get() = _snackBarMsg
-    private val _snackBarMsg: MutableLiveData<String?> = MutableLiveData(null)
+    val genericError: LiveData<String?>
+        get() = _genericError
+    private val _genericError: MutableLiveData<String?> = MutableLiveData(null)
 
 
     fun joinFlat(flatCode: String) {
@@ -52,7 +52,7 @@ class NoFlatFragmentViewModel @Inject constructor(
                     prefs.setFlatId(flat.id)
                 }
             } catch (e: PersistenceLayerException) {
-                _snackBarMsg.postValue(e.getMessage(applicationContext))
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }

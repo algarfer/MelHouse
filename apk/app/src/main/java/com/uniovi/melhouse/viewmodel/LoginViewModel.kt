@@ -25,17 +25,17 @@ class LoginViewModel @Inject constructor(
     val passwordError: LiveData<String?>
         get() = _passwordError
     private val _passwordError: MutableLiveData<String?> = MutableLiveData(null)
-    private val _emailError: MutableLiveData<String?> = MutableLiveData(null)
     val emailError: LiveData<String?>
         get() = _emailError
+    private val _emailError: MutableLiveData<String?> = MutableLiveData(null)
     val loginSuccessfull: LiveData<Boolean>
         get() = _loginSuccessfull
     private val _loginSuccessfull = MutableLiveData(false)
-    val snackBarMsg
-        get() = _snackBarMsg
-    private val _snackBarMsg = MutableLiveData<String>(null)
+    val genericError: LiveData<String>
+        get() = _genericError
+    private val _genericError = MutableLiveData<String>(null)
 
-    fun login(email: String, password: String,) {
+    fun login(email: String, password: String) {
         var areErrors = false
         if(email.isEmpty()) {
             _emailError.postValue(applicationContext.getString(R.string.error_form_login_email_empty))
@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
                 }
                 _loginSuccessfull.postValue(true)
             } catch (e: PersistenceLayerException) {
-                _snackBarMsg.postValue(e.getMessage(applicationContext))
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }

@@ -40,9 +40,9 @@ class SignUpViewModel @Inject constructor(
     val signupSuccessfull: LiveData<Boolean>
         get() = _signupSuccessfull
     private val _signupSuccessfull = MutableLiveData(false)
-    val snackBarMsg
-        get() = _snackBarMsg
-    private val _snackBarMsg = MutableLiveData<String?>(null)
+    val genericError: LiveData<String?>
+        get() = _genericError
+    private val _genericError = MutableLiveData<String?>(null)
 
     fun signup(name: String, email: String, password: String, password2: String) {
         val nameTrimmed = name.trim()
@@ -57,7 +57,7 @@ class SignUpViewModel @Inject constructor(
                 }
                 _signupSuccessfull.postValue(true)
             } catch (e: PersistenceLayerException) {
-                _snackBarMsg.postValue(e.getMessage(applicationContext))
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }

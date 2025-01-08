@@ -147,7 +147,7 @@ class UpsertTaskViewModel @AssistedInject constructor(
                     _creationSuccessful.postValue(true)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,7 @@ import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -33,24 +35,25 @@ class FlatFragmentViewModel @Inject constructor(
     private val flatRepository: FlatRepository,
     taskRepository: TaskRepository,
     taskUserRepository: TaskUserRepository,
-    private val prefs: Prefs
+    private val prefs: Prefs,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     private val _flat = flatRepository.findByIdAsFlow(prefs.getFlatId()!!)
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
     private val _currentUser = usersRepository.findByIdAsFlow(userSessionFacade.getUserId()!!)
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
     private val _partners = usersRepository.getRoommatesAsFlow(prefs.getFlatId()!!)
         .map { users -> users.sortedBy { if (it.id == userSessionFacade.getUserId()!!) Int.MIN_VALUE else it.id.hashCode() } }
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
     private val _tasks = taskRepository.findByFlatIdAsFlow(prefs.getFlatId()!!)
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
     private val _userTasks = taskUserRepository.findAllAsFlow()
-        .catch { _genericError.postValue(it.message) }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
         .shareIn(viewModelScope, started = SharingStarted.Lazily)
 
     val flat: LiveData<Flat> = _flat
@@ -70,11 +73,11 @@ class FlatFragmentViewModel @Inject constructor(
     val currentUser: LiveData<User> = _currentUser
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
-    val isAdmin: LiveData<Boolean> =
-        _flat.combine(_currentUser) { flat, user ->
-            flat.adminId == user.id
-        }.catch { _genericError.postValue(it.message) }
-            .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+    val isAdmin: LiveData<Boolean> = _flat.combine(_currentUser) { flat, user ->
+        flat.adminId == user.id
+    }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
     val tasks: LiveData<List<Task>> = _tasks
         .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
@@ -96,7 +99,7 @@ class FlatFragmentViewModel @Inject constructor(
                     flatRepository.update(newFlat)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }
@@ -109,7 +112,7 @@ class FlatFragmentViewModel @Inject constructor(
                     usersRepository.update(newUser)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }
@@ -124,7 +127,7 @@ class FlatFragmentViewModel @Inject constructor(
                     prefs.setFlatId(null)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }
