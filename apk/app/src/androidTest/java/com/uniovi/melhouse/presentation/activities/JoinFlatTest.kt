@@ -9,6 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.preferences.TestPrefs
@@ -32,6 +33,12 @@ class JoinFlatTest {
     @Rule(order = 1)
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(SplashScreenActivity::class.java)
+
+    @Rule
+    @JvmField
+    var mGrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.POST_NOTIFICATIONS")
 
     @Before
     fun init() {

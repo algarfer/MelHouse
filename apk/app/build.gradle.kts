@@ -80,6 +80,7 @@ dependencies {
     androidTestImplementation (libs.androidx.runner)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.rules)
     kaptAndroidTest (libs.hilt.android.compiler)
     testImplementation (libs.hilt.android.test)
     kaptTest (libs.hilt.android.compiler)

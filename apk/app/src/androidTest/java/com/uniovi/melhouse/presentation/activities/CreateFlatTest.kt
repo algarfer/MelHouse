@@ -2,17 +2,12 @@ package com.uniovi.melhouse.presentation.activities
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.uniovi.melhouse.data.model.User
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.preferences.TestPrefs
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import androidx.test.rule.GrantPermissionRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -29,6 +24,12 @@ class CreateFlatTest {
     @Rule(order = 1)
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(SplashScreenActivity::class.java)
+
+    @Rule
+    @JvmField
+    var mGrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.POST_NOTIFICATIONS")
 
     @Before
     fun init() {

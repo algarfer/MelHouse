@@ -18,6 +18,7 @@ import com.uniovi.melhouse.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.anyOf
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
 
@@ -87,6 +88,19 @@ fun signIn() {
         )
     )
     materialButton2.perform(click())
+
+    try{
+        val materialButton3 = onView(
+            allOf(
+                anyOf(
+                    withText("Permitir"),
+                    withText("Allow")
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton3.perform(click())
+    } catch (_: Exception) { }
 
     val textView = onView(
         allOf(
