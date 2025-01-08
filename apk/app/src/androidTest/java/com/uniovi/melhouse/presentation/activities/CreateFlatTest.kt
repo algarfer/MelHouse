@@ -8,6 +8,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import androidx.test.rule.GrantPermissionRule
+import com.uniovi.melhouse.di.modules.TestRepositoriesModule
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -34,6 +35,7 @@ class CreateFlatTest {
     @Before
     fun init() {
         hiltRule.inject()
+        TestRepositoriesModule.clearAll()
     }
 
     @BindValue
