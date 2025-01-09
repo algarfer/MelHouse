@@ -1,12 +1,13 @@
 package com.uniovi.melhouse.presentation.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.allViews
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.CalendarConstraints
@@ -15,11 +16,16 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskPriority
 import com.uniovi.melhouse.data.model.TaskStatus
+import com.uniovi.melhouse.data.model.toJson
+import com.uniovi.melhouse.data.model.toTask
 import com.uniovi.melhouse.databinding.CalendarUpsertTaskFragmentBinding
+import com.uniovi.melhouse.factories.viewmodel.UpsertTaskViewModelFactory
 import com.uniovi.melhouse.presentation.adapters.array.TaskPriorityDropDownMenuAdapter
 import com.uniovi.melhouse.presentation.adapters.array.TaskStatusDropDownMenuAdapter
+import com.uniovi.melhouse.presentation.buttons.AssigneeMaterialButton
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
 import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.utils.makeGone
@@ -28,34 +34,34 @@ import com.uniovi.melhouse.utils.maxDate
 import com.uniovi.melhouse.utils.toEditable
 import com.uniovi.melhouse.utils.today
 import com.uniovi.melhouse.viewmodel.UpsertTaskViewModel
-import com.uniovi.melhouse.viewmodel.state.TaskState
-import com.uniovi.melhouse.viewmodel.state.toJson
-import com.uniovi.melhouse.viewmodel.state.toTaskState
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.withCreationCallback
 import java.time.LocalDate
 
 @AndroidEntryPoint
 class UpsertTaskFragment : Fragment() {
 
-    private var taskState: TaskState? = null
-    private val viewModel: UpsertTaskViewModel by viewModels()
+    private var task: Task? = null
+    private val viewModel: UpsertTaskViewModel by viewModels(extrasProducer = {
+        defaultViewModelCreationExtras.withCreationCallback<UpsertTaskViewModelFactory> { factory ->
+            factory.create(task)
+        }
+    })
     private lateinit var binding: CalendarUpsertTaskFragmentBinding
-    private val MILLIS_PER_DAY = 86400000
-    private val TASK_STATE_PARAMETER = "task_state_json"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = CalendarUpsertTaskFragmentBinding.inflate(inflater, container, false)
-        taskState = arguments?.getString(TASK_STATE_PARAMETER)?.toTaskState()
+        task = arguments?.getString(TASK_PARAMETER)?.toTask(withTransientFields = true)
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private fun setupObservers() {
+        viewModel.clearAllErrors()
 
-        viewModel.startDate.observe(this) {
+        viewModel.startDate.observe(viewLifecycleOwner) {
             if(it != null) {
                 binding.btnClearStartDate.makeVisible()
                 binding.etStartDate.text = it.toString().toEditable()
@@ -65,7 +71,7 @@ class UpsertTaskFragment : Fragment() {
             }
         }
 
-        viewModel.endDate.observe(this) {
+        viewModel.endDate.observe(viewLifecycleOwner) {
             if(it != null) {
                 binding.btnClearEndDate.makeVisible()
                 binding.etEndDate.text = it.toString().toEditable()
@@ -75,7 +81,7 @@ class UpsertTaskFragment : Fragment() {
             }
         }
 
-        viewModel.status.observe(this) {
+        viewModel.status.observe(viewLifecycleOwner) {
             if(it == null) {
                 binding.dmStatus.tvDropdownField.setText("", false)
                 binding.btnClearStatus.makeGone()
@@ -85,7 +91,7 @@ class UpsertTaskFragment : Fragment() {
             }
         }
 
-        viewModel.priority.observe(this) {
+        viewModel.priority.observe(viewLifecycleOwner) {
             if(it == null) {
                 binding.dmPriority.tvDropdownField.setText("", false)
                 binding.btnClearPriority.makeGone()
@@ -95,56 +101,59 @@ class UpsertTaskFragment : Fragment() {
             }
         }
 
-        viewModel.map.observe(this) {
-            makeButtons()
+        viewModel.assignees.observe(viewLifecycleOwner) { asignees ->
+            if (asignees == null || viewModel.parters.value.isNullOrEmpty()) return@observe
+
+            binding.asigneesBtnGroup.allViews.forEachIndexed { i, btn ->
+                if(i == 0) return@forEachIndexed // Skips the view itself
+                val button = btn as AssigneeMaterialButton
+                applyColor(asignees.contains(button.asignee), button)
+            }
         }
 
-        viewModel.close.observe(this) {
+        viewModel.parters.observe(viewLifecycleOwner) {
+            if(it.isNullOrEmpty()) return@observe
+
+            binding.asigneesBtnGroup.removeAllViews()
+
+            it.forEach { mate ->
+                mate.let {
+                    val button = AssigneeMaterialButton(requireContext(), mate).apply {
+                        text = it.name
+                        strokeWidth = 2
+                        setStrokeColorResource(R.color.secondary)
+                    }
+                    button.setOnClickListener{
+                        viewModel.setAsignee(button.asignee)
+                    }
+                    binding.asigneesBtnGroup.addView(button)
+                }
+            }
+
+            viewModel.triggerAsigneesObserver()
+        }
+
+        viewModel.creationSuccessful.observe(viewLifecycleOwner) {
             if(it)
                 requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        viewModel.genericError.observe(this) {
+        viewModel.genericError.observe(viewLifecycleOwner) {
             if(it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
 
-        viewModel.titleError.observe(this) {
+        viewModel.titleError.observe(viewLifecycleOwner) {
             binding.etTaskTitle.error = it
         }
 
-        viewModel.endDateError.observe(this) {
+        viewModel.endDateError.observe(viewLifecycleOwner) {
             binding.etEndDate.error = it
         }
     }
 
-    private fun makeButtons() {
-        // Limpia las vistas existentes en el grupo de botones
-        binding.asigneesBtnGroup.removeAllViews()
-
-        // Itera sobre los elementos del mapa en el ViewModel
-        viewModel.map.value!!.forEachIndexed { index, mate ->
-            // Verifica que 'mate' no sea nulo antes de proceder
-            mate.let {
-                val button = MaterialButton(requireContext()).apply {
-                    text = it.name
-                    strokeWidth = 2
-                    setStrokeColorResource(R.color.secondary)
-                }
-                applyColor(viewModel.asignees[index], button)
-                button.setOnClickListener{
-                    applyColor(viewModel.changeAsignee(index), button)
-                }
-                // Agrega el botón al grupo de vistas
-                binding.asigneesBtnGroup.addView(button)
-            }
-        }
-    }
-
-    private fun applyColor(
-        condition: Boolean,
-        button: MaterialButton
-    ) {
+    private fun applyColor(condition: Boolean, button: MaterialButton) {
         if (condition)
             button.apply {
                 setBackgroundColor(getColor(context, R.color.secondary_container))
@@ -161,11 +170,12 @@ class UpsertTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.onViewCreated(taskState)
-        val taskState = taskState
-        if(taskState != null) {
-            binding.etTaskTitle.text = taskState.task.name.toEditable()
-            binding.etTaskDescription.text = taskState.task.description?.toEditable()
+        setupObservers()
+
+        val task = task
+        if(task != null) {
+            binding.etTaskTitle.text = task.name.toEditable()
+            binding.etTaskDescription.text = task.description?.toEditable()
         }
 
         binding.dmStatus.dropdownLayout.hint = getString(R.string.task_status)
@@ -190,24 +200,26 @@ class UpsertTaskFragment : Fragment() {
         }
 
         binding.etTaskTitle.doOnTextChanged { _, _, _, _ ->
-            viewModel.setTitle(binding.etTaskTitle.text.toString())
+            viewModel.title = binding.etTaskTitle.text.toString()
         }
         binding.etTaskDescription.doOnTextChanged { _, _, _, _ ->
-            viewModel.setDescription(binding.etTaskDescription.text.toString())
+            viewModel.description = binding.etTaskDescription.text.toString()
         }
-
 
         binding.dmStatus.tvDropdownField.apply {
             isFocusable = false
             isClickable = true
+
+            val defaultStatus = task?.status ?: TaskStatus.PENDING
+            setText(defaultStatus.getString(requireContext()), false)
+            viewModel.setStatus(defaultStatus)
+
             setAdapter(
                 TaskStatusDropDownMenuAdapter(
-                requireContext(),
-                TaskStatus.entries)
+                    requireContext(),
+                    TaskStatus.entries
+                )
             )
-            setOnClickListener {
-                showDropDown()
-            }
             setOnItemClickListener { adapterView, _, position, _ ->
                 val item = adapterView.getItemAtPosition(position) as TaskStatus
                 setText(item.getString(requireContext()), false)
@@ -218,14 +230,17 @@ class UpsertTaskFragment : Fragment() {
         binding.dmPriority.tvDropdownField.apply {
             isFocusable = false
             isClickable = true
+
+            val defaultPriority = task?.priority ?: TaskPriority.MEDIUM
+            setText(defaultPriority.getString(requireContext()), false)
+            viewModel.setPriority(defaultPriority)
+
             setAdapter(
                 TaskPriorityDropDownMenuAdapter(
-                requireContext(),
-                TaskPriority.entries)
+                    requireContext(),
+                    TaskPriority.entries
+                )
             )
-            setOnClickListener {
-                showDropDown()
-            }
             setOnItemClickListener { adapterView, _, position, _ ->
                 val item = adapterView.getItemAtPosition(position) as TaskPriority
                 setText(item.getString(requireContext()), false)
@@ -234,7 +249,7 @@ class UpsertTaskFragment : Fragment() {
         }
 
         binding.btnSave.setOnClickListener {
-            viewModel.upsertTask(requireContext())
+            viewModel.upsertTask()
         }
 
         binding.btnClearStartDate.setOnClickListener {
@@ -255,7 +270,13 @@ class UpsertTaskFragment : Fragment() {
 
         addStatusBarColorUpdate(R.color.background)
 
-        makeButtons()
+        if(task != null) {
+            binding.etTaskTitle.text = task.name.toEditable()
+            binding.etTaskDescription.text = task.description?.toEditable()
+            binding.etStartDate.text = task.startDate?.toString()?.toEditable()
+            binding.etEndDate.text = task.endDate?.toString()?.toEditable()
+            // Status and priority are set earlier with the listeners
+        }
     }
 
     private fun showDatePickerDialog(title: String, startDate: LocalDate, endDate: LocalDate, listener: (LocalDate) -> Unit) {
@@ -286,10 +307,13 @@ class UpsertTaskFragment : Fragment() {
     companion object {
         const val TAG = "UpsertTaskFragment"
 
-        fun create(taskState: TaskState? = null) : UpsertTaskFragment {
+        private const val MILLIS_PER_DAY = 86400000
+        private const val TASK_PARAMETER = "task_state_json"
+
+        fun create(task: Task? = null) : UpsertTaskFragment {
             return UpsertTaskFragment().apply {
                 arguments = Bundle().apply {
-                    putString(TASK_STATE_PARAMETER, taskState?.toJson())
+                    putString(TASK_PARAMETER, task?.toJson(withTransientFields = true))
                 }
             }
         }

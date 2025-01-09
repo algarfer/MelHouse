@@ -68,9 +68,9 @@
 
     <array name="chart_colors">
         <item>@color/chart_color_blue</item>
-        <item>@color/chart_color_red</item>
-        <item>@color/chart_color_yellow</item>
         <item>@color/chart_color_green</item>
+        <item>@color/chart_color_yellow</item>
+        <item>@color/chart_color_red</item>
     </array>
 
     <color name="chart_color_blue">#3498DB</color>

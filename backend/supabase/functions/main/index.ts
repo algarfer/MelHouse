@@ -82,6 +82,8 @@ serve(async (req: Request) => {
       noModuleCache,
       importMapPath,
       envVars,
+      cpuTimeSoftLimitMs: 10000,
+      cpuTimeHardLimitMs: 10000,
     })
     return await worker.fetch(req)
   } catch (e) {

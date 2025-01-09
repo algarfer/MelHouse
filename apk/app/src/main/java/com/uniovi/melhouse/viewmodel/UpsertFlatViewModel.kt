@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
@@ -18,6 +17,7 @@ import com.uniovi.melhouse.utils.validateLength
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -28,14 +28,14 @@ class UpsertFlatViewModel @AssistedInject constructor(
     private val flatRepository: FlatRepository,
     private val userSessionFacade: SupabaseUserSessionFacade,
     private val prefs: Prefs,
-    @Assisted private val flat: Flat?
-) : ViewModel() {
-
-    var name: String? = null
-    var address: String? = null
-    var floor: Int? = null
-    var door: String? = null
-    var stair: String? = null
+    @Assisted private val flat: Flat?,
+    @ApplicationContext private val applicationContext: Context
+) : AbstractViewModel() {
+    var name: String? = flat?.name
+    var address: String? = flat?.address
+    var floor: Int? = flat?.floor
+    var door: String? = flat?.door
+    var stair: String? = flat?.stair
 
     val nameError: LiveData<String?>
         get() = _nameError
@@ -46,21 +46,19 @@ class UpsertFlatViewModel @AssistedInject constructor(
     val creationSuccessful: LiveData<Boolean>
         get() = _creationSuccessful
     private val _creationSuccessful = MutableLiveData(false)
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
 
-    fun upsertFlat(context: Context) {
+    fun upsertFlat() {
         var areErrors = false
         val name = name
         if(name.isNullOrEmpty()) {
-            _nameError.postValue(context.getString(R.string.error_form_flat_name_empty))
+            _nameError.postValue(applicationContext.getString(R.string.error_form_flat_name_empty))
             areErrors = true
         } else if(!name.validateLength()) {
-            _nameError.postValue(context.getString(R.string.error_form_flat_name_length))
+            _nameError.postValue(applicationContext.getString(R.string.error_form_flat_name_length))
+            areErrors = true
         }
         if(address.isNullOrEmpty()) {
-            _addressError.postValue(context.getString(R.string.error_form_flat_address_empty))
+            _addressError.postValue(applicationContext.getString(R.string.error_form_flat_address_empty))
             areErrors = true
         }
 
@@ -83,7 +81,7 @@ class UpsertFlatViewModel @AssistedInject constructor(
                     _creationSuccessful.postValue(true)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }
@@ -103,5 +101,11 @@ class UpsertFlatViewModel @AssistedInject constructor(
             stair = stair?.ifEmptyNull(),
             adminId = userSessionFacade.getUserId()!!
         )
+    }
+
+    override fun clearAllErrors() {
+        super.clearAllErrors()
+        _nameError.value = null
+        _addressError.value = null
     }
 }

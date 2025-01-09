@@ -3,7 +3,6 @@ package com.uniovi.melhouse.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.Executor
@@ -15,57 +14,53 @@ import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepository
 import com.uniovi.melhouse.data.repository.user.UserRepository
 import com.uniovi.melhouse.exceptions.PersistenceLayerException
-import com.uniovi.melhouse.viewmodel.state.TaskState
+import com.uniovi.melhouse.factories.viewmodel.UpsertTaskViewModelFactory
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateLength
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import javax.inject.Inject
 
-@HiltViewModel
-class UpsertTaskViewModel @Inject constructor(
+@HiltViewModel(
+    assistedFactory = UpsertTaskViewModelFactory::class
+)
+class UpsertTaskViewModel @AssistedInject constructor(
     private val taskRepository: TaskRepository,
     private val prefs: Prefs,
     private val userRepository: UserRepository,
-    private val taskUserRepository: TaskUserRepository
-) : ViewModel() {
-    private var taskState: TaskState? = null
+    private val taskUserRepository: TaskUserRepository,
+    @Assisted private val task: Task?,
+    @ApplicationContext private val applicationContext: Context
+) : AbstractViewModel() {
 
-    private var title: String? = null
-    private var description: String? = null
+    var title: String? = null
+    var description: String? = null
 
     val startDate: LiveData<LocalDate?>
         get() = _startDate
-    private val _startDate = MutableLiveData<LocalDate?>()
+    private val _startDate = MutableLiveData<LocalDate?>(task?.startDate)
     val endDate: LiveData<LocalDate?>
         get() = _endDate
-    private val _endDate = MutableLiveData<LocalDate?>()
+    private val _endDate = MutableLiveData<LocalDate?>(task?.endDate)
     val status: LiveData<TaskStatus?>
         get() = _status
-    private val _status = MutableLiveData<TaskStatus?>()
+    private val _status = MutableLiveData<TaskStatus?>(task?.status)
     val priority: LiveData<TaskPriority?>
         get() = _priority
-    private val _priority = MutableLiveData<TaskPriority?>()
-
-    // Lista para controlar botones seleccionados(true -> en amarillo)
-    var asignees: MutableList<Boolean> = mutableListOf()
-
-    // Para cerrar el viewmodel tras finalizar la corrutinas
-    val close: LiveData<Boolean>
-        get() = _close
-    private val _close = MutableLiveData(false)
-
-    //mapea índice del botón -> compañero de piso
-    val map: LiveData<MutableList<User>>
-        get() = _map
-    private val _map = MutableLiveData<MutableList<User>>(mutableListOf())
-
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
-
+    private val _priority = MutableLiveData<TaskPriority?>(task?.priority)
+    val assignees: LiveData<Set<User>>
+        get() = _assignees
+    private val _assignees = MutableLiveData(task?.assignees ?: setOf())
+    val parters: LiveData<List<User>>
+        get() = _partners
+    private val _partners = MutableLiveData<List<User>>(emptyList())
+    val creationSuccessful: LiveData<Boolean>
+        get() = _creationSuccessful
+    private val _creationSuccessful = MutableLiveData(false)
     val titleError: LiveData<String?>
         get() = _titleError
     private val _titleError = MutableLiveData<String?>(null)
@@ -73,100 +68,89 @@ class UpsertTaskViewModel @Inject constructor(
         get() = _endDateError
     private val _endDateError = MutableLiveData<String?>(null)
 
-    fun setTitle(title: String) {
-        this.title = title
-    }
-
-    fun setDescription(description: String?) {
-        this.description = description
-    }
-
     fun setStartDate(startDate: LocalDate?) = _startDate.postValue(startDate)
-
     fun setEndDate(endDate: LocalDate?) = _endDate.postValue(endDate)
-
     fun setStatus(status: TaskStatus?) = _status.postValue(status)
-
     fun setPriority(status: TaskPriority?) = _priority.postValue(status)
 
-    // TODO - Simplify viewModel and move task to assisted injection
-    fun onViewCreated(taskState: TaskState?) {
-        this.taskState = taskState
-        putAsignees()
-
-        if(taskState != null) {
-            val task = taskState.task
-            setTitle(task.name)
-            setDescription(task.description)
-            setStartDate(task.startDate)
-            setEndDate(task.endDate)
-            setStatus(task.status)
-            setPriority(task.priority)
-
-
+    fun setAsignee(user: User) {
+        val temp = _assignees.value!!.toMutableSet()
+        if(_assignees.value!!.contains(user)) {
+            temp.remove(user)
+            _assignees.value = temp.toSet()
+        } else {
+            temp.add(user)
+            _assignees.value = temp.toSet()
         }
     }
 
-    fun upsertTask(context: Context) {
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.getRoommates(prefs.getFlatId()!!).let {
+                _partners.postValue(it)
+            }
+        }
+    }
+
+    fun triggerAsigneesObserver() {
+        _assignees.postValue(_assignees.value)
+    }
+
+    fun upsertTask() {
         var areErrors = false
         val title = title
         if(title.isNullOrEmpty()) {
-            _titleError.value = context.getString(R.string.error_task_title_missing)
+            _titleError.value = applicationContext.getString(R.string.error_task_title_missing)
             areErrors = true
         }
         else if(!title.validateLength()) {
-            _titleError.value = context.getString(R.string.error_task_title_length)
+            _titleError.value = applicationContext.getString(R.string.error_task_title_length)
             areErrors = true
         }
         if(_endDate.value == null) {
-            _endDateError.value = context.getString(R.string.error_task_end_date_missing)
+            _endDateError.value = applicationContext.getString(R.string.error_task_end_date_missing)
             areErrors = true
         }
 
         if(areErrors) return
 
-        if (taskState?.isInBD == true)
-            updateTaskState()
-        else
-            saveTaskState()
-    }
-
-    private fun saveTaskState() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Executor.safeCall {
-                    val task = generateTask()
-                    taskRepository.insert(task)
-                    if(taskState != null)
-                        taskUserRepository.insertAsignees(task.id, taskState!!.asignees.map { user -> user.id })
-                    _close.postValue(true)
-                }
-            } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+        if (task == null)
+            upsert {
+                val task = generateTask()
+                taskRepository.insert(task)
+                taskUserRepository.insertAsignees(task.id, this.assignees.value!!.map { user -> user.id })
             }
-        }
+        else
+            upsert {
+                val task = generateTask()
+                taskRepository.update(generateTask())
+                val oldAssignees = userRepository.findAsigneesById(task.id).toSet()
+                val newAssignees = _assignees.value!!.toSet()
+
+                val toDelete = oldAssignees - newAssignees
+                val toInsert = newAssignees - oldAssignees
+
+                taskUserRepository.deleteAssignees(task.id, toDelete.map { user -> user.id })
+                taskUserRepository.insertAsignees(task.id, toInsert.map { user -> user.id })
+            }
     }
 
-    private fun updateTaskState() {
+    private fun upsert(action: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Executor.safeCall {
-                    taskRepository.update(generateTask())
-                    taskUserRepository.deleteAllAsignees(taskState!!.task.id)
-                    taskUserRepository.insertAsignees(
-                        taskState!!.task.id,
-                        taskState!!.asignees.map { user -> user.id })
-                    _close.postValue(true)
+                    action()
+                    _creationSuccessful.postValue(true)
                 }
             } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
+                _genericError.postValue(e.getMessage(applicationContext))
             }
         }
     }
 
     private fun generateTask(): Task {
-        return taskState?.task?.copy(
-            name = title.orEmpty(), // TODO - Change to assert !!
+        return task?.copy(
+            name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
@@ -174,7 +158,7 @@ class UpsertTaskViewModel @Inject constructor(
             endDate = _endDate.value,
         ) ?:
         Task(
-            name = title.orEmpty(), // TODO - Change to assert !!
+            name = title!!,
             description = description,
             status = _status.value,
             priority = _priority.value,
@@ -184,48 +168,9 @@ class UpsertTaskViewModel @Inject constructor(
         )
     }
 
-    private fun putAsignees() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Executor.safeCall {
-                    val flatId = prefs.getFlatId()
-
-                    var roomates = emptyList<User>()
-                    if(flatId != null)
-                        roomates = userRepository.getRoommates(flatId)
-
-                    asignees = MutableList(roomates.size) { false }
-                    for ((index, roommate) in roomates.withIndex()) {
-                        _map.value!!.add(index, roommate)
-                        _map.postValue(_map.value!!.toMutableList())
-                    }
-
-                    if(taskState != null) {
-                        asignees = map.value!!.map { asignee -> taskState!!.asignees.contains(asignee) }.toMutableList()
-                    }
-                }
-            } catch (e: PersistenceLayerException) {
-                _genericError.postValue(e.message)
-            }
-        }
-    }
-
-    fun changeAsignee(index: Int): Boolean{
-        taskState = TaskState(generateTask(), asignees = getNewAsignees(index), taskState?.isInBD ?: false)
-
-        asignees[index] = !asignees[index]
-
-        return asignees[index]
-    }
-
-    private fun getNewAsignees(index: Int): MutableList<User> {
-        val newAsignees = taskState?.asignees?.toMutableList().orEmpty().toMutableList()
-
-        if (newAsignees.contains(_map.value!![index]))
-            newAsignees.remove(_map.value!![index])
-        else
-            newAsignees.add(_map.value!![index])
-
-        return newAsignees
+    override fun clearAllErrors () {
+        super.clearAllErrors()
+        _titleError.value = null
+        _endDateError.value = null
     }
 }

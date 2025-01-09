@@ -18,7 +18,7 @@
 
     <string name="chart_not_available_short">N/A</string>
     <string name="chart_bar_tasks_status">Estado de las tareas</string>
-    <string name="chart_pie_asignees">Tareas asignadas</string>
+    <string name="chart_pie_asignees">Tareas</string>
 
     <string name="flat_no_flat">Entrar a un piso</string>
     <string name="flat_code">Código del piso</string>
@@ -30,7 +30,7 @@
     <string name="flat_floor">Piso</string>
     <string name="flat_door">Puerta</string>
     <string name="flat_stair">Escalera</string>
-    <string name="flat_bedrooms">Habitaciones</string>
+    <string name="flat_n_mates">Compañeros</string>
     <string name="flat_invitation_code">Código: %1$s</string>
     <string name="flat_edit">Editar el piso</string>
     <string name="flat_invitation_code_large">Codigo de invitación</string>
@@ -43,7 +43,12 @@
     <string name="flat_leave">Abandonar el piso</string>
     <string name="flat_leave_dialog_title">Abandonar el piso</string>
     <string name="flat_leave_dialog_supporting_text">Estas a punto de salir del piso \"%1$s\". ¿Estás seguro?</string>
-
+    <string name="flat_assignee_1">Asignado 1</string>
+    <string name="flat_assignee_2">Asignado 2</string>
+    <string name="flat_assignee_3">Asignado 3</string>
+    <string name="flat_assign">¿Quién debe realizar la tarea?</string>
+    <string name="flat_statistics">Estadísticas</string>
+    <string name="flat_invitation_code_copied">Código del piso copiado</string>
 
     <string name="task_title">Título*</string>
     <string name="task_description">Descripción</string>
@@ -93,7 +98,13 @@
     <string name="error_invalid_login_credentials">Credenciales de acceso no validas</string>
     <string name="error_unknown">Error desconocido</string>
 
+    <string name="error_error">Error</string>
     <string name="error_flat_not_found">El piso indicado no existe.</string>
+    <string name="error_user_no_flat">El usuario no está en un piso</string>
+    <string name="error_max_user_flat">No entran más personas en el piso</string>
+    <string name="error_admin_not_in_flat">El usuario no está en este piso</string>
+    <string name="error_cannot_leave_empty_flat_admin">No se puede abandonar un piso no vacío siendo administrador</string>
+    <string name="error_cannot_delete_user_in_flat">No se puede eliminar la cuenta estando en un piso</string>
 
     <string name="error_lost_connection_title">Conexión perdida</string>
     <string name="error_lost_connection_msg">Has perdido la conexión con el servidor. Comprueba tu conexión a internet y vuelve a intentarlo.</string>
@@ -127,5 +138,8 @@
 
     <string name="settings_general">General</string>
     <string name="settings_dark_mode">Modo oscuro</string>
+    <string name="settings_delete_data">Eliminar cuenta de usuario</string>
+    <string name="settings_delete_data_dialog_title">Eliminar cuenta de usuario</string>
+    <string name="settings_delete_data_dialog_supporting_text">Esta a punto de eliminar su cuenta de usuario, esta acción es irreversible</string>
 
 </resources>

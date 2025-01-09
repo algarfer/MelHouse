@@ -4,7 +4,9 @@ language plpgsql
 security definer set search_path = ''
 as $$
 begin
-    delete from public.tasks_users where user_id = old.id;
+    if old.flat_id <> new.flat_id or new.flat_id is null then
+        delete from public.tasks_users where user_id = old.id;
+    end if;
     return new;
 end;
 $$;

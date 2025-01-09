@@ -10,9 +10,8 @@ begin
     from public.users
     where id = old.id;
 
-    if f_id is not null then
-        raise exception 'Cannot delete user: user is associated with a flat';
-    end if;
+    assert f_id is null, 'cannot_delete_user_in_flat'; 
+    
     return old;
 end;
 $$;

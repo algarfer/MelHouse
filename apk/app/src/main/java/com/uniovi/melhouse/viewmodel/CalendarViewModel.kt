@@ -1,73 +1,73 @@
 package com.uniovi.melhouse.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.uniovi.melhouse.data.Executor
-import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.repository.task.TaskRepository
-import com.uniovi.melhouse.exceptions.PersistenceLayerException
+import com.uniovi.melhouse.presentation.fragments.CalendarFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val tasksRepository: TaskRepository
-) : ViewModel() {
+    tasksRepository: TaskRepository
+) : AbstractViewModel() {
 
-    val tasks: LiveData<Map<LocalDate?, List<Task>>>
-        get() = _tasks
-    private val _tasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
-    val dailyTasks: LiveData<Map<LocalDate?, List<Task>>>
-        get() = _dailyTasks
-    private val _dailyTasks = MutableLiveData<Map<LocalDate?, List<Task>>>()
-    var date: LocalDate? = null
-    val genericError: LiveData<String?>
-        get() = _genericError
-    private val _genericError = MutableLiveData<String?>(null)
+    private val _tasks = tasksRepository.findAllAsFlow()
+        .map { tasks ->
+            tasks
+                .filter { it.endDate != null }
+                .groupBy { it.endDate }
+        }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
+        .shareIn(viewModelScope, started = SharingStarted.Lazily)
+    private val _date = MutableSharedFlow<LocalDate>()
+    val tasks = _tasks
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+    val dailyTasks = _tasks.combine(_date) { tasks, date -> tasks[date] }
+        .catch { e -> _genericError.postValue(e.localizedMessage) }
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+    var date = _date
+        .asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+    val today = liveData {
+        while (true) {
+            emit(LocalDate.now())
 
-    fun onCreate() {
-        updateTasks()
+            val now = LocalDateTime.now()
+            val nextMidnight = now.toLocalDate().plusDays(1).atStartOfDay()
+            val delay = Duration.between(now, nextMidnight).toMillis()
+
+            kotlinx.coroutines.delay(delay)
+        }
     }
+    private var previousSelectedDay: CalendarFragment.DayViewContainer? = null
 
-    fun updateTasks() {
+    init {
         viewModelScope.launch(Dispatchers.IO) {
-            _tasks.postValue(
-                try {
-                    Executor.safeCall {
-                        tasksRepository
-                            .findAll()
-                            .filter { it.endDate != null }
-                            .groupBy { it.endDate }
-                    }
-                } catch (e: PersistenceLayerException) {
-                    _genericError.postValue(e.message)
-                    mapOf()
-                }
-            )
+            _date.emit(LocalDate.now())
         }
     }
 
-    fun updateDailyTasks(date: LocalDate?) {
-        if (date == null) return
+    fun selectDay(date: LocalDate, view: CalendarFragment.DayViewContainer? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            _dailyTasks.postValue(
-                try {
-                    Executor.safeCall {
-                        tasksRepository
-                            .findByDate(date)
-                            .filter { it.endDate != null }
-                            .groupBy { it.endDate }
-                    }
-                } catch (e: PersistenceLayerException) {
-                    _genericError.postValue(e.message)
-                    mapOf()
-                }
-            )
+            _date.emit(date)
         }
+
+        if (view == null) return
+
+        previousSelectedDay?.deselect()
+        view.select()
+        previousSelectedDay = view
     }
 }

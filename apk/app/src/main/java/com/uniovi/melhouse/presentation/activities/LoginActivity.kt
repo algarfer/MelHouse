@@ -25,13 +25,13 @@ class LoginActivity : AbstractActivity() {
         binding.btnLogin.setOnClickListener {
             viewModel.login(
                 binding.etEmail.text.toString(),
-                binding.etPassword.text.toString(),
-                this
+                binding.etPassword.text.toString()
             )
         }
     }
 
     private fun setupObservers() {
+        viewModel.clearAllErrors()
         viewModel.emailError.observe(this) {
             binding.emailLayout.error = it
         }
@@ -47,9 +47,10 @@ class LoginActivity : AbstractActivity() {
             finish()
         }
 
-        viewModel.snackBarMsg.observe(this) {
+        viewModel.genericError.observe(this) {
             if(it.isNullOrEmpty()) return@observe
             getWarningSnackbar(binding.root, it).show()
+            viewModel.clearGenericError()
         }
     }
 

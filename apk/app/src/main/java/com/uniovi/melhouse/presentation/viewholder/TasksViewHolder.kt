@@ -11,6 +11,7 @@ import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.utils.taskDateFormatter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import java.util.UUID
 
 class TasksViewHolder @AssistedInject constructor(
     @Assisted view: View,
@@ -37,7 +38,7 @@ class TasksViewHolder @AssistedInject constructor(
 }
 
 // TODO - Refactor this
-fun taskPressedHandler(fragmentManager: FragmentManager, task: Task, updateCalendarViewModel: () -> Unit, updateTasksViewHolder: () -> Unit) {
-    val modal = TaskBottomSheetDialog.create(task, updateCalendarViewModel, updateTasksViewHolder)
+fun taskPressedHandler(fragmentManager: FragmentManager, taskId: UUID) {
+    val modal = TaskBottomSheetDialog.create(taskId)
     fragmentManager.let { modal.show(it, TaskBottomSheetDialog.TAG) }
 }

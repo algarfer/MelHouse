@@ -1,5 +1,6 @@
 package com.uniovi.melhouse.di.modules
 
+import android.util.Log
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskUser
@@ -14,6 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Singleton
@@ -24,11 +26,26 @@ import javax.inject.Singleton
     replaces = [RepositoriesModule::class]
 )
 object TestRepositoriesModule {
+    private val identifiedUserId = UUID.fromString("11111111-1111-1111-1111-111111111111")
+    private val identifiedFlatId = UUID.fromString("22222222-2222-2222-2222-222222222222")
     private val users: MutableList<User> = mutableListOf()
     private val tasks: MutableList<Task> = mutableListOf()
     private val flats: MutableList<Flat> = mutableListOf()
     private val taskUsers: MutableList<TaskUser> = mutableListOf()
-    private val identifiedUserId = UUID.fromString("11111111-1111-1111-1111-111111111111")
+
+    fun clearAll() {
+        users.clear()
+        tasks.clear()
+        flats.clear()
+        taskUsers.clear()
+
+        users.add(
+            User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId, fcmToken = "")
+        )
+        flats.add(
+            Flat(UUID.randomUUID(), "Flat1", "Flat1", 1, "Flat1", "Flat1", "JAVIMONT", identifiedUserId)
+        )
+    }
 
     @Provides
     @Singleton
@@ -43,12 +60,8 @@ object TestRepositoriesModule {
 
         coEvery { mockk.findById(any()) } answers {
             val userId = arg<UUID>(0)
-            val ret: User?
-            if(userId == identifiedUserId)// ID del usuario identificado
-                ret = User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = UUID.randomUUID())
-            else
-                ret = users.find { user -> user.id == userId }
-            ret
+            Log.i("userId", userId.toString())
+            users.find { user -> user.id == userId }
         }
 
         coEvery { mockk.findByIds(any()) } answers {
@@ -65,12 +78,14 @@ object TestRepositoriesModule {
             User(
                 name = "Roommate1",
                 email = "roommate1@email.com",
-                flatId = null
+                flatId = null,
+                fcmToken = ""
             ),
             User(
                 name = "Roommate2",
                 email = "roommate2@email.com",
-                flatId = null
+                flatId = null,
+                fcmToken = ""
             )
         )
 
@@ -94,6 +109,18 @@ object TestRepositoriesModule {
             val userId = arg<UUID>(0)
             users.removeIf { user -> user.id == userId }
             Unit
+        }
+
+        coEvery { mockk.findAllAsFlow() } answers {
+            flow { mockk.findAll() }
+        }
+
+        coEvery { mockk.findByIdAsFlow(any()) } answers {
+            flow { mockk.findById(arg(0)) }
+        }
+
+        coEvery { mockk.getRoommatesAsFlow(any()) } answers {
+            flow { mockk.getRoommates(arg(0)) }
         }
 
         return mockk
@@ -135,6 +162,27 @@ object TestRepositoriesModule {
             Unit
         }
 
+        coEvery { mockk.findByFlatId(any()) } answers {
+            val flatId = arg<UUID>(0)
+            tasks.filter { task -> task.flatId == flatId }
+        }
+
+        coEvery { mockk.findAllAsFlow() } answers {
+            flow { mockk.findAll() }
+        }
+
+        coEvery { mockk.findByIdAsFlow(any()) } answers {
+            flow { mockk.findById(arg(0)) }
+        }
+
+        coEvery { mockk.findByFlatIdAsFlow(any()) } answers {
+            flow { mockk.findByFlatId(arg(0)) }
+        }
+
+        coEvery { mockk.findAssignedByDateAsFlow(any()) } answers {
+            flow { mockk.findByDate(arg(0)) }
+        }
+
         return mockk
     }
 
@@ -151,12 +199,15 @@ object TestRepositoriesModule {
 
         coEvery { mockk.createFlat(any()) } answers {
             val flat = arg<Flat>(0)
-            flats.add(flat)
+            Log.i("createFlat", flat.toString())
+            //flat.adminId = identifiedUserId
+            flats.add(flat.copy(id= identifiedFlatId))
             flat
         }
 
         coEvery { mockk.findById(any()) } answers {
             val flatId = arg<UUID>(0)
+            Log.i("flatId", flatId.toString())
             flats.find { flat -> flat.id == flatId }
         }
 
@@ -178,8 +229,22 @@ object TestRepositoriesModule {
         coEvery { mockk.joinFlat(any()) } answers {
             val invitationCode = arg<String>(0)
             val flat = flats.find { flat -> flat.invitationCode == invitationCode }!!
-            users.find { user -> user.id == identifiedUserId }?.flatId = flat.id
+            users.find { user -> user.id == identifiedUserId }?.let { user ->
+                val updatedUser = user.copy(flatId = flat.id)
+                users[users.indexOf(user)] = updatedUser
+            }
+
+            Log.i("joinFlat", flat.toString())
+            Log.i("joinFlat", users.toString())
             flat
+        }
+
+        coEvery { mockk.findAllAsFlow() } answers {
+            flow { mockk.findAll() }
+        }
+
+        coEvery { mockk.findByIdAsFlow(any()) } answers {
+            flow { mockk.findById(arg(0)) }
         }
 
         return mockk
@@ -217,6 +282,14 @@ object TestRepositoriesModule {
 
             taskUsers.removeIf { taskUser -> taskUser.taskId == taskId }
             Unit
+        }
+
+        coEvery { mockk.findAllAsFlow() } answers {
+            flow { mockk.findAll() }
+        }
+
+        coEvery { mockk.findByIdAsFlow(any()) } answers {
+            flow { mockk.findById(arg(0)) }
         }
 
         return mockk

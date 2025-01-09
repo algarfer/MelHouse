@@ -1,11 +1,11 @@
 package com.uniovi.melhouse.presentation.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,12 +17,12 @@ import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.getInitials
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
 import com.uniovi.melhouse.presentation.fragments.FlatFragment
-import dagger.hilt.android.AndroidEntryPoint
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
 import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.DrawerViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener  {
@@ -30,6 +30,8 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
     private lateinit var binding: ActivityMenuBinding
     private lateinit var drawerLayout: DrawerLayout
     private val viewModel: DrawerViewModel by viewModels()
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     private fun setup(){
         supportFragmentManager.commit {
@@ -38,7 +40,6 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         }
     }
 
-    @SuppressLint("PrivateResource")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -46,8 +47,8 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         setContentView(binding.root)
 
         viewModel.onCreate()
-
         val headerView = binding.navigationView.getHeaderView(0)
+        viewModel.clearAllErrors()
 
         viewModel.user.observe(this) {
             if (it == null) return@observe
@@ -65,6 +66,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         viewModel.genericError.observe(this) {
             if (it == null) return@observe
             getWarningSnackbar(headerView, it).show()
+            viewModel.clearGenericError()
         }
 
         observeFlat()
@@ -86,6 +88,8 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
             insets
         }
 
+        notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+
         setup()
     }
 
@@ -102,7 +106,6 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
                 return true
             }
             R.id.navigation_flat -> FlatFragment()
-//            R.id.navigation_account -> AccountFragment()
             R.id.navigation_settings -> SettingsFragment()
             R.id.navigation_logout -> {
                 viewModel.logout()

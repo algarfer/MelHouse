@@ -2,14 +2,27 @@ package com.uniovi.melhouse.data.repository.task
 
 import com.uniovi.melhouse.data.model.Task
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.postgresListDataFlow
+import io.github.jan.supabase.realtime.selectAsFlow
+import io.github.jan.supabase.realtime.selectSingleValueAsFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
 
+@OptIn(SupabaseExperimental::class)
 class TaskRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) : TaskRepository {
@@ -36,6 +49,22 @@ class TaskRepositorySupabase @Inject constructor(
                     eq("flat_id", flatId)
                 }
             }.decodeList()
+    }
+
+    override fun findByFlatIdAsFlow(flatId: UUID): Flow<List<Task>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(
+                Task::id,
+                filter = FilterOperation("flat_id", FilterOperator.EQ, flatId)
+            )
+    }
+
+    override fun findAssignedByDateAsFlow(date: LocalDate?): Flow<List<Task>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(Task::id)
+            .map { it.filter { task -> task.endDate == date } }
     }
 
     override suspend fun findAssignedByDate(date: LocalDate?): List<Task> {
@@ -86,5 +115,19 @@ class TaskRepositorySupabase @Inject constructor(
             .from(TABLE_NAME)
             .select()
             .decodeList()
+    }
+
+    override fun findAllAsFlow(): Flow<List<Task>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(Task::id)
+    }
+
+    override fun findByIdAsFlow(id: UUID): Flow<Task> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectSingleValueAsFlow(Task::id) {
+                Task::id eq id
+            }
     }
 }

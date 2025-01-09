@@ -33,10 +33,7 @@ fun Task.getDatesString(): String {
 
 val taskDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE'\n'dd MMM'\n'yyyy")
 
-fun today(): LocalDate {
-    return LocalDate.now()
-}
-
-fun maxDate(): LocalDate {
-    return LocalDate.now().plusYears(5)
-}
+fun today(): LocalDate = LocalDate.now()
+fun maxDate(): LocalDate = LocalDate.now().plusYears(5)
+fun yesterday(): LocalDate = LocalDate.now().minusDays(1)
+fun tomorrow(): LocalDate = LocalDate.now().plusDays(1)

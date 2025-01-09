@@ -16,6 +16,7 @@ import com.uniovi.melhouse.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.anyOf
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
 
@@ -85,6 +86,19 @@ fun signIn() {
         )
     )
     materialButton2.perform(click())
+
+    try{
+        val materialButton3 = onView(
+            allOf(
+                anyOf(
+                    withText("Permitir"),
+                    withText("Allow")
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton3.perform(click())
+    } catch (_: Exception) { }
 
     val textView = onView(
         allOf(
@@ -205,21 +219,6 @@ fun createFlat() {
     )
     textInputEditText17.perform(replaceText("A"), closeSoftKeyboard())
 
-    val textInputEditText18 = onView(
-        allOf(
-            withId(R.id.etFlatBedrooms),
-            childAtPosition(
-                childAtPosition(
-                    withId(R.id.flatBedroomsLayout),
-                    0
-                ),
-                0
-            ),
-            isDisplayed()
-        )
-    )
-    textInputEditText18.perform(replaceText("3"), closeSoftKeyboard())
-
     val materialButton6 = onView(
         allOf(
             withId(R.id.btnContinuar), withText("Continuar"),
@@ -238,13 +237,69 @@ fun createFlat() {
     )
     materialButton6.perform(click())
 
+    checkJoinedFlat()
+}
+
+fun checkJoinedFlat() {
     val textView = onView(
         allOf(
-            withId(R.id.tvTodayTasks), withText("Tareas de hoy"),
+            withId(R.id.tvTodayTasks), withText("Tareas pendientes para hoy"),
             isDisplayed()
         )
     )
-    textView.check(matches(withText("Tareas de hoy")))
+    textView.check(matches(withText("Tareas pendientes para hoy")))
+}
+
+fun signOut() {
+    val materialButton3 = onView(
+        allOf(
+            withId(R.id.btnMenuLines),
+            childAtPosition(
+                allOf(
+                    withId(R.id.main),
+                    childAtPosition(
+                        withId(R.id.drawerLayout),
+                        0
+                    )
+                ),
+                2
+            ),
+            isDisplayed()
+        )
+    )
+    materialButton3.perform(click())
+
+    val navigationMenuItemView = onView(
+        allOf(
+            withId(R.id.navigation_logout),
+            childAtPosition(
+                allOf(
+                    withId(com.google.android.material.R.id.design_navigation_view),
+                    childAtPosition(
+                        withId(R.id.navigationView),
+                        0
+                    )
+                ),
+                6
+            ),
+            isDisplayed()
+        )
+    )
+    navigationMenuItemView.perform(click())
+
+    val button = onView(
+        allOf(
+            withId(R.id.loginButton), withText("Iniciar Sesión"),
+            withParent(
+                allOf(
+                    withId(R.id.main),
+                    withParent(withId(android.R.id.content))
+                )
+            ),
+            isDisplayed()
+        )
+    )
+    button.check(matches(isDisplayed()))
 }
 
 fun childAtPosition(

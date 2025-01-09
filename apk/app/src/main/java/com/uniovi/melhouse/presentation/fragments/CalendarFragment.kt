@@ -20,22 +20,24 @@ import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.data.model.TaskStatus
 import com.uniovi.melhouse.databinding.CalendarDayLayoutBinding
 import com.uniovi.melhouse.databinding.CalendarFragmentBinding
 import com.uniovi.melhouse.databinding.CalendarHeaderLayoutBinding
 import com.uniovi.melhouse.factories.presentation.adapter.TasksAdapterFactory
 import com.uniovi.melhouse.presentation.adapters.TasksAdapter
+import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.utils.addStatusBarColorUpdate
 import com.uniovi.melhouse.utils.displayText
 import com.uniovi.melhouse.utils.getColorCompat
-import com.uniovi.melhouse.utils.lighterColor
-import com.uniovi.melhouse.utils.setTextColorRes
-import com.uniovi.melhouse.presentation.viewholder.taskPressedHandler
 import com.uniovi.melhouse.utils.getWarningSnackbar
+import com.uniovi.melhouse.utils.lighterColor
+import com.uniovi.melhouse.utils.makeGone
+import com.uniovi.melhouse.utils.makeVisible
+import com.uniovi.melhouse.utils.setTextColorRes
 import com.uniovi.melhouse.viewmodel.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
 import javax.inject.Inject
@@ -44,66 +46,59 @@ import javax.inject.Inject
 class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
-    private var selectedDate: LocalDate? = null
-    private var _tasksAdapter: TasksAdapter? = null
     @Inject lateinit var tasksAdapterFactory: TasksAdapterFactory
-    private val tasksAdapter: TasksAdapter
-        get() {
-            if (_tasksAdapter == null) {
-                _tasksAdapter = tasksAdapterFactory.create(listOf()) {
-                    taskPressedHandler(parentFragmentManager, it,{viewModel.updateDailyTasks(selectedDate)}){
-                        viewModel.updateTasks()
-                    }
-                }
-            }
-            return _tasksAdapter!!
-        }
+    private lateinit var tasksAdapter: TasksAdapter
     private val viewModel: CalendarViewModel by viewModels()
 
     private lateinit var binding: CalendarFragmentBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.onCreate()
+    override fun onResume() {
+        super.onResume()
+        viewModel.clearGenericError()
+
+        viewModel.genericError.observe(this) {
+            if(it == null) return@observe
+            getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
+        }
+
+        viewModel.date.observe(this) {
+            binding.calendarView.scrollToMonth(it.yearMonth)
+            binding.calendarView.notifyDateChanged(it)
+        }
 
         viewModel.dailyTasks.observe(this) {
-            tasksAdapter.updateList(it[selectedDate].orEmpty())
+            tasksAdapter.updateList(it.orEmpty())
         }
 
         viewModel.tasks.observe(this) {
             binding.calendarView.notifyCalendarChanged()
+            configureBinders(daysOfWeek(firstDayOfWeekFromLocale(Locale.getDefault())))
         }
 
-        viewModel.genericError.observe(this) {
-            if(it == null) return@observe
-
-            getWarningSnackbar(requireView(), it).show()
+        viewModel.today.observe(this) {
+            binding.calendarView.notifyCalendarChanged()
+            configureBinders(daysOfWeek(firstDayOfWeekFromLocale(Locale.getDefault())))
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.updateTasks()
-
-        if (viewModel.date != null) {
-            binding.calendarView.scrollToMonth(viewModel.date!!.yearMonth)
-            binding.calendarView.notifyDateChanged(viewModel.date!!)
-            viewModel.updateDailyTasks(viewModel.date!!)
-            selectedDate = viewModel.date
-        }
+        viewModel.selectDay(viewModel.today.value!!)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.calendar_fragment, container, false)
+    ): View {
+        binding = CalendarFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addStatusBarColorUpdate(R.color.primary)
-        binding = CalendarFragmentBinding.bind(view)
+
+        tasksAdapter = tasksAdapterFactory.create(listOf()) { task ->
+            taskPressedHandler(parentFragmentManager, task.id)
+        }
 
         binding.tasksView.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -122,47 +117,22 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
 
         binding.calendarView.monthScrollListener = { month ->
             binding.calendarViewCurrentMonth.text = month.yearMonth.displayText()
-            selectedDate?.let {
-                selectedDate = null
-                binding.calendarView.notifyDateChanged(it)
-                viewModel.updateDailyTasks(null)
-            }
         }
 
         binding.addTaskFab.setOnClickListener {
             val fragment = UpsertTaskFragment.create()
             parentFragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true) //
+                .setReorderingAllowed(true)
                 .replace(R.id.calendar_fragment_container, fragment, UpsertTaskFragment.TAG)
                 .addToBackStack(null)
                 .commit()
         }
     }
 
-
     private fun configureBinders(daysOfWeek: List<DayOfWeek>) {
-        class DayViewContainer(view: View) : ViewContainer(view) {
-            lateinit var day: CalendarDay
-            val binding = CalendarDayLayoutBinding.bind(view)
-
-            init {
-                view.setOnClickListener {
-                    if (day.position == DayPosition.MonthDate) {
-                        if (selectedDate != day.date) {
-                            val oldDate = selectedDate
-                            selectedDate = day.date
-                            val binding = this@CalendarFragment.binding
-                            binding.calendarView.notifyDateChanged(day.date)
-                            oldDate?.let { binding.calendarView.notifyDateChanged(it) }
-                            viewModel.updateDailyTasks(day.date)
-                        }
-                    }
-                }
-            }
-        }
         binding.calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
-            override fun create(view: View) = DayViewContainer(view)
+            override fun create(view: View) = DayViewContainer(view, viewModel, binding)
             override fun bind(container: DayViewContainer, data: CalendarDay) {
                 container.day = data
                 val context = container.binding.root.context
@@ -170,21 +140,55 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                 val layout = container.binding.calendarDayLayout
                 textView.text = data.date.dayOfMonth.toString()
 
-                val taskIndicator = container.binding.calendarDayIndicator
-                taskIndicator.background = null
+                val taskIndicators = listOf(
+                    container.binding.calendarDayIndicator,
+                    container.binding.calendarDayIndicator2,
+                    container.binding.calendarDayIndicator3
+                )
+
+                taskIndicators.forEach { it.background = null }
+
                 val tasks = viewModel.tasks.value
 
                 if (tasks != null && !tasks[data.date].isNullOrEmpty()) {
-                    val color = if (data.position != DayPosition.MonthDate)
-                        context.getColorCompat(R.color.tertiary).lighterColor()
-                    else
-                        context.getColorCompat(R.color.tertiary)
-                    taskIndicator.setBackgroundColor(color)
-                }
+                    val dayTasks = tasks[data.date]!!.sortedWith(
+                        compareBy(
+                            { task ->
+                                when (task.status) {
+                                    TaskStatus.PENDING -> 1
+                                    TaskStatus.INPROGRESS -> 2
+                                    TaskStatus.DONE -> 3
+                                    TaskStatus.CANCELLED -> 4
+                                    null -> Int.MAX_VALUE
+                                }
+                            },
+                            { it.id }
+                        )
+                    ).subList(0, 3.coerceAtMost(tasks[data.date]!!.size))
 
-                if (data.position != DayPosition.MonthDate) {
+                    for ((index, task) in dayTasks.withIndex()) {
+                        var color = when (task.status) {
+                            TaskStatus.PENDING -> context.getColorCompat(R.color.task_status_pending)
+                            TaskStatus.INPROGRESS -> context.getColorCompat(R.color.task_status_in_progress)
+                            TaskStatus.DONE -> context.getColorCompat(R.color.task_status_done)
+                            TaskStatus.CANCELLED -> context.getColorCompat(R.color.task_status_cancelled)
+                            null -> context.getColorCompat(R.color.tertiary)
+                        }
+                        if (data.position != DayPosition.MonthDate)
+                            color = color.lighterColor()
+
+                        taskIndicators[index].setBackgroundColor(color)
+                    }
+                }
+                if(data.position != DayPosition.MonthDate && data.date == viewModel.today.value) {
+                    textView.setTextColorRes(R.color.on_primary)
+                    layout.setBackgroundColor(context.getColorCompat(R.color.primary).lighterColor())
+                } else if (data.position != DayPosition.MonthDate) {
                     textView.setTextColorRes(R.color.on_primary_container)
                     layout.setBackgroundColor(context.getColorCompat(R.color.primary_container).lighterColor())
+                } else if (data.date == viewModel.today.value) {
+                    textView.setTextColorRes(R.color.on_primary)
+                    layout.setBackgroundColor(context.getColorCompat(R.color.primary))
                 }
             }
         }
@@ -207,11 +211,40 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                 }
             }
     }
+    class DayViewContainer(
+        view: View,
+        viewModel: CalendarViewModel,
+        binding: CalendarFragmentBinding
+    ) : ViewContainer(view) {
+        lateinit var day: CalendarDay
+        val binding = CalendarDayLayoutBinding.bind(view)
 
-    override fun onPause() {
-        super.onPause()
+        init {
+            view.setOnClickListener {
+                if (day.position == DayPosition.MonthDate) {
+                    if (viewModel.date.value != day.date) {
+                        val oldDate = viewModel.date.value
+                        viewModel.selectDay(day.date, this)
+                        val b = binding
+                        b.calendarView.notifyDateChanged(day.date)
+                        oldDate?.let { b.calendarView.notifyDateChanged(it) }
+                    }
+                }
+            }
+        }
 
-        viewModel.date = selectedDate
+        fun select() {
+            binding.topBorder.makeVisible()
+            binding.bottomBorder.makeVisible()
+            binding.leftBorder.makeVisible()
+            binding.rightBorder.makeVisible()
+        }
+
+        fun deselect() {
+            binding.topBorder.makeGone()
+            binding.bottomBorder.makeGone()
+            binding.leftBorder.makeGone()
+            binding.rightBorder.makeGone()
+        }
     }
-
 }

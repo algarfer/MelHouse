@@ -10,13 +10,13 @@ import java.util.UUID
 @Serializable
 data class Flat(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
-    var name: String,
-    var address: String,
-    var floor: Int? = null,
-    var door: String? = null,
-    var stair: String? = null,
-    @SerialName("invitation_code") var invitationCode: String = "",
-    @Serializable(with = UUIDSerializer::class) @SerialName("admin_id") var adminId: UUID
+    val name: String,
+    val address: String,
+    val floor: Int? = null,
+    val door: String? = null,
+    val stair: String? = null,
+    @SerialName("invitation_code") val invitationCode: String = "",
+    @Serializable(with = UUIDSerializer::class) @SerialName("admin_id") val adminId: UUID
 )
 
 fun Flat.getFullAddress(): String {

@@ -4,21 +4,21 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.uniovi.melhouse.R
+import com.uniovi.melhouse.di.modules.TestRepositoriesModule
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.preferences.TestPrefs
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.`is`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,10 +35,16 @@ class FlatTest {
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(SplashScreenActivity::class.java)
 
+    @Rule
+    @JvmField
+    var mGrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.POST_NOTIFICATIONS")
+
     @Before
     fun init() {
-        // Perform any setup here
-        hiltRule.inject() // Inject Hilt dependencies
+        hiltRule.inject()
+        TestRepositoriesModule.clearAll()
     }
 
     @BindValue
@@ -46,14 +52,13 @@ class FlatTest {
     val prefs: Prefs = TestPrefs()
 
     @Test
-    fun createFlatTest() {
+    fun createFlatTest() = runTest {
         signIn()
-
         createFlat()
     }
 
     @Test
-    fun joinFlatTest(){
+    fun joinFlatTest() {
         signIn()
 
         val textInputEditText6 = onView(
@@ -89,6 +94,7 @@ class FlatTest {
         )
         materialButton4.perform(click())
 
-        //TODO Check that the user has joined the flat
+        checkJoinedFlat()
+
     }
 }

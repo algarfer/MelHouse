@@ -17,6 +17,7 @@ create table public.users(
     name text not null,
     email text not null,
     flat_id uuid,
+    fcm_token text,
     constraint pk_users primary key (id),
     constraint uq_users_email unique (email),
     constraint fk_user_id foreign key (id) references auth.users (id) on delete cascade,
@@ -73,3 +74,8 @@ alter default privileges for role postgres in schema private grant select on tab
 alter default privileges for role postgres in schema private grant execute on routines to anon, authenticated;
 alter default privileges for role postgres in schema private grant select on sequences to anon, authenticated;
 alter default privileges for role postgres in schema private grant execute on functions to anon, authenticated;
+
+alter publication supabase_realtime add table flats;
+alter publication supabase_realtime add table users;
+alter publication supabase_realtime add table tasks;
+alter publication supabase_realtime add table tasks_users;

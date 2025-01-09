@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -48,11 +49,7 @@ class FlatFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.onCreate()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        viewModel.clearAllErrors()
 
         viewModel.flat.observe(this) { flat ->
             if(flat == null) {
@@ -90,6 +87,13 @@ class FlatFragment : Fragment() {
                     .show()
             }
 
+            binding.btnClipboard.setOnClickListener {
+                val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
+                val clip = ClipData.newPlainText(label.toString(), flat.invitationCode)
+                clipboard?.setPrimaryClip(clip)
+                Toast.makeText(requireContext(), R.string.flat_invitation_code_copied, Toast.LENGTH_SHORT).show()
+            }
+
             binding.btnClipboard.makeVisible()
         }
 
@@ -107,6 +111,37 @@ class FlatFragment : Fragment() {
                 else
                     binding.btnEdit.makeGone()
             }
+        }
+
+        viewModel.tasks.observe(this) {
+            if(it.isEmpty()) return@observe
+
+            val (data, customLegend) = it.toStatusBarChartData(requireContext())
+
+            binding.bcTaskStatus.apply {
+                this.data = data
+                description.isEnabled = false
+                axisLeft.setDrawLabels(false)
+                axisLeft.setDrawGridLines(false)
+                axisLeft.setDrawAxisLine(false)
+                axisRight.granularity = (it.size/10).toFloat()
+                axisRight.textColor = requireContext().getColorCompat(R.color.on_background)
+                xAxis.setDrawLabels(false)
+                xAxis.setDrawGridLines(false)
+                isHighlightPerTapEnabled = false
+                setFitBars(true)
+                animateY(800)
+                setTouchEnabled(false)
+                legend.setCustom(customLegend)
+                legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+                legend.setDrawInside(false)
+                legend.isWordWrapEnabled = true
+                legend.textSize = 10f
+                legend.xEntrySpace = 75f
+                legend.textColor = requireContext().getColorCompat(R.color.on_background)
+                data.setValueTextColor(requireContext().getColorCompat(R.color.on_background))
+            }
+            binding.bcTaskStatus.invalidate()
         }
 
         viewModel.partners.observe(this) {
@@ -132,42 +167,14 @@ class FlatFragment : Fragment() {
                     isHighlightPerTapEnabled = false
                     animateY(800)
                 }
-                binding.pcTaskAssignee.invalidate() //refresh
+                binding.pcTaskAssignee.invalidate()
             }
-        }
-
-        viewModel.tasks.observe(this) {
-            if(it.isEmpty()) return@observe
-
-            val (data, customLegend) = it.toStatusBarChartData(requireContext())
-
-            binding.bcTaskStatus.apply {
-                this.data = data
-                description.isEnabled = false
-                axisLeft.setDrawLabels(false)
-                axisLeft.setDrawGridLines(false)
-                axisLeft.setDrawAxisLine(false)
-                axisRight.granularity = (it.size / 10).toFloat()
-                xAxis.setDrawLabels(false)
-                xAxis.setDrawGridLines(false)
-                isHighlightPerTapEnabled = false
-                setFitBars(true)
-                animateY(800)
-                setTouchEnabled(false)
-                legend.setCustom(customLegend)
-                legend.orientation = Legend.LegendOrientation.VERTICAL
-                legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-                legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-                legend.setDrawInside(true)
-                legend.isWordWrapEnabled = true
-            }
-            binding.bcTaskStatus.invalidate() // refresh
         }
 
         viewModel.genericError.observe(this) {
             if(it == null) return@observe
-
             getWarningSnackbar(requireView(), it).show()
+            viewModel.clearGenericError()
         }
     }
 
@@ -176,19 +183,16 @@ class FlatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFlatBinding.inflate(inflater, container, false)
-        binding.btnClipboard.setOnClickListener {
-            val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
-            val clip = ClipData.newPlainText(label.toString(), viewModel.flat.value?.invitationCode)
-            clipboard?.setPrimaryClip(clip)
-        }
 
-        partnersAdapter = partnersAdapterFactory.create(listOf(), viewModel)
+        viewModel.currentUser.observe(viewLifecycleOwner) {
+            partnersAdapter = partnersAdapterFactory.create(listOf(), viewModel, it)
 
-        binding.rvFlatMembers.apply {
-            val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            manager.setScrollEnabled(false)
-            layoutManager = manager
-            adapter = partnersAdapter
+            binding.rvFlatMembers.apply {
+                val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                manager.setScrollEnabled(false)
+                layoutManager = manager
+                adapter = partnersAdapter
+            }
         }
         return binding.root
     }

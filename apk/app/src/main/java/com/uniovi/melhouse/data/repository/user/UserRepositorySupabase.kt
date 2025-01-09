@@ -3,10 +3,17 @@ package com.uniovi.melhouse.data.repository.user
 import com.uniovi.melhouse.data.model.TaskUser
 import com.uniovi.melhouse.data.model.User
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.realtime.selectAsFlow
+import io.github.jan.supabase.realtime.selectSingleValueAsFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
 
+@OptIn(SupabaseExperimental::class)
 class UserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
 ): UserRepository {
@@ -44,6 +51,20 @@ class UserRepositorySupabase @Inject constructor(
                 }
             }
             .decodeList()
+    }
+
+    // FIXME - This only updates the user list only when the logged user is an admin
+    override fun getRoommatesAsFlow(flatId: UUID): Flow<List<User>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(User::id)
+            .map { it.filter { user -> user.flatId == flatId } }
+    }
+
+    override suspend fun deleteUserForever() {
+        supabaseClient
+            .postgrest
+            .rpc("delete_user_forever")
     }
 
     override suspend fun insert(entity: User) {
@@ -89,10 +110,24 @@ class UserRepositorySupabase @Inject constructor(
             .decodeList()
     }
 
+    override fun findAllAsFlow(): Flow<List<User>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(User::id)
+    }
+
+    override fun findByIdAsFlow(id: UUID): Flow<User> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectSingleValueAsFlow(User::id) {
+                User::id eq id
+            }
+    }
+
     override suspend fun findAsigneesById(taskId: UUID): List<User> {
         val tasksUsers = supabaseClient
             .from("tasks_users")
-            .select() {
+            .select {
                 filter {
                     eq("task_id", taskId)
                 }

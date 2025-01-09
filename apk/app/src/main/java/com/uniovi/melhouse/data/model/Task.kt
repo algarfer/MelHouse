@@ -11,20 +11,26 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
 import java.util.UUID
 
 @Serializable
 data class Task(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
-    var name: String,
-    var description: String? = null,
-    @Serializable(with = TaskStatusSerializer::class) var status: TaskStatus? = null,
-    @Serializable(with = TaskPrioritySerializer::class) var priority: TaskPriority? = null,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") var startDate: LocalDate? = null,
-    @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") var endDate: LocalDate? = null,
-    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") var flatId: UUID,
-    @Transient var assignees: List<User> = emptyList()
+    val name: String,
+    val description: String? = null,
+    @Serializable(with = TaskStatusSerializer::class) val status: TaskStatus? = null,
+    @Serializable(with = TaskPrioritySerializer::class) val priority: TaskPriority? = null,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("start_date") val startDate: LocalDate? = null,
+    @Serializable(with = LocalDateSerializer::class) @SerialName("end_date") val endDate: LocalDate? = null,
+    @Serializable(with = UUIDSerializer::class) @SerialName("flat_id") val flatId: UUID,
+    @Transient var assignees: Set<User> = emptySet()
 )
 
 enum class TaskStatus(val value: Int) : LocaleEnum {
@@ -54,6 +60,26 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
     },
 }
 
-fun Task.toJson() = Json.encodeToString(this)
+fun Task.toJson(withTransientFields: Boolean = false): String {
+    if(!withTransientFields) return Json.encodeToString(this)
 
-fun String.toTask() = Json.decodeFromString<Task>(this)
+    val json = Json.encodeToJsonElement(this).jsonObject
+    val asigneesJson = Json.encodeToJsonElement(this.assignees.map { it.toJson() })
+    val extendedJson = json + ("assignees" to asigneesJson)
+    return Json.encodeToString(JsonObject(extendedJson))
+}
+
+fun String.toTask(withTransientFields: Boolean = false): Task {
+    val json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
+
+    if(!withTransientFields) return json.decodeFromString<Task>(this)
+
+    val jsonObject = json.parseToJsonElement(this).jsonObject
+    val baseTask = json.decodeFromJsonElement<Task>(jsonObject)
+    val assigneesJsonArray = jsonObject["assignees"]?.jsonArray ?: emptyList()
+    val assignees = assigneesJsonArray.map { it.jsonPrimitive.content.toUser() }
+    return baseTask.copy(assignees = assignees.toSet())
+}

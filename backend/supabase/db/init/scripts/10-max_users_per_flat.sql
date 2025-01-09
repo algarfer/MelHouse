@@ -6,6 +6,10 @@ as $$
 declare
   qty int4;
 begin
+  if (TG_OP = 'UPDATE' and new.flat_id = old.flat_id) then
+    return new;
+  end if;
+
   if new.flat_id is null then
     return new;
   end if;

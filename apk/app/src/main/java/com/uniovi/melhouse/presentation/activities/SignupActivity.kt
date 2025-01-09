@@ -27,13 +27,14 @@ class SignupActivity : AbstractActivity() {
                 binding.etName.text.toString(),
                 binding.etEmail.text.toString(),
                 binding.etPassword.text.toString(),
-                binding.etConfirmPassword.text.toString(),
-                this
+                binding.etConfirmPassword.text.toString()
             )
         }
     }
 
     private fun setupObservers() {
+        viewModel.clearAllErrors()
+
         viewModel.nameError.observe(this) {
             binding.nameLayout.error = it
         }
@@ -58,9 +59,10 @@ class SignupActivity : AbstractActivity() {
             finish()
         }
 
-        viewModel.snackBarMsg.observe(this) {
+        viewModel.genericError.observe(this) {
             if(it.isNullOrEmpty()) return@observe
             getWarningSnackbar(binding.root, it).show()
+            viewModel.clearGenericError()
         }
     }
 
