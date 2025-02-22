@@ -54,7 +54,22 @@
         <activity android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="android:screenOrientation" />
-        
+
+        <receiver android:name=".widget.provider.NextTasksWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
+
+        <service
+            android:name=".widget.service.NextTasksService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <service android:name=".services.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
