@@ -16,10 +16,12 @@ import com.google.android.material.navigation.NavigationView
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.getInitials
 import com.uniovi.melhouse.databinding.ActivityMenuBinding
+import com.uniovi.melhouse.presentation.fragments.BillsFragment
 import com.uniovi.melhouse.presentation.fragments.FlatFragment
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
+import com.uniovi.melhouse.presentation.fragments.UpsertBillFragment
 import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.DrawerViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -111,6 +113,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
                 viewModel.logout()
                 return true
             }
+            R.id.navigation_bills -> UpsertBillFragment()
             else -> null
         }
 

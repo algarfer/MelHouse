@@ -49,6 +49,26 @@ create table public.tasks_users(
     constraint fk_tasks_users_users foreign key (user_id) references public.users (id) on delete cascade
 );
 
+create table public.bills(
+    id uuid not null default uuid_generate_v4(),
+    amount double precision not null,
+    concept text not null,
+    flat_id uuid not null,
+    constraint pk_bills primary key (id),
+    constraint fk_bills_flats foreign key (flat_id) references public.flats (id) on delete cascade
+);
+
+
+create table public.bill_users(
+    user_id uuid not null,
+    bill_id uuid not null,
+    paid boolean not null default false,
+    amount double precision not null,
+    constraint pk_bill_users primary key (user_id, bill_id),
+    constraint fk_bill_users_bills foreign key (bill_id) references public.bills (id) on delete cascade,
+    constraint fk_bill_users_users foreign key (user_id) references public.users (id) on delete cascade
+);
+
 -- Add circular foreign key constraints
 alter table public.flats
 add constraint fk_flats_user foreign key (admin_id) references public.users (id);
@@ -58,6 +78,8 @@ grant select, insert, update, delete, truncate, references, trigger on public.us
 grant select, insert, update, delete, truncate, references, trigger on public.flats to postgres;
 grant select, insert, update, delete, truncate, references, trigger on public.tasks to postgres;
 grant select, insert, update, delete, truncate, references, trigger on public.tasks_users to postgres;
+grant select, insert, update, delete, truncate, references, trigger on public.bills to postgres;
+grant select, insert, update, delete, truncate, references, trigger on public.bill_users to postgres;
 
 create schema private;
 
@@ -79,3 +101,5 @@ alter publication supabase_realtime add table flats;
 alter publication supabase_realtime add table users;
 alter publication supabase_realtime add table tasks;
 alter publication supabase_realtime add table tasks_users;
+alter publication supabase_realtime add table bills;
+alter publication supabase_realtime add table bill_users;

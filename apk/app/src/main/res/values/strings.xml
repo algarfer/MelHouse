@@ -141,5 +141,15 @@
     <string name="settings_delete_data">Eliminar cuenta de usuario</string>
     <string name="settings_delete_data_dialog_title">Eliminar cuenta de usuario</string>
     <string name="settings_delete_data_dialog_supporting_text">Esta a punto de eliminar su cuenta de usuario, esta acción es irreversible</string>
+    <string name="bills">Facturas</string>
+    <string name="add">Añadir</string>
+    <string name="unexpected_error">Error inesperado</string>
+    <string name="error_bill_shares_not_equal">"La suma de los pagos no es igual a %s€"</string>
+    <string name="concept">Concepto</string>
+    <string name="amount">Importe</string>
+    <string name="error_invalid_amount">Error: Importe inválido</string>
+    <string name="error_empty_concept">El concepto de la factura es obligatorio</string>
+    <string name="error_amount_exceeded">El importe de la factura no puede superar %s€</string>
+    <string name="bills_not_found">No hay facturas</string>
 
 </resources>

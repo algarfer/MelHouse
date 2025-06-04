@@ -1,5 +1,9 @@
 package com.uniovi.melhouse.di.modules
 
+import com.uniovi.melhouse.data.repository.bill.BillRepository
+import com.uniovi.melhouse.data.repository.bill.BillRepositorySupabase
+import com.uniovi.melhouse.data.repository.billuser.BillUserRepository
+import com.uniovi.melhouse.data.repository.billuser.BillUserRepositorySupabase
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.flat.FlatRepositorySupabase
 import com.uniovi.melhouse.data.repository.task.TaskRepository
@@ -36,5 +40,15 @@ object RepositoriesModule {
     @Provides
     @Singleton
     fun provideTaskUserRepository(repositorySupabase: TaskUserRepositorySupabase): TaskUserRepository
+        = repositorySupabase
+
+    @Provides
+    @Singleton
+    fun provideBillRepository(repositorySupabase: BillRepositorySupabase): BillRepository
+        = repositorySupabase
+
+    @Provides
+    @Singleton
+    fun provideBillUserRepository(repositorySupabase: BillUserRepositorySupabase): BillUserRepository
         = repositorySupabase
 }
