@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.uniovi.melhouse.R
 import com.uniovi.melhouse.data.model.Bill
+import com.uniovi.melhouse.data.model.toBill
+import com.uniovi.melhouse.data.model.toJson
 import com.uniovi.melhouse.databinding.UpsertBillBinding
 import com.uniovi.melhouse.factories.presentation.adapter.UserBillAdapterFactory
 import com.uniovi.melhouse.factories.viewmodel.UpsertBillViewModelFactory
@@ -28,6 +30,7 @@ import javax.inject.Inject
 class UpsertBillFragment : Fragment() {
     private var bill: Bill? = null
     private lateinit var userBillAdapter: UserBillSpinnerAdapter
+
     @Inject
     lateinit var userBillAdapterFactory: UserBillAdapterFactory
 
@@ -40,6 +43,16 @@ class UpsertBillFragment : Fragment() {
 
     companion object {
         const val TAG = "UpsertBillFragment"
+
+        private const val BILL_PARAMETER = "bill_state_json"
+
+        fun create(bill: Bill? = null): UpsertBillFragment {
+            return UpsertBillFragment().apply {
+                arguments = Bundle().apply {
+                    putString(BILL_PARAMETER, bill?.toJson())
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -51,38 +64,45 @@ class UpsertBillFragment : Fragment() {
 
         binding = UpsertBillBinding.inflate(inflater, container, false)
 
+        bill = arguments?.getString(BILL_PARAMETER)?.toBill()
+
+        Log.i("concept", "concept: ${bill?.concept}, amount: ${bill?.amount}")
+
+        bill?.let {
+            binding.editTextText.setText(it.concept)
+            binding.editTextNumberDecimal.setText(it.amount.toString())
+        }
+
         viewModel.genericError.observe(viewLifecycleOwner) {
-            if(it == null) return@observe
+            if (it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
             viewModel.clearGenericError()
         }
 
-        viewModel.partners.observe(viewLifecycleOwner){ _ ->
-            viewModel.updateShares()
+        viewModel.partners.observe(viewLifecycleOwner) { _ ->
+            updateRecycler()
+        }
 
-            Log.i("debug", "va a crearse el adapter, ${viewModel.shares.value}")
-            userBillAdapter = userBillAdapterFactory.create(viewModel.shares.value ?: emptyList()){s:String, d:Double ->
-                viewModel.changeShare(s,d)
-            }
-
-            binding.recyclerDynamicList.apply {
-                val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-                manager.setScrollEnabled(false)
-                layoutManager = manager
-                adapter = userBillAdapter
-            }
+        viewModel.billusers.observe(viewLifecycleOwner) { _ ->
+            updateRecycler()
         }
 
         viewModel.shares.observe(viewLifecycleOwner) { _ ->
+
+
             updatePieChart()
         }
 
         binding.btnAdd.setOnClickListener {
             viewModel.concept = binding.editTextText.text.toString()
-            if(viewModel.isBillValid()) {
+            if (viewModel.isBillValid()) {
                 viewModel.upsertBill()
-                requireActivity().onBackPressedDispatcher.onBackPressed()
             }
+        }
+
+        viewModel.creationSuccessful.observe(viewLifecycleOwner) {
+            if (it)
+                requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         viewModel.amount.observe(viewLifecycleOwner) { _ ->
@@ -95,6 +115,23 @@ class UpsertBillFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun updateRecycler() {
+        viewModel.updateShares()
+        Log.i("debug", "va a crearse el adapter, ${viewModel.shares.value}")
+        userBillAdapter = userBillAdapterFactory.create(
+            viewModel.shares.value ?: emptyList()
+        ) { s: String, d: Double ->
+            viewModel.changeShare(s, d)
+        }
+
+        binding.recyclerDynamicList.apply {
+            val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            manager.setScrollEnabled(false)
+            layoutManager = manager
+            adapter = userBillAdapter
+        }
     }
 
     private fun updatePieChart() {

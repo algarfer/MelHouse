@@ -2,18 +2,32 @@ package com.uniovi.melhouse.data.repository.bill
 
 import com.uniovi.melhouse.data.model.Bill
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.realtime.selectAsFlow
+import io.github.jan.supabase.realtime.selectSingleValueAsFlow
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import javax.inject.Inject
 
-//@OptIn(SupabaseExperimental::class)
+@OptIn(SupabaseExperimental::class)
 class BillRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
-): BillRepository{
+) : BillRepository {
 
     companion object {
         private const val TABLE_NAME = "bills"
+    }
+
+    override fun findAllByFlatIdAsFlow(flatId: UUID): Flow<List<Bill>> {
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(
+                Bill::id,
+                filter = FilterOperation("flat_id", FilterOperator.EQ, flatId)
+            )
     }
 
     override suspend fun insert(entity: Bill) {
@@ -60,11 +74,17 @@ class BillRepositorySupabase @Inject constructor(
     }
 
     override fun findAllAsFlow(): Flow<List<Bill>> {
-        TODO("Not yet implemented")
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(Bill::id)
     }
 
     override fun findByIdAsFlow(id: UUID): Flow<Bill> {
-        TODO("Not yet implemented")
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectSingleValueAsFlow(Bill::id) {
+                Bill::id eq id
+            }
     }
 
 }

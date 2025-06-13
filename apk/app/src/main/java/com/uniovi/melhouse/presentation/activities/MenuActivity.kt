@@ -21,13 +21,12 @@ import com.uniovi.melhouse.presentation.fragments.FlatFragment
 import com.uniovi.melhouse.presentation.fragments.MenuFragment
 import com.uniovi.melhouse.presentation.fragments.NoFlatFragment
 import com.uniovi.melhouse.presentation.fragments.SettingsFragment
-import com.uniovi.melhouse.presentation.fragments.UpsertBillFragment
 import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.viewmodel.DrawerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener  {
+class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMenuBinding
     private lateinit var drawerLayout: DrawerLayout
@@ -35,7 +34,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
-    private fun setup(){
+    private fun setup() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace(R.id.menuOptionsFragment, MenuFragment())
@@ -59,7 +58,7 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
         }
 
         viewModel.isLogged.observe(this) {
-            if(it) return@observe
+            if (it) return@observe
 
             startActivity(Intent(this, NotRegisteredActivity::class.java))
             finish()
@@ -101,19 +100,22 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
                 observeFlat()
                 return true
             }
+
             R.id.navigation_calendar -> {
                 val intent = Intent(this, CalendarViewActivity::class.java)
                 startActivity(intent)
                 drawerLayout.closeDrawer(binding.navigationView)
                 return true
             }
+
             R.id.navigation_flat -> FlatFragment()
             R.id.navigation_settings -> SettingsFragment()
             R.id.navigation_logout -> {
                 viewModel.logout()
                 return true
             }
-            R.id.navigation_bills -> UpsertBillFragment()
+
+            R.id.navigation_bills -> BillsFragment()
             else -> null
         }
 

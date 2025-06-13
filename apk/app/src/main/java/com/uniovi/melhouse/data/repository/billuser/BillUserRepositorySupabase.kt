@@ -2,15 +2,17 @@ package com.uniovi.melhouse.data.repository.billuser
 
 import com.uniovi.melhouse.data.model.BillUser
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.realtime.selectAsFlow
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import javax.inject.Inject
 
-//@OptIn(SupabaseExperimental::class)
+@OptIn(SupabaseExperimental::class)
 class BillUserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
-): BillUserRepository {
+) : BillUserRepository {
 
     companion object {
         private const val TABLE_NAME = "bill_users"
@@ -19,7 +21,7 @@ class BillUserRepositorySupabase @Inject constructor(
     override suspend fun getBillUsers(billId: UUID): List<BillUser> {
         return supabaseClient
             .from(TABLE_NAME)
-            .select{
+            .select {
                 filter {
                     eq("bill_id", billId)
                 }
@@ -70,9 +72,13 @@ class BillUserRepositorySupabase @Inject constructor(
             .decodeList()
     }
 
+
     override fun findAllAsFlow(): Flow<List<BillUser>> {
-        TODO("Not yet implemented")
+        return supabaseClient
+            .from(TABLE_NAME)
+            .selectAsFlow(listOf(BillUser::billId, BillUser::userId))
     }
+
 
     override fun findByIdAsFlow(id: UUID): Flow<BillUser> {
         TODO("Not yet implemented")

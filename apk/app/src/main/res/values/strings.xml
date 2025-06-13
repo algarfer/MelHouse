@@ -151,5 +151,8 @@
     <string name="error_empty_concept">El concepto de la factura es obligatorio</string>
     <string name="error_amount_exceeded">El importe de la factura no puede superar %s€</string>
     <string name="bills_not_found">No hay facturas</string>
+    <string name="paid">Pagado</string>
+    <string name="pending">Pendiente</string>
+    <string name="error_bill_has_paid_users">No puedes editar una factura que ya ha sido pagada parcialmente</string>
 
 </resources>
