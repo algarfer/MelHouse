@@ -3,6 +3,7 @@ package com.uniovi.melhouse.widget.provider
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
@@ -44,5 +45,21 @@ class NextTasksWidgetProvider : AppWidgetProvider() {
         views.setOnClickPendingIntent(R.id.widget_title, pendingIntent)
 
         appWidgetManager.updateAppWidget(appWidgetId, views)
+    }
+
+    companion object WidgetUpdateHelper {
+        fun updateTaskWidgets(context: Context) {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                ComponentName(context, NextTasksWidgetProvider::class.java)
+            )
+
+            val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+            updateIntent.component = ComponentName(context, NextTasksWidgetProvider::class.java)
+            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+            context.sendBroadcast(updateIntent)
+
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list)
+        }
     }
 }

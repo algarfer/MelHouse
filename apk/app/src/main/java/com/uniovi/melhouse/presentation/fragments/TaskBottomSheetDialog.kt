@@ -21,6 +21,7 @@ import com.uniovi.melhouse.utils.getWarningSnackbar
 import com.uniovi.melhouse.utils.makeGone
 import com.uniovi.melhouse.utils.makeVisible
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
+import com.uniovi.melhouse.widget.provider.NextTasksWidgetProvider
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
 import java.util.UUID
@@ -134,6 +135,7 @@ class TaskBottomSheetDialog : BottomSheetDialogFragment() {
             .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
             .setPositiveButton(resources.getString(R.string.continuar)) { _, _ ->
                 viewModel.deleteTask()
+                NextTasksWidgetProvider.updateTaskWidgets(requireContext())
             }
             .show()
     }
