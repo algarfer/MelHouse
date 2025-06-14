@@ -16,14 +16,12 @@ class UserBillViewHolder @AssistedInject constructor(
     private val binding = UserBillBindingBinding.bind(view)
 
     override fun render(item: Pair<String, Double>) {
-        Log.i("rendering", item.toString())
         binding.tvItemLabel.text = item.first
         binding.etValue.setText(item.second.toString())
 
         binding.etValue.addTextChangedListener {
             val value = it.toString().toDoubleOrNull() ?: 0.0
             onValueChanged(item.first, value)
-            Log.i("rendering", "updated share for ${item.first} to $value")
         }
     }
 }

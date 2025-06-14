@@ -66,8 +66,6 @@ class UpsertBillFragment : Fragment() {
 
         bill = arguments?.getString(BILL_PARAMETER)?.toBill()
 
-        Log.i("concept", "concept: ${bill?.concept}, amount: ${bill?.amount}")
-
         bill?.let {
             binding.editTextText.setText(it.concept)
             binding.editTextNumberDecimal.setText(it.amount.toString())
@@ -119,7 +117,6 @@ class UpsertBillFragment : Fragment() {
 
     private fun updateRecycler() {
         viewModel.updateShares()
-        Log.i("debug", "va a crearse el adapter, ${viewModel.shares.value}")
         userBillAdapter = userBillAdapterFactory.create(
             viewModel.shares.value ?: emptyList()
         ) { s: String, d: Double ->
