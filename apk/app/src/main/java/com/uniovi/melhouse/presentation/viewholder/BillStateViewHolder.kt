@@ -50,15 +50,15 @@ class BillStateViewHolder @AssistedInject constructor(
             removeBill(item)
         }
 
-        binding.root.setOnClickListener {
-            billHandler(item)
-        }
-
         observer = Observer {
             if (it) {
                 binding.btnDeleteBill.makeVisible()
+                binding.root.setOnClickListener {
+                    billHandler(item)
+                }
             } else {
                 binding.btnDeleteBill.makeGone()
+                binding.root.setOnClickListener(null)
             }
         }
 

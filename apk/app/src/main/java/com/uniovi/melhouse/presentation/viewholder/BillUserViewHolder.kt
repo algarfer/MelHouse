@@ -19,6 +19,10 @@ class BillUserViewHolder @AssistedInject constructor(
             if (item.second.paid) view.context.getString(R.string.paid) else view.context.getString(
                 R.string.pending
             )
+        binding.textViewShare.text = buildString {
+            append(item.second.amount.toString())
+            append("€")
+        }
         binding.root.setBackgroundColor(
             if (item.second.paid) view.context.getColor(R.color.chart_color_green)
             else view.context.getColor(R.color.chart_color_red)
