@@ -1,10 +1,16 @@
 package com.uniovi.melhouse.di.modules
 
 import android.util.Log
+import com.uniovi.melhouse.data.model.Bill
+import com.uniovi.melhouse.data.model.BillUser
 import com.uniovi.melhouse.data.model.Flat
 import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.data.model.TaskUser
 import com.uniovi.melhouse.data.model.User
+import com.uniovi.melhouse.data.repository.bill.BillRepository
+import com.uniovi.melhouse.data.repository.bill.BillRepositorySupabase
+import com.uniovi.melhouse.data.repository.billuser.BillUserRepository
+import com.uniovi.melhouse.data.repository.billuser.BillUserRepositorySupabase
 import com.uniovi.melhouse.data.repository.flat.FlatRepository
 import com.uniovi.melhouse.data.repository.task.TaskRepository
 import com.uniovi.melhouse.data.repository.taskuser.TaskUserRepository
@@ -15,7 +21,12 @@ import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Singleton
@@ -32,18 +43,52 @@ object TestRepositoriesModule {
     private val tasks: MutableList<Task> = mutableListOf()
     private val flats: MutableList<Flat> = mutableListOf()
     private val taskUsers: MutableList<TaskUser> = mutableListOf()
+    private val bills: MutableStateFlow<List<Bill>> = MutableStateFlow(emptyList())
+    private val billUsers: MutableStateFlow<List<BillUser>> = MutableStateFlow(emptyList())
 
     fun clearAll() {
         users.clear()
         tasks.clear()
         flats.clear()
         taskUsers.clear()
+        val billId = UUID.randomUUID()
+        bills.value = listOf(
+            Bill(
+                id = billId,
+                amount = 100.0,
+                flatId = identifiedFlatId,
+                concept = "Test Bill",
+            )
+        )
+        billUsers.value = listOf(
+            BillUser(
+                billId = billId,
+                userId = identifiedUserId,
+                amount = 100.0,
+                paid = false
+            )
+        )
 
         users.add(
-            User(id = identifiedUserId, email = "mel@mel.mel", name = "Mel", flatId = identifiedFlatId, fcmToken = "")
+            User(
+                id = identifiedUserId,
+                email = "mel@mel.mel",
+                name = "Mel",
+                flatId = identifiedFlatId,
+                fcmToken = ""
+            )
         )
         flats.add(
-            Flat(UUID.randomUUID(), "Flat1", "Flat1", 1, "Flat1", "Flat1", "JAVIMONT", identifiedUserId)
+            Flat(
+                UUID.randomUUID(),
+                "Flat1",
+                "Flat1",
+                1,
+                "Flat1",
+                "Flat1",
+                "JAVIMONT",
+                identifiedUserId
+            )
         )
     }
 
@@ -60,7 +105,6 @@ object TestRepositoriesModule {
 
         coEvery { mockk.findById(any()) } answers {
             val userId = arg<UUID>(0)
-            Log.i("userId", userId.toString())
             users.find { user -> user.id == userId }
         }
 
@@ -76,6 +120,7 @@ object TestRepositoriesModule {
 
         coEvery { mockk.getRoommates(any()) } returns listOf(
             User(
+                id = identifiedUserId,
                 name = "Roommate1",
                 email = "roommate1@email.com",
                 flatId = null,
@@ -199,15 +244,12 @@ object TestRepositoriesModule {
 
         coEvery { mockk.createFlat(any()) } answers {
             val flat = arg<Flat>(0)
-            Log.i("createFlat", flat.toString())
-            //flat.adminId = identifiedUserId
-            flats.add(flat.copy(id= identifiedFlatId))
+            flats.add(flat.copy(id = identifiedFlatId))
             flat
         }
 
         coEvery { mockk.findById(any()) } answers {
             val flatId = arg<UUID>(0)
-            Log.i("flatId", flatId.toString())
             flats.find { flat -> flat.id == flatId }
         }
 
@@ -233,9 +275,6 @@ object TestRepositoriesModule {
                 val updatedUser = user.copy(flatId = flat.id)
                 users[users.indexOf(user)] = updatedUser
             }
-
-            Log.i("joinFlat", flat.toString())
-            Log.i("joinFlat", users.toString())
             flat
         }
 
@@ -294,4 +333,86 @@ object TestRepositoriesModule {
 
         return mockk
     }
+
+    @Provides
+    @Singleton
+    fun provideBillRepository(): BillRepository {
+        val mockk = mockk<BillRepository>()
+
+        coEvery { mockk.findAllAsFlow() } answers {
+            bills
+        }
+
+        coEvery { mockk.findAll() } answers {
+            bills.value
+        }
+
+        coEvery { mockk.findAllByFlatIdAsFlow(any()) } answers {
+            bills
+        }
+
+        coEvery { mockk.insert(any()) } answers {
+            val entity = arg<Bill>(0)
+            bills.value += entity
+        }
+
+        coEvery { mockk.update(any()) } answers {
+            val entity = arg<Bill>(0)
+            bills.value = bills.value.map { if (it.id == entity.id) entity else it }
+        }
+
+        coEvery { mockk.delete(any()) } answers {
+            val entityId = arg<UUID>(0)
+            bills.value = bills.value.filterNot { it.id == entityId }
+        }
+
+        coEvery { mockk.findById(any()) } answers {
+            val entityId = arg<UUID>(0)
+            bills.value.find { it.id == entityId }
+        }
+
+        coEvery { mockk.findByIdAsFlow(any()) } answers {
+            val entityId = arg<UUID>(0)
+            flowOf(bills.value.find { it.id == entityId }!!)
+        }
+
+        return mockk
+    }
+
+    @Provides
+    @Singleton
+    fun provideBillUserRepository(): BillUserRepository {
+        val mockk = mockk<BillUserRepository>()
+
+        coEvery { mockk.findAllAsFlow() } answers {
+            billUsers
+        }
+
+        coEvery { mockk.findAll() } answers {
+            billUsers.value
+        }
+
+        coEvery { mockk.insert(any()) } answers {
+            val entity = arg<BillUser>(0)
+            billUsers.value += entity
+        }
+
+        coEvery { mockk.update(any()) } answers {
+            val entity = arg<BillUser>(0)
+            billUsers.value = billUsers.value.map {
+                if (it.billId == entity.billId && it.userId == entity.userId) entity else it
+            }
+        }
+
+        coEvery { mockk.delete(any()) } answers {
+            val entity = arg<BillUser>(0)
+            billUsers.value = billUsers.value.filterNot {
+                it.billId == entity.billId && it.userId == entity.userId
+            }
+        }
+
+        return mockk
+    }
+
+
 }

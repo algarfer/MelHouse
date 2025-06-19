@@ -11,10 +11,10 @@ import io.github.jan.supabase.auth.SessionManager
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
-import javax.inject.Singleton
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import javax.inject.Singleton
 
 @Module
 @TestInstallIn(
@@ -25,7 +25,7 @@ object TestDatabaseModule {
 
     @Provides
     @Singleton
-    fun provideSupabase() : SupabaseClient {
+    fun provideSupabase(): SupabaseClient {
         val supabaseClient = mockk<SupabaseClient>(relaxed = true)
         val sessionM = mockk<SessionManager>()
         val userSession = mockk<UserSession>()
@@ -38,11 +38,23 @@ object TestDatabaseModule {
                     every { alwaysAutoRefresh } returns false
                 }
 
-                coEvery { loadFromStorage(any())} returns false
+                coEvery { loadFromStorage(any()) } returns false
 
-                coEvery { signUpWith<Email.Config, UserInfo, Email>(any(), any(), any()) } returns null
+                coEvery {
+                    signUpWith<Email.Config, UserInfo, Email>(
+                        any(),
+                        any(),
+                        any()
+                    )
+                } returns null
 
-                coEvery { signInWith<Email.Config, UserInfo, Email>(any(), any(), any()) } returns Unit
+                coEvery {
+                    signInWith<Email.Config, UserInfo, Email>(
+                        any(),
+                        any(),
+                        any()
+                    )
+                } returns Unit
 
                 every { sessionManager } returns sessionM
 
@@ -58,7 +70,7 @@ object TestDatabaseModule {
 
         coEvery { sessionM.saveSession(any()) } returns Unit
 
-        every {userInfo.id} returns "11111111-1111-1111-1111-111111111111"
+        every { userInfo.id } returns "11111111-1111-1111-1111-111111111111"
 
         return supabaseClient
     }

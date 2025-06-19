@@ -42,7 +42,8 @@ class UserTest {
     @JvmField
     var mGrantPermissionRule =
         GrantPermissionRule.grant(
-            "android.permission.POST_NOTIFICATIONS")
+            "android.permission.POST_NOTIFICATIONS"
+        )
 
     @Before
     fun init() {
