@@ -4,7 +4,7 @@ import android.content.Context
 import com.uniovi.melhouse.preference.Prefs
 import java.util.UUID
 
-class TestPrefs : Prefs(){
+class TestPrefs : Prefs() {
     private var flatId: UUID? = null
 
     override fun setContext(context: Context) {}

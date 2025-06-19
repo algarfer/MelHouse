@@ -6,6 +6,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
@@ -13,6 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.uniovi.melhouse.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -87,7 +90,7 @@ fun signIn() {
     )
     materialButton2.perform(click())
 
-    try{
+    try {
         val materialButton3 = onView(
             allOf(
                 anyOf(
@@ -98,7 +101,8 @@ fun signIn() {
             )
         )
         materialButton3.perform(click())
-    } catch (_: Exception) { }
+    } catch (_: Exception) {
+    }
 
     val textView = onView(
         allOf(
@@ -251,41 +255,7 @@ fun checkJoinedFlat() {
 }
 
 fun signOut() {
-    val materialButton3 = onView(
-        allOf(
-            withId(R.id.btnMenuLines),
-            childAtPosition(
-                allOf(
-                    withId(R.id.main),
-                    childAtPosition(
-                        withId(R.id.drawerLayout),
-                        0
-                    )
-                ),
-                2
-            ),
-            isDisplayed()
-        )
-    )
-    materialButton3.perform(click())
-
-    val navigationMenuItemView = onView(
-        allOf(
-            withId(R.id.navigation_logout),
-            childAtPosition(
-                allOf(
-                    withId(com.google.android.material.R.id.design_navigation_view),
-                    childAtPosition(
-                        withId(R.id.navigationView),
-                        0
-                    )
-                ),
-                6
-            ),
-            isDisplayed()
-        )
-    )
-    navigationMenuItemView.perform(click())
+    clickMenuOption(R.id.navigation_logout, 7)
 
     val button = onView(
         allOf(
@@ -318,4 +288,145 @@ fun childAtPosition(
                     && view == parent.getChildAt(position)
         }
     }
+}
+
+fun createBill() {
+    clickMenuOption(R.id.navigation_bills, 5)
+
+    /*runBlocking {
+        delay(60000) // Wait for the RecyclerView to load
+    }*/
+
+    val fab = onView(
+        allOf(
+            withId(R.id.add_bill_fab),
+            isDisplayed()
+        )
+    )
+    fab.check(matches(isDisplayed())).perform(click())
+
+    val appCompatEditText = onView(
+        allOf(
+            withId(R.id.editTextText),
+            childAtPosition(
+                childAtPosition(
+                    withClassName(`is`("android.widget.ScrollView")),
+                    0
+                ),
+                3
+            )
+        )
+    )
+    appCompatEditText.perform(scrollTo(), replaceText("Concepto"), closeSoftKeyboard())
+
+    val appCompatEditText2 = onView(
+        allOf(
+            withId(R.id.editTextNumberDecimal),
+            childAtPosition(
+                childAtPosition(
+                    withClassName(`is`("android.widget.ScrollView")),
+                    0
+                ),
+                4
+            )
+        )
+    )
+    appCompatEditText2.perform(scrollTo(), replaceText("10"), closeSoftKeyboard())
+
+    val appCompatEditText3 = onView(
+        allOf(
+            withId(R.id.etValue), withText("0.0"),
+            childAtPosition(
+                childAtPosition(
+                    withId(R.id.recyclerDynamicList),
+                    0
+                ),
+                1
+            )
+        )
+    )
+    appCompatEditText3.perform(scrollTo(), replaceText("10.0"))
+
+    val appCompatEditText4 = onView(
+        allOf(
+            withId(R.id.etValue), withText("10.0"),
+            childAtPosition(
+                childAtPosition(
+                    withId(R.id.recyclerDynamicList),
+                    0
+                ),
+                1
+            ),
+            isDisplayed()
+        )
+    )
+    appCompatEditText4.perform(closeSoftKeyboard())
+
+    val materialButton6 = onView(
+        allOf(
+            withId(R.id.btnAdd),
+            childAtPosition(
+                childAtPosition(
+                    withClassName(`is`("android.widget.ScrollView")),
+                    0
+                ),
+                2
+            )
+        )
+    )
+    materialButton6.perform(scrollTo(), click())
+
+    val billState = onView(
+        allOf(
+            withText("Facturas"),
+            isDisplayed()
+        )
+    )
+    billState.check(matches(isDisplayed()))
+}
+
+fun removeFirstBill() {
+    //TODO
+}
+
+fun editFirstBill() {
+    //TODO
+}
+
+private fun clickMenuOption(optionId: Int, optionIndex: Int) {
+    val materialButton3 = onView(
+        allOf(
+            withId(R.id.btnMenuLines),
+            childAtPosition(
+                allOf(
+                    withId(R.id.main),
+                    childAtPosition(
+                        withId(R.id.drawerLayout),
+                        0
+                    )
+                ),
+                2
+            ),
+            isDisplayed()
+        )
+    )
+    materialButton3.perform(click())
+
+    val navigationMenuItemView = onView(
+        allOf(
+            withId(optionId),
+            childAtPosition(
+                allOf(
+                    withId(com.google.android.material.R.id.design_navigation_view),
+                    childAtPosition(
+                        withId(R.id.navigationView),
+                        0
+                    )
+                ),
+                optionIndex
+            ),
+            isDisplayed()
+        )
+    )
+    navigationMenuItemView.check(matches(isDisplayed())).perform(click())
 }

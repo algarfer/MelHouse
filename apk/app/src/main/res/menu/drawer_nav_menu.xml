@@ -19,6 +19,11 @@
                 android:id="@+id/navigation_flat"
                 android:icon="@drawable/baseline_chair_24"
                 android:title="@string/title_flat" />
+
+            <item
+                android:id="@+id/navigation_bills"
+                android:icon="@drawable/receipt_long_24"
+                android:title="@string/bills" />
         </menu>
     </item>
     <item
