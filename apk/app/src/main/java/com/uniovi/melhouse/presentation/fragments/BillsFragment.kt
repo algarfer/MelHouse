@@ -54,6 +54,8 @@ class BillsFragment : Fragment() {
             adapter = userBillAdapter
         }
 
+        binding.addBillFab.visibility = View.GONE
+
         binding.addBillFab.setOnClickListener {
             handleBill(null)
         }
@@ -81,6 +83,10 @@ class BillsFragment : Fragment() {
             if (it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
             viewModel.clearGenericError()
+        }
+
+        viewModel.isAdmin.observe(viewLifecycleOwner) { isAdmin ->
+            binding.addBillFab.visibility = if (isAdmin) View.VISIBLE else View.GONE
         }
     }
 

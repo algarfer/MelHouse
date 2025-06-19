@@ -140,11 +140,13 @@ class MenuActivity : AbstractActivity(), NavigationView.OnNavigationItemSelected
             if (it == null) {
                 binding.navigationView.menu.findItem(R.id.navigation_calendar).isVisible = false
                 binding.navigationView.menu.findItem(R.id.navigation_flat).isVisible = false
+                binding.navigationView.menu.findItem(R.id.navigation_bills).isVisible = false
                 loadFragment(NoFlatFragment())
                 return@observe
             }
             binding.navigationView.menu.findItem(R.id.navigation_calendar).isVisible = true
             binding.navigationView.menu.findItem(R.id.navigation_flat).isVisible = true
+            binding.navigationView.menu.findItem(R.id.navigation_bills).isVisible = true
             loadFragment(MenuFragment())
         }
     }
