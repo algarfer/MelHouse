@@ -17,6 +17,7 @@ import com.uniovi.melhouse.exceptions.PersistenceLayerException
 import com.uniovi.melhouse.factories.viewmodel.UpsertTaskViewModelFactory
 import com.uniovi.melhouse.preference.Prefs
 import com.uniovi.melhouse.utils.validateLength
+import com.uniovi.melhouse.widget.provider.NextTasksWidgetProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -133,6 +134,8 @@ class UpsertTaskViewModel @AssistedInject constructor(
                 taskUserRepository.deleteAssignees(task.id, toDelete.map { user -> user.id })
                 taskUserRepository.insertAsignees(task.id, toInsert.map { user -> user.id })
             }
+
+        NextTasksWidgetProvider.updateTaskWidgets(applicationContext)
     }
 
     private fun upsert(action: suspend () -> Unit) {
