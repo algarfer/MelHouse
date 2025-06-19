@@ -11,15 +11,17 @@ import com.uniovi.melhouse.presentation.viewholder.NextTasksViewHolder
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
-class NextTasksAdapter @AssistedInject constructor (
+class NextTasksAdapter @AssistedInject constructor(
     @Assisted list: List<Task>,
     private val nextTasksViewHolderFactory: NextTasksViewHolderFactory
 ) : AbstractAdapter<Task, NextTasksViewHolder>(list) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NextTasksViewHolder {
-        return nextTasksViewHolderFactory.create(LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.next_task_layout, parent, false))
+        return nextTasksViewHolderFactory.create(
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.next_task_layout, parent, false)
+        )
     }
 
     override fun updateList(newList: List<Task>) {

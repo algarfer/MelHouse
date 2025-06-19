@@ -35,7 +35,7 @@ class UpsertFlatFragment : Fragment() {
         const val TAG = "UpsertFlatFragment"
         private const val FLAT_PARAMETER = "flat_json"
 
-        fun create(flat: Flat? = null) : UpsertFlatFragment {
+        fun create(flat: Flat? = null): UpsertFlatFragment {
             return UpsertFlatFragment().apply {
                 arguments = Bundle().apply {
                     putString(FLAT_PARAMETER, flat?.toJson())
@@ -78,8 +78,8 @@ class UpsertFlatFragment : Fragment() {
             binding.flatAddressLayout.error = it
         }
         viewModel.creationSuccessful.observe(viewLifecycleOwner) {
-            if(!it) return@observe
-            if(flat == null) {
+            if (!it) return@observe
+            if (flat == null) {
                 val intent = Intent(requireContext(), MenuActivity::class.java)
                 startActivity(intent)
                 requireActivity().finish()
@@ -88,7 +88,7 @@ class UpsertFlatFragment : Fragment() {
             }
         }
         viewModel.genericError.observe(viewLifecycleOwner) {
-            if(it == null) return@observe
+            if (it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
             viewModel.clearGenericError()
         }
@@ -101,7 +101,7 @@ class UpsertFlatFragment : Fragment() {
         setupObservers()
 
         val flat = flat
-        if(flat != null) {
+        if (flat != null) {
             binding.etFlatName.text = flat.name.toEditable()
             binding.etAddress.text = flat.address.toEditable()
             binding.etFloor.text = flat.floor?.toString()?.toEditable()

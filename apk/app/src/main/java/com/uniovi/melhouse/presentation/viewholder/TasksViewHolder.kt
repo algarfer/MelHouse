@@ -26,7 +26,7 @@ class TasksViewHolder @AssistedInject constructor(
 
         binding.taskDescription.text = item.description?.adaptTextToSize()
 
-        if(item.description.isNullOrEmpty())
+        if (item.description.isNullOrEmpty())
             binding.taskDescription.makeGone()
         else
             binding.taskDescription.makeVisible()

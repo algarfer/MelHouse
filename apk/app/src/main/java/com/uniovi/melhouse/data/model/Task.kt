@@ -38,7 +38,8 @@ enum class TaskStatus(val value: Int) : LocaleEnum {
         override fun getString(context: Context) = context.getString(R.string.task_status_done)
     },
     INPROGRESS(1) {
-        override fun getString(context: Context) = context.getString(R.string.task_status_in_progress)
+        override fun getString(context: Context) =
+            context.getString(R.string.task_status_in_progress)
     },
     PENDING(2) {
         override fun getString(context: Context) = context.getString(R.string.task_status_pending)
@@ -61,7 +62,7 @@ enum class TaskPriority(val value: Int) : LocaleEnum {
 }
 
 fun Task.toJson(withTransientFields: Boolean = false): String {
-    if(!withTransientFields) return Json.encodeToString(this)
+    if (!withTransientFields) return Json.encodeToString(this)
 
     val json = Json.encodeToJsonElement(this).jsonObject
     val asigneesJson = Json.encodeToJsonElement(this.assignees.map { it.toJson() })
@@ -75,7 +76,7 @@ fun String.toTask(withTransientFields: Boolean = false): Task {
         encodeDefaults = true
     }
 
-    if(!withTransientFields) return json.decodeFromString<Task>(this)
+    if (!withTransientFields) return json.decodeFromString<Task>(this)
 
     val jsonObject = json.parseToJsonElement(this).jsonObject
     val baseTask = json.decodeFromJsonElement<Task>(jsonObject)

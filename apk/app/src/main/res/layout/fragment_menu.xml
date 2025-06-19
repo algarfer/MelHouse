@@ -91,7 +91,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guidelineMenuFragment"
-        app:layout_constraintVertical_bias="0.05" >
+        app:layout_constraintVertical_bias="0.05">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/tomorrowTasksLayout"

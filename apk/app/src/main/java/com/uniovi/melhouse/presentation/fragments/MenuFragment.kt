@@ -23,7 +23,8 @@ class MenuFragment : Fragment() {
     private val viewModel: MenuFragmentViewModel by viewModels()
     private lateinit var todayTasksAdapter: NextTasksAdapter
     private lateinit var tomorrowTasksAdapter: NextTasksAdapter
-    @Inject lateinit var nextTasksAdapterFactory: NextTasksAdapterFactory
+    @Inject
+    lateinit var nextTasksAdapterFactory: NextTasksAdapterFactory
 
     companion object {
         const val TAG = "MenuFragment"
@@ -78,7 +79,7 @@ class MenuFragment : Fragment() {
         }
 
         viewModel.genericError.observe(viewLifecycleOwner) {
-            if(it == null) return@observe
+            if (it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
             viewModel.clearGenericError()
         }

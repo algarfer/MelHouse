@@ -43,11 +43,16 @@ class SignUpViewModel @Inject constructor(
     fun signup(name: String, email: String, password: String, password2: String) {
         val nameTrimmed = name.trim()
         val emailTrimmed = email.trim()
-        if(preCheck(nameTrimmed, emailTrimmed, password, password2)) return
+        if (preCheck(nameTrimmed, emailTrimmed, password, password2)) return
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                supabaseUserSessionFacade.signUp(emailTrimmed, password, nameTrimmed, prefs.getFcmToken()!!)
+                supabaseUserSessionFacade.signUp(
+                    emailTrimmed,
+                    password,
+                    nameTrimmed,
+                    prefs.getFcmToken()!!
+                )
                 supabaseUserSessionFacade.getUserData().let {
                     prefs.setFlatId(it.flatId)
                 }
@@ -58,29 +63,34 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun preCheck(name: String, email: String, password: String, password2: String): Boolean {
+    private fun preCheck(
+        name: String,
+        email: String,
+        password: String,
+        password2: String
+    ): Boolean {
         var areErrors = false
 
-        if(name.isEmpty()) {
+        if (name.isEmpty()) {
             _nameError.postValue(applicationContext.getString(R.string.error_form_signup_name_empty))
             areErrors = true
         } else {
-            if(!name.validateLength()) {
+            if (!name.validateLength()) {
                 _nameError.postValue(applicationContext.getString(R.string.error_form_signup_name_length))
                 areErrors = true
             } else {
                 _nameError.postValue(null)
             }
         }
-        if(email.isEmpty()) {
+        if (email.isEmpty()) {
             _emailError.postValue(applicationContext.getString(R.string.error_form_signup_email_empty))
             areErrors = true
         } else {
-            if(!name.validateLength()) {
+            if (!name.validateLength()) {
                 _emailError.postValue(applicationContext.getString(R.string.error_form_signup_email_length))
                 areErrors = true
             } else {
-                if(!email.validateEmail()) {
+                if (!email.validateEmail()) {
                     _emailError.postValue(applicationContext.getString(R.string.error_form_signup_email_invalid))
                     areErrors = true
                 } else {
@@ -93,11 +103,11 @@ class SignUpViewModel @Inject constructor(
             _passwordError.postValue(applicationContext.getString(R.string.error_form_signup_password_empty))
             areErrors = true
         } else {
-            if(!password.validatePassword()) {
+            if (!password.validatePassword()) {
                 _passwordError.postValue(applicationContext.getString(R.string.error_form_signup_password_invalid))
                 areErrors = true
             } else {
-                if(!password.validateLength(0, 50)) {
+                if (!password.validateLength(0, 50)) {
                     _passwordError.postValue(applicationContext.getString(R.string.error_form_signup_password_length))
                     areErrors = true
                 } else {
@@ -105,7 +115,7 @@ class SignUpViewModel @Inject constructor(
                 }
             }
         }
-        if(password != password2) {
+        if (password != password2) {
             _password2Error.postValue(applicationContext.getString(R.string.error_form_signup_password_not_match))
             areErrors = true
         } else {

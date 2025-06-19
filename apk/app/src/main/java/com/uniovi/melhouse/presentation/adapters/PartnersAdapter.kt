@@ -27,8 +27,10 @@ class PartnersAdapter @AssistedInject constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PartnersViewHolder {
-        return partnersViewHolderFactory.create(LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.flat_partner_layout, parent, false), viewModel, user)
+        return partnersViewHolderFactory.create(
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.flat_partner_layout, parent, false), viewModel, user
+        )
     }
 }

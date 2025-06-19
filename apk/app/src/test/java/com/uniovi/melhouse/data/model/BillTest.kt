@@ -46,7 +46,8 @@ class BillTest {
 
     @Test
     fun testBillDeserialization() {
-        val json = """{"id":"00000000-0000-0000-0000-000000000001","flat_id":"00000000-0000-0000-0000-000000000002","amount":75.0,"concept":"Internet"}"""
+        val json =
+            """{"id":"00000000-0000-0000-0000-000000000001","flat_id":"00000000-0000-0000-0000-000000000002","amount":75.0,"concept":"Internet"}"""
 
         val bill = json.toBill()
 

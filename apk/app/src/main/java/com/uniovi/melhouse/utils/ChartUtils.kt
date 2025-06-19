@@ -18,7 +18,7 @@ fun List<User>.toAsigneesPieChart(context: Context): PieData {
     val entries = mutableListOf<PieEntry>()
     val totalTasks = this.sumOf { it.tasks.size }
 
-    this.forEach {user ->
+    this.forEach { user ->
         val percentage = (user.tasks.size.toFloat() / totalTasks) * 100
         if (percentage > 0) {
             entries.add(PieEntry(percentage, user.name))
@@ -40,11 +40,12 @@ fun List<Task>.toStatusBarChartData(context: Context): Pair<BarData, List<Legend
         .mapValues { it.value.size }
 
     values.entries.forEachIndexed { i, entry ->
-        val label = entry.key?.getString(context) ?: context.getString(R.string.chart_not_available_short)
+        val label =
+            entry.key?.getString(context) ?: context.getString(R.string.chart_not_available_short)
         val qty = entry.value
 
         entries.add(BarEntry(i.toFloat(), qty.toFloat()))
-        val color = when(entry.key) {
+        val color = when (entry.key) {
             TaskStatus.DONE -> context.getColorCompat(R.color.task_status_done)
             TaskStatus.INPROGRESS -> context.getColorCompat(R.color.task_status_in_progress)
             TaskStatus.PENDING -> context.getColorCompat(R.color.task_status_pending)

@@ -6,6 +6,9 @@ import dagger.assisted.AssistedFactory
 @AssistedFactory
 interface UserBillAdapterFactory {
 
-        fun create(userBills: List<Pair<String, Double>>, onValueChanged: (String, Double) -> Unit): UserBillSpinnerAdapter
+    fun create(
+        userBills: List<Pair<String, Double>>,
+        onValueChanged: (String, Double) -> Unit
+    ): UserBillSpinnerAdapter
 
 }

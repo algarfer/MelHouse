@@ -28,7 +28,7 @@ class TaskBottomSheetViewModel @AssistedInject constructor(
     userRepository: UserRepository,
     taskUserRepository: TaskUserRepository,
     @Assisted val taskId: UUID,
-    @Assisted("close") private var closeTaskBottomSheetDialog: (() -> Unit) = {  },
+    @Assisted("close") private var closeTaskBottomSheetDialog: (() -> Unit) = { },
     @ApplicationContext private val applicationContext: Context
 ) : AbstractViewModel() {
 

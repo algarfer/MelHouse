@@ -11,7 +11,8 @@ import javax.inject.Inject
 @HiltAndroidApp
 class App : Application() {
 
-    @Inject lateinit var prefs: Prefs
+    @Inject
+    lateinit var prefs: Prefs
 
     override fun onCreate() {
         super.onCreate()

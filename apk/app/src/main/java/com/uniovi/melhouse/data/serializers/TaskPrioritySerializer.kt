@@ -9,7 +9,8 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 object TaskPrioritySerializer : KSerializer<TaskPriority> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("TaskPriority", PrimitiveKind.INT)
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("TaskPriority", PrimitiveKind.INT)
 
     override fun deserialize(decoder: Decoder): TaskPriority {
         val value = decoder.decodeInt()

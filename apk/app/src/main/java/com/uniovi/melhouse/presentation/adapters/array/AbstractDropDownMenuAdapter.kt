@@ -21,7 +21,7 @@ abstract class AbstractDropDownMenuAdapter<T : LocaleEnum>(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var row = convertView
 
-        if(row == null) {
+        if (row == null) {
             val inflater = LayoutInflater.from(context)
             row = inflater.inflate(layout, parent, false)
         }

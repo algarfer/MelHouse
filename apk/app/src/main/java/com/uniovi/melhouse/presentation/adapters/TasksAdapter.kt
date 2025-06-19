@@ -18,9 +18,11 @@ class TasksAdapter @AssistedInject constructor(
 ) : AbstractAdapter<Task, TasksViewHolder>(list) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
-        return tasksViewHolderFactory.create(LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.calendar_task_layout, parent, false), taskHandler)
+        return tasksViewHolderFactory.create(
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.calendar_task_layout, parent, false), taskHandler
+        )
     }
 
     override fun updateList(newList: List<Task>) {

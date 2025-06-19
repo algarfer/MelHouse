@@ -18,7 +18,7 @@ import kotlin.system.exitProcess
 abstract class AbstractActivity : AppCompatActivity() {
 
     private var isDialogShowed = false
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,7 +35,7 @@ abstract class AbstractActivity : AppCompatActivity() {
 
     // Template method: onCreate can be overriden without calling super
     open fun onCreateCallback() {
-        if(!InternetConnectionObserver.hasConnection()) {
+        if (!InternetConnectionObserver.hasConnection()) {
             showConnectionLostDialog()
         }
     }
@@ -49,7 +49,7 @@ abstract class AbstractActivity : AppCompatActivity() {
     private fun checkReallyDisconnect() {
         lifecycleScope.launch(Dispatchers.Main) {
             delay(1500)
-            if(!InternetConnectionObserver.hasConnection()) {
+            if (!InternetConnectionObserver.hasConnection()) {
                 showConnectionLostDialog()
             }
         }
@@ -92,7 +92,7 @@ abstract class AbstractActivity : AppCompatActivity() {
     }
 
     protected fun showConnectionLostDialog() {
-        if(isDialogShowed) return
+        if (isDialogShowed) return
         isDialogShowed = true
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.error_lost_connection_title))

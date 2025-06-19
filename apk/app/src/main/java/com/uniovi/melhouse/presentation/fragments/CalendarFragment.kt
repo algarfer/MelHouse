@@ -46,7 +46,8 @@ import javax.inject.Inject
 class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, HasBackButton {
     override val toolbar: Toolbar get() = binding.calendarViewAppBar
 
-    @Inject lateinit var tasksAdapterFactory: TasksAdapterFactory
+    @Inject
+    lateinit var tasksAdapterFactory: TasksAdapterFactory
     private lateinit var tasksAdapter: TasksAdapter
     private val viewModel: CalendarViewModel by viewModels()
 
@@ -57,7 +58,7 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
         viewModel.clearGenericError()
 
         viewModel.genericError.observe(this) {
-            if(it == null) return@observe
+            if (it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
             viewModel.clearGenericError()
         }
@@ -180,12 +181,16 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                         taskIndicators[index].setBackgroundColor(color)
                     }
                 }
-                if(data.position != DayPosition.MonthDate && data.date == viewModel.today.value) {
+                if (data.position != DayPosition.MonthDate && data.date == viewModel.today.value) {
                     textView.setTextColorRes(R.color.on_primary)
-                    layout.setBackgroundColor(context.getColorCompat(R.color.primary).lighterColor())
+                    layout.setBackgroundColor(
+                        context.getColorCompat(R.color.primary).lighterColor()
+                    )
                 } else if (data.position != DayPosition.MonthDate) {
                     textView.setTextColorRes(R.color.on_primary_container)
-                    layout.setBackgroundColor(context.getColorCompat(R.color.primary_container).lighterColor())
+                    layout.setBackgroundColor(
+                        context.getColorCompat(R.color.primary_container).lighterColor()
+                    )
                 } else if (data.date == viewModel.today.value) {
                     textView.setTextColorRes(R.color.on_primary)
                     layout.setBackgroundColor(context.getColorCompat(R.color.primary))
@@ -211,6 +216,7 @@ class CalendarFragment : BaseFragment(R.layout.calendar_fragment), HasToolbar, H
                 }
             }
     }
+
     class DayViewContainer(
         view: View,
         viewModel: CalendarViewModel,

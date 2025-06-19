@@ -24,31 +24,31 @@ object RepositoriesModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(repositorySupabase: UserRepositorySupabase): UserRepository
-        = repositorySupabase
+    fun provideUserRepository(repositorySupabase: UserRepositorySupabase): UserRepository =
+        repositorySupabase
 
     @Provides
     @Singleton
-    fun provideTaskRepository(repositorySupabase: TaskRepositorySupabase): TaskRepository
-        = repositorySupabase
+    fun provideTaskRepository(repositorySupabase: TaskRepositorySupabase): TaskRepository =
+        repositorySupabase
 
     @Provides
     @Singleton
-    fun provideFlatRepository(repositorySupabase: FlatRepositorySupabase): FlatRepository
-        = repositorySupabase
+    fun provideFlatRepository(repositorySupabase: FlatRepositorySupabase): FlatRepository =
+        repositorySupabase
 
     @Provides
     @Singleton
-    fun provideTaskUserRepository(repositorySupabase: TaskUserRepositorySupabase): TaskUserRepository
-        = repositorySupabase
+    fun provideTaskUserRepository(repositorySupabase: TaskUserRepositorySupabase): TaskUserRepository =
+        repositorySupabase
 
     @Provides
     @Singleton
-    fun provideBillRepository(repositorySupabase: BillRepositorySupabase): BillRepository
-        = repositorySupabase
+    fun provideBillRepository(repositorySupabase: BillRepositorySupabase): BillRepository =
+        repositorySupabase
 
     @Provides
     @Singleton
-    fun provideBillUserRepository(repositorySupabase: BillUserRepositorySupabase): BillUserRepository
-        = repositorySupabase
+    fun provideBillUserRepository(repositorySupabase: BillUserRepositorySupabase): BillUserRepository =
+        repositorySupabase
 }

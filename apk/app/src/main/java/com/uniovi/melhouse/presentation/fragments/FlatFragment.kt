@@ -41,7 +41,8 @@ class FlatFragment : Fragment() {
     private lateinit var binding: FragmentFlatBinding
     private val viewModel: FlatFragmentViewModel by viewModels()
     private lateinit var partnersAdapter: PartnersAdapter
-    @Inject lateinit var partnersAdapterFactory: PartnersAdapterFactory
+    @Inject
+    lateinit var partnersAdapterFactory: PartnersAdapterFactory
 
     companion object {
         const val TAG = "FlatFragment"
@@ -52,13 +53,14 @@ class FlatFragment : Fragment() {
         viewModel.clearAllErrors()
 
         viewModel.flat.observe(this) { flat ->
-            if(flat == null) {
+            if (flat == null) {
                 binding.btnClipboard.makeGone()
                 return@observe
             }
 
             val barcodeEncoder = BarcodeEncoder()
-            val bitmap = barcodeEncoder.encodeBitmap(flat.invitationCode, BarcodeFormat.QR_CODE, 512, 512)
+            val bitmap =
+                barcodeEncoder.encodeBitmap(flat.invitationCode, BarcodeFormat.QR_CODE, 512, 512)
 
             binding.apply {
                 tvNameFlat.text = flat.name
@@ -79,7 +81,12 @@ class FlatFragment : Fragment() {
             binding.btnLeave.setOnClickListener {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(resources.getString(R.string.flat_leave_dialog_title))
-                    .setMessage(resources.getString(R.string.flat_leave_dialog_supporting_text, flat.name))
+                    .setMessage(
+                        resources.getString(
+                            R.string.flat_leave_dialog_supporting_text,
+                            flat.name
+                        )
+                    )
                     .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
                     .setPositiveButton(resources.getString(R.string.continuar)) { _, _ ->
                         viewModel.leave()
@@ -91,14 +98,18 @@ class FlatFragment : Fragment() {
                 val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
                 val clip = ClipData.newPlainText(label.toString(), flat.invitationCode)
                 clipboard?.setPrimaryClip(clip)
-                Toast.makeText(requireContext(), R.string.flat_invitation_code_copied, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    R.string.flat_invitation_code_copied,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             binding.btnClipboard.makeVisible()
         }
 
         viewModel.hasLeaved.observe(this) {
-            if(!it) return@observe
+            if (!it) return@observe
             val intent = Intent(requireContext(), MenuActivity::class.java)
             startActivity(intent)
             requireActivity().finish()
@@ -106,7 +117,7 @@ class FlatFragment : Fragment() {
 
         viewModel.isAdmin.observe(this) {
             it?.let {
-                if(it)
+                if (it)
                     binding.btnEdit.makeVisible()
                 else
                     binding.btnEdit.makeGone()
@@ -114,7 +125,7 @@ class FlatFragment : Fragment() {
         }
 
         viewModel.tasks.observe(this) {
-            if(it.isEmpty()) return@observe
+            if (it.isEmpty()) return@observe
 
             val (data, customLegend) = it.toStatusBarChartData(requireContext())
 
@@ -124,7 +135,7 @@ class FlatFragment : Fragment() {
                 axisLeft.setDrawLabels(false)
                 axisLeft.setDrawGridLines(false)
                 axisLeft.setDrawAxisLine(false)
-                axisRight.granularity = (it.size/10).toFloat()
+                axisRight.granularity = (it.size / 10).toFloat()
                 axisRight.textColor = requireContext().getColorCompat(R.color.on_background)
                 xAxis.setDrawLabels(false)
                 xAxis.setDrawGridLines(false)
@@ -172,7 +183,7 @@ class FlatFragment : Fragment() {
         }
 
         viewModel.genericError.observe(this) {
-            if(it == null) return@observe
+            if (it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
             viewModel.clearGenericError()
         }
@@ -188,7 +199,8 @@ class FlatFragment : Fragment() {
             partnersAdapter = partnersAdapterFactory.create(listOf(), viewModel, it)
 
             binding.rvFlatMembers.apply {
-                val manager = CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+                val manager =
+                    CustomLinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
                 manager.setScrollEnabled(false)
                 layoutManager = manager
                 adapter = partnersAdapter

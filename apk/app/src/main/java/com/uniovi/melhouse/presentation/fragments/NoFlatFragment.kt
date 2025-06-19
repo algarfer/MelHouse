@@ -38,10 +38,12 @@ class NoFlatFragment : Fragment() {
                 if (scanResult.contents != null) {
                     viewModel.joinFlat(scanResult.contents)
                 } else {
-                    Toast.makeText(requireContext(), R.string.flat_qr_cancelled, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.flat_qr_cancelled, Toast.LENGTH_SHORT)
+                        .show()
                 }
             } else {
-                Toast.makeText(requireContext(), R.string.flat_qr_not_read, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.flat_qr_not_read, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

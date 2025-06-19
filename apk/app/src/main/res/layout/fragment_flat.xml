@@ -81,7 +81,7 @@
             app:icon="@drawable/baseline_content_copy_24"
             style="?attr/materialIconButtonStyle"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvFlatMembers"
@@ -111,7 +111,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvDivider1"
             app:layout_constraintStart_toStartOf="parent"
             android:text="@string/flat_statistics"
-            style="@style/TitleMedium"/>
+            style="@style/TitleMedium" />
 
         <com.github.mikephil.charting.charts.HorizontalBarChart
             android:id="@+id/bcTaskStatus"

@@ -30,7 +30,7 @@ class SplashScreenViewModel @Inject constructor(
             try {
                 isLogged = supabaseUserSessionFacade.loadFromStorage()
 
-                if(!isLogged) prefs.clearAll()
+                if (!isLogged) prefs.clearAll()
             } catch (e: PersistenceLayerException) {
                 prefs.clearAll()
                 supabaseUserSessionFacade.clearSession()
@@ -43,7 +43,7 @@ class SplashScreenViewModel @Inject constructor(
     fun updateFCMToken(token: String) {
         val previousToken = prefs.getFcmToken()
 
-        if(previousToken == null || previousToken != token) {
+        if (previousToken == null || previousToken != token) {
             prefs.setFcmToken(token)
             prefs.setFcmTokenStoredServer(false)
         }
@@ -53,7 +53,7 @@ class SplashScreenViewModel @Inject constructor(
 
     private fun uploadToken() {
         supabaseUserSessionFacade.getUserId()?.let {
-            if(!prefs.getFcmTokenStoredServer()) {
+            if (!prefs.getFcmTokenStoredServer()) {
                 viewModelScope.launch(Dispatchers.IO) {
                     supabaseUserSessionFacade.updateFCMToken(prefs.getFcmToken())
                 }

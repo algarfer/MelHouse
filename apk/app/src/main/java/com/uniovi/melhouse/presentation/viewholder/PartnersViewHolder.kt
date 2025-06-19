@@ -41,7 +41,12 @@ class PartnersViewHolder @AssistedInject constructor(
         binding.btnKick.setOnClickListener {
             MaterialAlertDialogBuilder(view.context)
                 .setTitle(view.resources.getString(R.string.partner_kick_dialog_title))
-                .setMessage(view.resources.getString(R.string.partner_kick_dialog_supporting_text, item.name))
+                .setMessage(
+                    view.resources.getString(
+                        R.string.partner_kick_dialog_supporting_text,
+                        item.name
+                    )
+                )
                 .setNeutralButton(view.resources.getString(R.string.cancel)) { _, _ -> }
                 .setPositiveButton(view.resources.getString(R.string.continuar)) { _, _ ->
                     viewModel.kickUser(item)
@@ -52,7 +57,12 @@ class PartnersViewHolder @AssistedInject constructor(
         binding.btnAscend.setOnClickListener {
             MaterialAlertDialogBuilder(view.context)
                 .setTitle(view.resources.getString(R.string.partner_promote_dialog_title))
-                .setMessage(view.resources.getString(R.string.partner_promote_dialog_supporting_text, item.name))
+                .setMessage(
+                    view.resources.getString(
+                        R.string.partner_promote_dialog_supporting_text,
+                        item.name
+                    )
+                )
                 .setNeutralButton(view.resources.getString(R.string.cancel)) { _, _ -> }
                 .setPositiveButton(view.resources.getString(R.string.continuar)) { _, _ ->
                     viewModel.promoteToAdmin(item)
@@ -67,7 +77,7 @@ class PartnersViewHolder @AssistedInject constructor(
     }
 
     private fun canShowButtons(displayedUser: User, currentUser: User, isAdmin: Boolean): Boolean {
-        if(displayedUser.id == currentUser.id) return false
+        if (displayedUser.id == currentUser.id) return false
         return isAdmin
     }
 }

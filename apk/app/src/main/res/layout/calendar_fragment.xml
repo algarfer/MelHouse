@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="@id/calendar_view_app_bar"
         android:textColor="@color/on_primary"
         android:textSize="20sp"
-        tools:text="Year Month"/>
+        tools:text="Year Month" />
 
     <LinearLayout
         android:orientation="vertical"

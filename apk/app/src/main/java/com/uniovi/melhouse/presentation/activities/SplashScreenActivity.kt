@@ -50,14 +50,14 @@ class SplashScreenActivity : AbstractActivity() {
 
         // Determine the next activity to start
         viewModel.isReady.observe(this) {
-            if(!it) return@observe
+            if (!it) return@observe
 
-            if(!InternetConnectionObserver.hasConnection()) {
+            if (!InternetConnectionObserver.hasConnection()) {
                 showConnectionLostDialog()
                 return@observe
             }
 
-            val intent = if(viewModel.isLogged) {
+            val intent = if (viewModel.isLogged) {
                 Intent(this, MenuActivity::class.java)
             } else {
                 Intent(this, NotRegisteredActivity::class.java)

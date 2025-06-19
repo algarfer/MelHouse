@@ -15,8 +15,7 @@
         android:layout_height="40dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvUserName"
@@ -30,8 +29,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         tools:text="Usuario"
-        style="@style/BodyLarge"
-        />
+        style="@style/BodyLarge" />
 
     <Button
         android:id="@+id/btnKick"
@@ -59,6 +57,6 @@
         app:iconTint="@color/on_secondary_container"
         android:contentDescription="@string/flat_promote_user"
         app:icon="@drawable/baseline_crown_24"
-        style="?attr/materialIconButtonStyle"/>
+        style="?attr/materialIconButtonStyle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

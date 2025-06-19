@@ -46,7 +46,7 @@
         android:focusable="true"
         app:layout_constraintTop_toBottomOf="@+id/tvJoin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/formLayout"
@@ -61,7 +61,7 @@
                 app:endIconMode="clear_text"
                 app:layout_constraintEnd_toStartOf="@id/guidelineNoFlatVertical"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFlatCode"
@@ -128,7 +128,7 @@
         android:focusable="true"
         app:layout_constraintTop_toBottomOf="@+id/tvCreate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/btnCreateFlat"

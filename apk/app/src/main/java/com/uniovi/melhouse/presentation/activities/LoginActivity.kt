@@ -40,7 +40,7 @@ class LoginActivity : AbstractActivity() {
         }
 
         viewModel.loginSuccessfull.observe(this) {
-            if(!it) return@observe
+            if (!it) return@observe
             startActivity(Intent(this, MenuActivity::class.java))
 
             setResult(RESULT_OK)
@@ -48,7 +48,7 @@ class LoginActivity : AbstractActivity() {
         }
 
         viewModel.genericError.observe(this) {
-            if(it.isNullOrEmpty()) return@observe
+            if (it.isNullOrEmpty()) return@observe
             getWarningSnackbar(binding.root, it).show()
             viewModel.clearGenericError()
         }

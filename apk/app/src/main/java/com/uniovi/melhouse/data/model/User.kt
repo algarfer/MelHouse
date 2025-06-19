@@ -15,7 +15,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.util.UUID
 
 @Serializable
-data class User (
+data class User(
     @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     val name: String,
     val email: String,
@@ -29,7 +29,7 @@ fun User.getInitials(): String {
 }
 
 fun User.toJson(withTransientFields: Boolean = false): String {
-    if(!withTransientFields) return Json.encodeToString(this)
+    if (!withTransientFields) return Json.encodeToString(this)
 
     val json = Json.encodeToJsonElement(this).jsonObject
     val tasksJson = Json.encodeToJsonElement(this.tasks.map { it.toJson() })
@@ -43,7 +43,7 @@ fun String.toUser(withTransientFields: Boolean = false): User {
         encodeDefaults = true
     }
 
-    if(!withTransientFields) return json.decodeFromString<User>(this)
+    if (!withTransientFields) return json.decodeFromString<User>(this)
 
     val jsonObject = json.parseToJsonElement(this).jsonObject
     val baseUser = json.decodeFromJsonElement<User>(jsonObject)

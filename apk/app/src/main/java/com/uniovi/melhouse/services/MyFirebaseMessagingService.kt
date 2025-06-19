@@ -27,6 +27,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var prefs: Prefs
+
     @Inject
     lateinit var supabaseUserSessionFacade: SupabaseUserSessionFacade
 
@@ -46,7 +47,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             scope.launch {
                 try {
                     supabaseUserSessionFacade.updateFCMToken(token)
-                } catch (e: CancellationException) { }
+                } catch (e: CancellationException) {
+                }
             }
 
             handler.postDelayed({

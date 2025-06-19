@@ -22,7 +22,7 @@ object InternetConnectionObserver {
     private var onConnectHandler: () -> Unit = {}
     private var onDisconnectHandler: () -> Unit = {}
 
-    fun instance(context: Context) : InternetConnectionObserver {
+    fun instance(context: Context): InternetConnectionObserver {
         cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return this
     }
@@ -44,12 +44,13 @@ object InternetConnectionObserver {
          */
         override fun onAvailable(network: Network) {
             val networkCapabilities = cm?.getNetworkCapabilities(network)
-            val hasInternetCapability = networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            val hasInternetCapability =
+                networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             if (hasInternetCapability == true) {
                 // check if this network actually has internet
                 CoroutineScope(Dispatchers.IO).launch {
                     val hasInternet = checkInternetConnection(network.socketFactory)
-                    if(hasInternet){
+                    if (hasInternet) {
                         withContext(Dispatchers.Main) {
                             validNetworks.add(network)
                             checkValidNetworks()
@@ -83,7 +84,7 @@ object InternetConnectionObserver {
 
     private fun checkValidNetworks() {
         val status = validNetworks.size > 0
-        if(status){
+        if (status) {
             onConnectHandler()
         } else {
             onDisconnectHandler()

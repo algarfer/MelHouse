@@ -21,7 +21,7 @@ class TaskUserRepositorySupabase @Inject constructor(
     override suspend fun insertAsignees(taskId: UUID, userIds: List<UUID>) {
         supabaseClient
             .from(TABLE_NAME)
-            .insert(userIds.map { uuid -> TaskUser(uuid, taskId)})
+            .insert(userIds.map { uuid -> TaskUser(uuid, taskId) })
     }
 
     override suspend fun deleteAssignees(taskId: UUID, userIds: List<UUID>) {

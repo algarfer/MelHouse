@@ -19,8 +19,9 @@ class UserBillSpinnerAdapter @AssistedInject constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserBillViewHolder {
         return userBillViewHolderFactory.create(
             LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.user_bill_binding, parent, false), onValueChanged)
+                .from(parent.context)
+                .inflate(R.layout.user_bill_binding, parent, false), onValueChanged
+        )
     }
 
     override fun updateList(newList: List<Pair<String, Double>>) {

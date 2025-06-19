@@ -76,7 +76,7 @@ class UpsertTaskViewModel @AssistedInject constructor(
 
     fun setAsignee(user: User) {
         val temp = _assignees.value!!.toMutableSet()
-        if(_assignees.value!!.contains(user)) {
+        if (_assignees.value!!.contains(user)) {
             temp.remove(user)
             _assignees.value = temp.toSet()
         } else {
@@ -100,26 +100,27 @@ class UpsertTaskViewModel @AssistedInject constructor(
     fun upsertTask() {
         var areErrors = false
         val title = title
-        if(title.isNullOrEmpty()) {
+        if (title.isNullOrEmpty()) {
             _titleError.value = applicationContext.getString(R.string.error_task_title_missing)
             areErrors = true
-        }
-        else if(!title.validateLength()) {
+        } else if (!title.validateLength()) {
             _titleError.value = applicationContext.getString(R.string.error_task_title_length)
             areErrors = true
         }
-        if(_endDate.value == null) {
+        if (_endDate.value == null) {
             _endDateError.value = applicationContext.getString(R.string.error_task_end_date_missing)
             areErrors = true
         }
 
-        if(areErrors) return
+        if (areErrors) return
 
         if (task == null)
             upsert {
                 val task = generateTask()
                 taskRepository.insert(task)
-                taskUserRepository.insertAsignees(task.id, this.assignees.value!!.map { user -> user.id })
+                taskUserRepository.insertAsignees(
+                    task.id,
+                    this.assignees.value!!.map { user -> user.id })
             }
         else
             upsert {
@@ -159,8 +160,7 @@ class UpsertTaskViewModel @AssistedInject constructor(
             priority = _priority.value,
             startDate = _startDate.value,
             endDate = _endDate.value,
-        ) ?:
-        Task(
+        ) ?: Task(
             name = title!!,
             description = description,
             status = _status.value,
@@ -171,7 +171,7 @@ class UpsertTaskViewModel @AssistedInject constructor(
         )
     }
 
-    override fun clearAllErrors () {
+    override fun clearAllErrors() {
         super.clearAllErrors()
         _titleError.value = null
         _endDateError.value = null

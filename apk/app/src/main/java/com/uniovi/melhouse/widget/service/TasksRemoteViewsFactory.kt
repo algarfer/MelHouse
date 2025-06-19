@@ -10,7 +10,7 @@ import com.uniovi.melhouse.data.repository.task.TaskRepository
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
-class TasksRemoteViewsFactory (
+class TasksRemoteViewsFactory(
     private val context: Context,
     private val session: SupabaseUserSessionFacade,
     private val taskRepository: TaskRepository
@@ -30,7 +30,7 @@ class TasksRemoteViewsFactory (
                 emptyList()
         }
     }
-    
+
     override fun onDestroy() {}
 
     override fun getCount(): Int = tasks.size

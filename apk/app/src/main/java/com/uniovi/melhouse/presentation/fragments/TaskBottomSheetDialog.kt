@@ -29,26 +29,30 @@ import java.util.UUID
 @AndroidEntryPoint
 class TaskBottomSheetDialog : BottomSheetDialogFragment() {
 
-    private lateinit var binding : TaskDetailsBottomSheetLayoutBinding
+    private lateinit var binding: TaskDetailsBottomSheetLayoutBinding
     private val viewModel: TaskBottomSheetViewModel by viewModels(extrasProducer = {
         defaultViewModelCreationExtras
             .withCreationCallback<TaskBottomSheetViewModelFactory> { factory ->
-            factory.create(taskId) { dismiss() }
-        }
+                factory.create(taskId) { dismiss() }
+            }
     })
     private lateinit var taskId: UUID
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = TaskDetailsBottomSheetLayoutBinding.inflate(inflater, container, false)
         taskId = UUID.fromString(arguments?.getString(TASK_ID_PARAMETER))
 
         viewModel.clearAllErrors()
 
         viewModel.task.observe(this) { task ->
-            if(task == null) return@observe
+            if (task == null) return@observe
 
             // Set asignees
-            if(task.assignees.isEmpty()) {
+            if (task.assignees.isEmpty()) {
                 binding.taskAsigneeLayout.makeGone()
                 binding.tvTaskAsignee.makeGone()
             } else {
@@ -143,7 +147,8 @@ class TaskBottomSheetDialog : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         dialog?.setOnShowListener { it ->
             val d = it as BottomSheetDialog
-            val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheet =
+                d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.let {
                 val behavior = BottomSheetBehavior.from(it)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED

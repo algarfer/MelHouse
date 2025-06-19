@@ -50,21 +50,21 @@ class UpsertFlatViewModel @AssistedInject constructor(
     fun upsertFlat() {
         var areErrors = false
         val name = name
-        if(name.isNullOrEmpty()) {
+        if (name.isNullOrEmpty()) {
             _nameError.postValue(applicationContext.getString(R.string.error_form_flat_name_empty))
             areErrors = true
-        } else if(!name.validateLength()) {
+        } else if (!name.validateLength()) {
             _nameError.postValue(applicationContext.getString(R.string.error_form_flat_name_length))
             areErrors = true
         }
-        if(address.isNullOrEmpty()) {
+        if (address.isNullOrEmpty()) {
             _addressError.postValue(applicationContext.getString(R.string.error_form_flat_address_empty))
             areErrors = true
         }
 
-        if(areErrors) return
+        if (areErrors) return
 
-        if(flat == null)
+        if (flat == null)
             upsert {
                 val flat = flatRepository.createFlat(generateFlat())
                 prefs.setFlatId(flat.id)

@@ -33,17 +33,17 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String) {
         var areErrors = false
-        if(email.isEmpty()) {
+        if (email.isEmpty()) {
             _emailError.postValue(applicationContext.getString(R.string.error_form_login_email_empty))
             areErrors = true
         }
 
-        if(password.isEmpty()) {
+        if (password.isEmpty()) {
             _passwordError.postValue(applicationContext.getString(R.string.error_form_login_password_empty))
             areErrors = true
         }
 
-        if(areErrors) return
+        if (areErrors) return
 
         viewModelScope.launch(Dispatchers.IO) {
             try {

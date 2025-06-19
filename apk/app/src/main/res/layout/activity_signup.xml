@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="@+id/guidelineLogo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/formLayout"
@@ -118,14 +118,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/emailLayout"
                 app:layout_constraintBottom_toTopOf="@id/confirmPasswordLayout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" >
+                app:layout_constraintStart_toStartOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:hint="@string/password"/>
+                    android:hint="@string/password" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -144,7 +144,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:hint="@string/confirm_password"/>
+                    android:hint="@string/confirm_password" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button

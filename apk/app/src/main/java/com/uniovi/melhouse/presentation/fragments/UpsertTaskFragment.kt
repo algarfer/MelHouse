@@ -62,7 +62,7 @@ class UpsertTaskFragment : Fragment() {
         viewModel.clearAllErrors()
 
         viewModel.startDate.observe(viewLifecycleOwner) {
-            if(it != null) {
+            if (it != null) {
                 binding.btnClearStartDate.makeVisible()
                 binding.etStartDate.text = it.toString().toEditable()
             } else {
@@ -72,7 +72,7 @@ class UpsertTaskFragment : Fragment() {
         }
 
         viewModel.endDate.observe(viewLifecycleOwner) {
-            if(it != null) {
+            if (it != null) {
                 binding.btnClearEndDate.makeVisible()
                 binding.etEndDate.text = it.toString().toEditable()
             } else {
@@ -82,7 +82,7 @@ class UpsertTaskFragment : Fragment() {
         }
 
         viewModel.status.observe(viewLifecycleOwner) {
-            if(it == null) {
+            if (it == null) {
                 binding.dmStatus.tvDropdownField.setText("", false)
                 binding.btnClearStatus.makeGone()
             } else {
@@ -92,7 +92,7 @@ class UpsertTaskFragment : Fragment() {
         }
 
         viewModel.priority.observe(viewLifecycleOwner) {
-            if(it == null) {
+            if (it == null) {
                 binding.dmPriority.tvDropdownField.setText("", false)
                 binding.btnClearPriority.makeGone()
             } else {
@@ -105,14 +105,14 @@ class UpsertTaskFragment : Fragment() {
             if (asignees == null || viewModel.parters.value.isNullOrEmpty()) return@observe
 
             binding.asigneesBtnGroup.allViews.forEachIndexed { i, btn ->
-                if(i == 0) return@forEachIndexed // Skips the view itself
+                if (i == 0) return@forEachIndexed // Skips the view itself
                 val button = btn as AssigneeMaterialButton
                 applyColor(asignees.contains(button.asignee), button)
             }
         }
 
         viewModel.parters.observe(viewLifecycleOwner) {
-            if(it.isNullOrEmpty()) return@observe
+            if (it.isNullOrEmpty()) return@observe
 
             binding.asigneesBtnGroup.removeAllViews()
 
@@ -123,7 +123,7 @@ class UpsertTaskFragment : Fragment() {
                         strokeWidth = 2
                         setStrokeColorResource(R.color.secondary)
                     }
-                    button.setOnClickListener{
+                    button.setOnClickListener {
                         viewModel.setAsignee(button.asignee)
                     }
                     binding.asigneesBtnGroup.addView(button)
@@ -134,12 +134,12 @@ class UpsertTaskFragment : Fragment() {
         }
 
         viewModel.creationSuccessful.observe(viewLifecycleOwner) {
-            if(it)
+            if (it)
                 requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         viewModel.genericError.observe(viewLifecycleOwner) {
-            if(it == null) return@observe
+            if (it == null) return@observe
             getWarningSnackbar(requireView(), it).show()
             viewModel.clearGenericError()
         }
@@ -173,7 +173,7 @@ class UpsertTaskFragment : Fragment() {
         setupObservers()
 
         val task = task
-        if(task != null) {
+        if (task != null) {
             binding.etTaskTitle.text = task.name.toEditable()
             binding.etTaskDescription.text = task.description?.toEditable()
         }
@@ -188,13 +188,21 @@ class UpsertTaskFragment : Fragment() {
         }
 
         binding.etStartDate.setOnClickListener {
-            showDatePickerDialog(requireContext().getString(R.string.task_select_start_date), today(), viewModel.endDate.value ?: maxDate()) {
+            showDatePickerDialog(
+                requireContext().getString(R.string.task_select_start_date),
+                today(),
+                viewModel.endDate.value ?: maxDate()
+            ) {
                 viewModel.setStartDate(it)
             }
         }
 
         binding.etEndDate.setOnClickListener {
-            showDatePickerDialog(requireContext().getString(R.string.task_select_end_date), viewModel.startDate.value ?: today(), maxDate()) {
+            showDatePickerDialog(
+                requireContext().getString(R.string.task_select_end_date),
+                viewModel.startDate.value ?: today(),
+                maxDate()
+            ) {
                 viewModel.setEndDate(it)
             }
         }
@@ -270,7 +278,7 @@ class UpsertTaskFragment : Fragment() {
 
         addStatusBarColorUpdate(R.color.background)
 
-        if(task != null) {
+        if (task != null) {
             binding.etTaskTitle.text = task.name.toEditable()
             binding.etTaskDescription.text = task.description?.toEditable()
             binding.etStartDate.text = task.startDate?.toString()?.toEditable()
@@ -279,11 +287,18 @@ class UpsertTaskFragment : Fragment() {
         }
     }
 
-    private fun showDatePickerDialog(title: String, startDate: LocalDate, endDate: LocalDate, listener: (LocalDate) -> Unit) {
-        val validatorComposite = CompositeDateValidator.allOf(listOf(
-            DateValidatorPointBackward.before(endDate.toEpochDay() * MILLIS_PER_DAY),
-            DateValidatorPointForward.from(startDate.toEpochDay() * MILLIS_PER_DAY),
-        ))
+    private fun showDatePickerDialog(
+        title: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        listener: (LocalDate) -> Unit
+    ) {
+        val validatorComposite = CompositeDateValidator.allOf(
+            listOf(
+                DateValidatorPointBackward.before(endDate.toEpochDay() * MILLIS_PER_DAY),
+                DateValidatorPointForward.from(startDate.toEpochDay() * MILLIS_PER_DAY),
+            )
+        )
 
         val constraintsBuilder = CalendarConstraints.Builder()
             .setStart(MaterialDatePicker.todayInUtcMilliseconds())
@@ -310,7 +325,7 @@ class UpsertTaskFragment : Fragment() {
         private const val MILLIS_PER_DAY = 86400000
         private const val TASK_PARAMETER = "task_state_json"
 
-        fun create(task: Task? = null) : UpsertTaskFragment {
+        fun create(task: Task? = null): UpsertTaskFragment {
             return UpsertTaskFragment().apply {
                 arguments = Bundle().apply {
                     putString(TASK_PARAMETER, task?.toJson(withTransientFields = true))

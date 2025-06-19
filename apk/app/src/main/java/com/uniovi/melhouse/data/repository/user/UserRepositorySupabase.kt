@@ -16,7 +16,7 @@ import javax.inject.Inject
 @OptIn(SupabaseExperimental::class)
 class UserRepositorySupabase @Inject constructor(
     private val supabaseClient: SupabaseClient
-): UserRepository {
+) : UserRepository {
 
     companion object {
         private const val TABLE_NAME = "users"

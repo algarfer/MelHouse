@@ -45,7 +45,7 @@ open class Prefs @Inject constructor() {
             .apply()
     }
 
-    open fun setDarkMode(value : Boolean) {
+    open fun setDarkMode(value: Boolean) {
         storage!!
             .edit()
             .putBoolean(IS_DARK_MODE_ENABLED, value)

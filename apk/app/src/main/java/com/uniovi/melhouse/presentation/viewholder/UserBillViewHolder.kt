@@ -11,7 +11,7 @@ import dagger.assisted.AssistedInject
 class UserBillViewHolder @AssistedInject constructor(
     @Assisted private val view: View,
     @Assisted private val onValueChanged: (String, Double) -> Unit
-) : AbstractViewHolder<Pair<String, Double>>(view)  {
+) : AbstractViewHolder<Pair<String, Double>>(view) {
 
     private val binding = UserBillBindingBinding.bind(view)
 

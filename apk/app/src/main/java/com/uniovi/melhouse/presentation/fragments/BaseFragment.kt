@@ -37,14 +37,20 @@ abstract class BaseFragment(@LayoutRes layoutRes: Int) : Fragment(layoutRes) {
             toolbar?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary))
             toolbar?.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.on_primary))
 
-            (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+            (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(
+                false
+            )
         }
 
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
         if (this is HasBackButton) {
             actionBar?.setDisplayHomeAsUpEnabled(true)
-            val backArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_chevron_left_24)
-            backArrow?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.on_primary), PorterDuff.Mode.SRC_ATOP)
+            val backArrow =
+                ContextCompat.getDrawable(requireContext(), R.drawable.baseline_chevron_left_24)
+            backArrow?.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.on_primary),
+                PorterDuff.Mode.SRC_ATOP
+            )
             actionBar?.setHomeAsUpIndicator(backArrow)
         } else {
             actionBar?.setDisplayHomeAsUpEnabled(false)

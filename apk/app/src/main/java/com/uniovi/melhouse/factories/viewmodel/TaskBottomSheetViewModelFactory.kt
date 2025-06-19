@@ -1,6 +1,5 @@
 package com.uniovi.melhouse.factories.viewmodel
 
-import com.uniovi.melhouse.data.model.Task
 import com.uniovi.melhouse.viewmodel.TaskBottomSheetViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -11,6 +10,6 @@ interface TaskBottomSheetViewModelFactory {
 
     fun create(
         taskId: UUID,
-        @Assisted("close") closeTaskBottomSheetDialog: (() -> Unit) = {  },
+        @Assisted("close") closeTaskBottomSheetDialog: (() -> Unit) = { },
     ): TaskBottomSheetViewModel
 }

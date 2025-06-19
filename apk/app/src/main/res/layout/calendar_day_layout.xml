@@ -51,7 +51,7 @@
         android:layout_height="5dp"
         android:background="@color/tertiary"
         android:layout_marginBottom="8dp"
-        android:translationZ="-8dp"/>
+        android:translationZ="-8dp" />
 
     <View
         android:id="@+id/left_border"
@@ -61,8 +61,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:id="@+id/right_border"
@@ -72,8 +71,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:id="@+id/bottom_border"
@@ -83,8 +81,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/left_border"
-        app:layout_constraintEnd_toStartOf="@id/right_border"
-        />
+        app:layout_constraintEnd_toStartOf="@id/right_border" />
 
     <View
         android:id="@+id/top_border"
@@ -94,7 +91,6 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/left_border"
-        app:layout_constraintEnd_toStartOf="@id/right_border"
-        />
+        app:layout_constraintEnd_toStartOf="@id/right_border" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

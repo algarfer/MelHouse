@@ -55,8 +55,8 @@ fun getWarningSnackbar(view: View, text: String) = Snackbar.make(view, text, Sna
 fun String.ifEmptyNull() = ifEmpty { null }
 
 fun String.adaptTextToSize(size: Int = 30): String {
-    if(this.isEmpty()) return ""
+    if (this.isEmpty()) return ""
     val needTrim = this.contains("\n") || this.length > size
     val d = this.split("\n")[0]
-    return if(needTrim) "${d.substring(0, size - 3)}..." else d
+    return if (needTrim) "${d.substring(0, size - 3)}..." else d
 }

@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DrawerViewModel @Inject constructor(
-    private val prefs:Prefs,
+    private val prefs: Prefs,
     private val userSessionFacade: SupabaseUserSessionFacade,
     private val supabase: SupabaseClient,
     @ApplicationContext private val applicationContext: Context
@@ -31,6 +31,7 @@ class DrawerViewModel @Inject constructor(
     val flat: LiveData<Flat?>
         get() = _flat
     private val _flat = MutableLiveData<Flat?>(null)
+
     // TODO - Try to handle in AbstractActivity
     val isLogged: LiveData<Boolean>
         get() = _isLogged

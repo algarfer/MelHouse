@@ -20,7 +20,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideSupabase() : SupabaseClient {
+    fun provideSupabase(): SupabaseClient {
         // TODO - Catch exception if there is no connection
         return createSupabaseClient(
             Config.SUPABASE_URL,

@@ -63,10 +63,14 @@ class FlatFragmentViewModel @Inject constructor(
         val assignments = userTasks.filter { it.taskId in tasksIds }
 
         users
-            .map { user -> user.tasks = assignments
-                .filter { it.userId == user.id }
-                .map { taskId -> tasks
-                    .find { it.id == taskId.taskId }!! }.toSet(); user }
+            .map { user ->
+                user.tasks = assignments
+                    .filter { it.userId == user.id }
+                    .map { taskId ->
+                        tasks
+                            .find { it.id == taskId.taskId }!!
+                    }.toSet(); user
+            }
     }.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
     val currentUser: LiveData<User> = _currentUser

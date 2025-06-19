@@ -30,7 +30,7 @@ class SettingsFragment : Fragment() {
         viewModel.clearAllErrors()
 
         viewModel.goToStart.observe(this) {
-            if(!it) return@observe
+            if (!it) return@observe
             val intent = Intent(requireContext(), NotRegisteredActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)

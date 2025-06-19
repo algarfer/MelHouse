@@ -13,7 +13,7 @@
         android:gravity="center"
         android:textSize="16sp"
         android:padding="8dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/widget_list"
@@ -21,5 +21,5 @@
         android:layout_height="wrap_content"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical" />
 </LinearLayout>

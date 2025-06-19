@@ -16,13 +16,14 @@ class NotRegisteredActivity : AbstractActivity() {
     private lateinit var binding: ActivityNotRegisteredBinding
 
     private fun setup() {
-        val launcher = registerForActivityResult((ActivityResultContracts.StartActivityForResult())) {
-            when(it.resultCode) {
-                RESULT_OK -> {
-                    finish()
+        val launcher =
+            registerForActivityResult((ActivityResultContracts.StartActivityForResult())) {
+                when (it.resultCode) {
+                    RESULT_OK -> {
+                        finish()
+                    }
                 }
             }
-        }
 
         binding = ActivityNotRegisteredBinding.inflate(layoutInflater)
         setContentView(binding.root)
